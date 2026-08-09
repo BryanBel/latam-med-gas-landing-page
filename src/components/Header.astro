@@ -4,23 +4,23 @@ import { NAV_LINKS, DEFAULT_SITE_SETTINGS } from '../lib/content';
 const siteName = DEFAULT_SITE_SETTINGS.siteName;
 ---
 
-<header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200">
-  <div class="max-w-7xl mx-auto px-5 md:px-9 h-[76px] flex items-center justify-between gap-6">
-    <a href="#inicio" class="flex items-center gap-2 shrink-0">
-      <span class="flex items-center justify-center w-9 h-9 rounded-lg bg-accent text-white font-display font-bold text-[13px]">
+<header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+  <div class="mx-auto flex h-[76px] max-w-7xl items-center justify-between gap-6 px-5 md:px-9">
+    <a href="#inicio" class="flex shrink-0 items-center gap-2">
+      <span
+        class="bg-accent font-display flex h-9 w-9 items-center justify-center rounded-lg text-[13px] font-bold text-white"
+      >
         LMG
       </span>
-      <span class="font-display font-bold text-[16px] text-ink tracking-tight leading-none">
-        Latam Med Gas
-      </span>
+      <span class="font-display text-ink text-[16px] leading-none font-bold tracking-tight"> Latam Med Gas </span>
     </a>
 
-    <nav class="hidden lg:flex items-center gap-7" aria-label="Navegación principal">
+    <nav class="hidden items-center gap-7 lg:flex" aria-label="Navegación principal">
       {
         NAV_LINKS.map((l) => (
           <a
             href={l.href}
-            class="text-[14px] font-medium text-slate-600 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-sm transition-colors"
+            class="hover:text-accent focus-visible:ring-accent rounded-sm text-[14px] font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
           >
             {l.label}
           </a>
@@ -28,7 +28,7 @@ const siteName = DEFAULT_SITE_SETTINGS.siteName;
       }
       <a
         href="#contacto"
-        class="px-4 py-2 rounded-lg bg-accent text-white text-[14px] font-semibold hover:bg-accent-600 transition-colors"
+        class="bg-accent hover:bg-accent-600 rounded-lg px-4 py-2 text-[14px] font-semibold text-white transition-colors"
       >
         Contáctenos
       </a>
@@ -37,8 +37,10 @@ const siteName = DEFAULT_SITE_SETTINGS.siteName;
     <input type="checkbox" id="mobile-nav-toggle" class="peer hidden" />
     <label
       for="mobile-nav-toggle"
-      class="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg ring-1 ring-slate-200 cursor-pointer"
+      class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg ring-1 ring-slate-200 lg:hidden"
       aria-label={`Abrir menú de ${siteName}`}
+      aria-expanded="false"
+      aria-controls="mobile-nav"
     >
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
         <path d="M2 4.5h14M2 9h14M2 13.5h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
@@ -46,19 +48,39 @@ const siteName = DEFAULT_SITE_SETTINGS.siteName;
     </label>
 
     <nav
-      class="hidden peer-checked:flex lg:hidden absolute top-[76px] left-0 right-0 bg-white border-b border-slate-200 flex-col p-5 gap-1"
+      id="mobile-nav"
+      class="absolute top-[76px] right-0 left-0 hidden flex-col gap-1 border-b border-slate-200 bg-white p-5 peer-checked:flex lg:hidden"
       aria-label="Navegación móvil"
     >
       {
         NAV_LINKS.map((l) => (
-          <a href={l.href} class="text-[15px] font-medium text-slate-600 hover:text-accent px-2 py-2.5 rounded-lg">
+          <a href={l.href} class="hover:text-accent rounded-lg px-2 py-2.5 text-[15px] font-medium text-slate-600">
             {l.label}
           </a>
         ))
       }
-      <a href="#contacto" class="mt-2 text-center px-4 py-2.5 rounded-lg bg-accent text-white text-[14px] font-semibold">
+      <a
+        href="#contacto"
+        class="bg-accent mt-2 rounded-lg px-4 py-2.5 text-center text-[14px] font-semibold text-white"
+      >
         Contáctenos
       </a>
     </nav>
   </div>
 </header>
+
+<script>
+  const toggle = document.getElementById('mobile-nav-toggle') as HTMLInputElement | null;
+  const label = document.querySelector('label[for="mobile-nav-toggle"]');
+
+  toggle?.addEventListener('change', () => {
+    label?.setAttribute('aria-expanded', String(toggle.checked));
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toggle?.checked) {
+      toggle.checked = false;
+      label?.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>

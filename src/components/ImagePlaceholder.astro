@@ -10,7 +10,7 @@ const { caption, aspect = 'aspect-[4/3]', class: className = '' } = Astro.props;
 
 <div
   class:list={[
-    'rounded-lg bg-slate-50 ring-1 ring-inset ring-slate-200 flex flex-col items-center justify-center gap-2',
+    'flex flex-col items-center justify-center gap-2 rounded-lg bg-slate-50 ring-1 ring-slate-200 ring-inset',
     aspect,
     className,
   ]}
@@ -25,5 +25,5 @@ const { caption, aspect = 'aspect-[4/3]', class: className = '' } = Astro.props;
       stroke-linecap="round"
       stroke-linejoin="round"></path>
   </svg>
-  <span class="text-[11px] font-mono uppercase tracking-[0.08em] text-slate-400 text-center px-3">{caption}</span>
+  <span class="px-3 text-center font-mono text-[11px] tracking-[0.08em] text-slate-400 uppercase">{caption}</span>
 </div>

@@ -1,14 +1,14 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   /* Neutral placeholder palette — swap once real brand colors land */
-  --color-ink: #1B2430;
-  --color-accent: #3B4A6B;
-  --color-accent-400: #5A6D94;
-  --color-accent-500: #46587D;
-  --color-accent-600: #2F3C58;
-  --color-accent-700: #232D42;
+  --color-ink: #1b2430;
+  --color-accent: #3b4a6b;
+  --color-accent-400: #5a6d94;
+  --color-accent-500: #46587d;
+  --color-accent-600: #2f3c58;
+  --color-accent-700: #232d42;
 
-  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
 }

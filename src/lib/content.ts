@@ -42,12 +42,14 @@ export const DEFAULT_SERVICES = [
   {
     _id: 'seed-verificacion',
     title: 'Verificación ASSE 6030',
-    description: 'Verificación de sistemas de tubería de gases medicinales bajo la norma ASSE 6030, con informe final y anexos.',
+    description:
+      'Verificación de sistemas de tubería de gases medicinales bajo la norma ASSE 6030, con informe final y anexos.',
   },
   {
     _id: 'seed-cursos',
     title: 'Cursos de Capacitación ASSE 6000',
-    description: 'Formación profesional bajo la norma ASSE serie 6000, código NFPA 99, dictada por instructores certificados ASSE 6050.',
+    description:
+      'Formación profesional bajo la norma ASSE serie 6000, código NFPA 99, dictada por instructores certificados ASSE 6050.',
   },
   {
     _id: 'seed-certificacion',
@@ -63,9 +65,21 @@ export const DEFAULT_SERVICES = [
 
 export const DEFAULT_CERTIFICATIONS = [
   { _id: 'seed-nfpa99', name: 'NFPA 99', description: 'Código de instalaciones para el cuidado de la salud.' },
-  { _id: 'seed-asse6000', name: 'ASSE 6000', description: 'Serie de normas de certificación profesional para personal de gases medicinales.' },
-  { _id: 'seed-asse6010', name: 'ASSE 6010', description: 'Instalador de sistemas de tubería para gases medicinales no inflamables.' },
-  { _id: 'seed-asse6030', name: 'ASSE 6030', description: 'Verificador de sistemas de tubería para gases medicinales no inflamables.' },
+  {
+    _id: 'seed-asse6000',
+    name: 'ASSE 6000',
+    description: 'Serie de normas de certificación profesional para personal de gases medicinales.',
+  },
+  {
+    _id: 'seed-asse6010',
+    name: 'ASSE 6010',
+    description: 'Instalador de sistemas de tubería para gases medicinales no inflamables.',
+  },
+  {
+    _id: 'seed-asse6030',
+    name: 'ASSE 6030',
+    description: 'Verificador de sistemas de tubería para gases medicinales no inflamables.',
+  },
 ];
 
 export const DEFAULT_PROJECTS = [

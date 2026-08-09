@@ -1,6 +1,6 @@
 ---
 import ImagePlaceholder from './ImagePlaceholder.astro';
-import type { Certification } from '../lib/sanity-queries';
+import type { Certification } from '../lib/sanityQueries';
 import { DEFAULT_CERTIFICATIONS } from '../lib/content';
 
 interface Props {
@@ -11,22 +11,22 @@ const { certifications } = Astro.props;
 const items = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATIONS;
 ---
 
-<section id="certificaciones" class="max-w-7xl mx-auto px-5 md:px-9 py-20 md:py-24">
-  <div class="max-w-2xl mb-12">
-    <div class="text-[13px] font-semibold text-accent uppercase tracking-[0.08em] mb-3">Certificaciones</div>
-    <h2 class="font-display font-extrabold text-[28px] md:text-[34px] text-ink tracking-tight">
+<section id="certificaciones" class="mx-auto max-w-7xl px-5 py-20 md:px-9 md:py-24">
+  <div class="mb-12 max-w-2xl">
+    <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Certificaciones</div>
+    <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight md:text-[34px]">
       Respaldados por los estándares internacionales de la industria
     </h2>
   </div>
 
-  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+  <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
     {
       items.map((c) => (
-        <div class="rounded-2xl bg-white ring-1 ring-slate-200 overflow-hidden">
+        <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200">
           <ImagePlaceholder caption={c.name} aspect="aspect-[16/10]" />
           <div class="p-5">
-            <h3 class="font-display font-bold text-[15px] text-ink mb-1.5">{c.name}</h3>
-            <p class="text-[13px] text-slate-600 leading-relaxed">{c.description}</p>
+            <h3 class="font-display text-ink mb-1.5 text-[15px] font-bold">{c.name}</h3>
+            <p class="text-[13px] leading-relaxed text-slate-600">{c.description}</p>
           </div>
         </div>
       ))

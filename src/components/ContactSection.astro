@@ -1,6 +1,6 @@
 ---
 import ContactForm from './ContactForm';
-import type { SiteSettings } from '../lib/sanity-queries';
+import type { SiteSettings } from '../lib/sanityQueries';
 import { DEFAULT_SITE_SETTINGS } from '../lib/content';
 
 interface Props {
@@ -13,34 +13,34 @@ const email = settings?.email ?? DEFAULT_SITE_SETTINGS.email;
 const address = settings?.address ?? DEFAULT_SITE_SETTINGS.address;
 ---
 
-<section id="contacto" class="max-w-7xl mx-auto px-5 md:px-9 py-20 md:py-24">
-  <div class="grid lg:grid-cols-[0.8fr_1.2fr] gap-14">
+<section id="contacto" class="mx-auto max-w-7xl px-5 py-20 md:px-9 md:py-24">
+  <div class="grid gap-14 lg:grid-cols-[0.8fr_1.2fr]">
     <div>
-      <div class="text-[13px] font-semibold text-accent uppercase tracking-[0.08em] mb-3">Contacto</div>
-      <h2 class="font-display font-extrabold text-[28px] md:text-[34px] text-ink tracking-tight mb-5">
+      <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Contacto</div>
+      <h2 class="font-display text-ink mb-5 text-[28px] font-extrabold tracking-tight md:text-[34px]">
         Conversemos sobre su proyecto
       </h2>
-      <p class="text-slate-600 text-[15px] leading-relaxed mb-8">
+      <p class="mb-8 text-[15px] leading-relaxed text-slate-600">
         Escríbanos y le responderemos con la información técnica y comercial que necesite.
       </p>
 
       <dl class="space-y-4">
         <div>
-          <dt class="text-[12px] font-semibold text-slate-500 uppercase tracking-[0.08em] mb-1">Teléfono</dt>
-          <dd class="text-[14.5px] text-ink font-medium">{phone}</dd>
+          <dt class="mb-1 text-[12px] font-semibold tracking-[0.08em] text-slate-500 uppercase">Teléfono</dt>
+          <dd class="text-ink text-[14.5px] font-medium">{phone}</dd>
         </div>
         <div>
-          <dt class="text-[12px] font-semibold text-slate-500 uppercase tracking-[0.08em] mb-1">Correo</dt>
-          <dd class="text-[14.5px] text-ink font-medium">{email}</dd>
+          <dt class="mb-1 text-[12px] font-semibold tracking-[0.08em] text-slate-500 uppercase">Correo</dt>
+          <dd class="text-ink text-[14.5px] font-medium">{email}</dd>
         </div>
         <div>
-          <dt class="text-[12px] font-semibold text-slate-500 uppercase tracking-[0.08em] mb-1">Dirección</dt>
-          <dd class="text-[14.5px] text-ink font-medium leading-relaxed">{address}</dd>
+          <dt class="mb-1 text-[12px] font-semibold tracking-[0.08em] text-slate-500 uppercase">Dirección</dt>
+          <dd class="text-ink text-[14.5px] leading-relaxed font-medium">{address}</dd>
         </div>
       </dl>
     </div>
 
-    <div class="rounded-2xl bg-white ring-1 ring-slate-200 p-7 md:p-9">
+    <div class="rounded-2xl bg-white p-7 ring-1 ring-slate-200 md:p-9">
       <ContactForm client:load />
     </div>
   </div>

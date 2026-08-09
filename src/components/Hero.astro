@@ -1,6 +1,6 @@
 ---
 import ImagePlaceholder from './ImagePlaceholder.astro';
-import type { HeroSection } from '../lib/sanity-queries';
+import type { HeroSection } from '../lib/sanityQueries';
 import { DEFAULT_HERO } from '../lib/content';
 
 interface Props {
@@ -15,25 +15,25 @@ const ctaLabel = hero?.ctaLabel ?? DEFAULT_HERO.ctaLabel;
 const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
 ---
 
-<section id="inicio" class="max-w-7xl mx-auto px-5 md:px-9 py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center">
+<section id="inicio" class="mx-auto grid max-w-7xl items-center gap-12 px-5 py-16 md:px-9 md:py-24 lg:grid-cols-2">
   <div>
-    <div class="text-[13px] font-semibold text-accent uppercase tracking-[0.08em] mb-4">{eyebrow}</div>
-    <h1 class="font-display font-extrabold text-[32px] md:text-[44px] text-ink tracking-tight leading-[1.1]">
+    <div class="text-accent mb-4 text-[13px] font-semibold tracking-[0.08em] uppercase">{eyebrow}</div>
+    <h1 class="font-display text-ink text-[32px] leading-[1.1] font-extrabold tracking-tight md:text-[44px]">
       {heading}
     </h1>
-    <p class="mt-5 text-slate-600 text-[16px] md:text-[17px] leading-relaxed max-w-[52ch]">
+    <p class="mt-5 max-w-[52ch] text-[16px] leading-relaxed text-slate-600 md:text-[17px]">
       {subheading}
     </p>
     <div class="mt-8 flex flex-wrap gap-3">
       <a
         href={ctaLink}
-        class="px-6 py-3 rounded-lg bg-accent text-white text-[14.5px] font-semibold hover:bg-accent-600 transition-colors"
+        class="bg-accent hover:bg-accent-600 rounded-lg px-6 py-3 text-[14.5px] font-semibold text-white transition-colors"
       >
         {ctaLabel}
       </a>
       <a
         href="#servicios"
-        class="px-6 py-3 rounded-lg ring-1 ring-slate-200 text-ink text-[14.5px] font-semibold hover:ring-accent/40 transition-colors"
+        class="text-ink hover:ring-accent/40 rounded-lg px-6 py-3 text-[14.5px] font-semibold ring-1 ring-slate-200 transition-colors"
       >
         Ver servicios
       </a>
@@ -41,7 +41,7 @@ const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
     <div class="mt-8 flex flex-wrap gap-2">
       {
         ['NFPA 99', 'ASSE 6000', 'ASSE 6010', 'ASSE 6030'].map((tag) => (
-          <span class="text-[12px] font-mono font-semibold px-3 py-1 rounded-full bg-slate-100 text-slate-600 ring-1 ring-slate-200">
+          <span class="rounded-full bg-slate-100 px-3 py-1 font-mono text-[12px] font-semibold text-slate-600 ring-1 ring-slate-200">
             {tag}
           </span>
         ))

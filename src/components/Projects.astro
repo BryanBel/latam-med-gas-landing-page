@@ -1,6 +1,6 @@
 ---
 import ImagePlaceholder from './ImagePlaceholder.astro';
-import type { Project } from '../lib/sanity-queries';
+import type { Project } from '../lib/sanityQueries';
 import { DEFAULT_PROJECTS } from '../lib/content';
 
 interface Props {
@@ -11,24 +11,24 @@ const { projects } = Astro.props;
 const items = projects.length > 0 ? projects : DEFAULT_PROJECTS;
 ---
 
-<section id="proyectos" class="bg-slate-50 border-y border-slate-200">
-  <div class="max-w-7xl mx-auto px-5 md:px-9 py-20 md:py-24">
-    <div class="max-w-2xl mb-12">
-      <div class="text-[13px] font-semibold text-accent uppercase tracking-[0.08em] mb-3">Proyectos</div>
-      <h2 class="font-display font-extrabold text-[28px] md:text-[34px] text-ink tracking-tight">
+<section id="proyectos" class="border-y border-slate-200 bg-slate-50">
+  <div class="mx-auto max-w-7xl px-5 py-20 md:px-9 md:py-24">
+    <div class="mb-12 max-w-2xl">
+      <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Proyectos</div>
+      <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight md:text-[34px]">
         Instituciones que confían en nuestro trabajo
       </h2>
     </div>
 
-    <div class="grid md:grid-cols-2 gap-6">
+    <div class="grid gap-6 md:grid-cols-2">
       {
         items.map((p) => (
-          <div class="rounded-2xl bg-white ring-1 ring-slate-200 overflow-hidden">
+          <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200">
             <ImagePlaceholder caption={p.clientName} aspect="aspect-[21/9]" />
             <div class="p-7">
-              <h3 class="font-display font-bold text-[18px] text-ink mb-1">{p.clientName}</h3>
-              {p.location && <p class="text-[12.5px] text-slate-500 font-medium mb-3">{p.location}</p>}
-              <p class="text-[14px] text-slate-600 leading-relaxed">{p.description}</p>
+              <h3 class="font-display text-ink mb-1 text-[18px] font-bold">{p.clientName}</h3>
+              {p.location && <p class="mb-3 text-[12.5px] font-medium text-slate-500">{p.location}</p>}
+              <p class="text-[14px] leading-relaxed text-slate-600">{p.description}</p>
             </div>
           </div>
         ))

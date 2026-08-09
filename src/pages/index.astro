@@ -7,7 +7,7 @@ import Certifications from '../components/Certifications.astro';
 import Projects from '../components/Projects.astro';
 import ContactSection from '../components/ContactSection.astro';
 import Footer from '../components/Footer.astro';
-import { getSiteSettings, getHeroSection, getServices, getCertifications, getProjects } from '../lib/sanity-queries';
+import { getSiteSettings, getHeroSection, getServices, getCertifications, getProjects } from '../lib/sanityQueries';
 import { DEFAULT_SITE_SETTINGS } from '../lib/content';
 
 let settings = null;
@@ -24,8 +24,9 @@ try {
     getCertifications(),
     getProjects(),
   ]);
-} catch {
-  // Sanity unreachable at build time — page renders with seed content from lib/content.ts
+} catch (err) {
+  // Page still renders with seed content from lib/content.ts, but surface the failure in build logs.
+  console.warn('[Sanity] falling back to seed content:', err);
 }
 ---
 

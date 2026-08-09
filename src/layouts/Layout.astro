@@ -36,7 +36,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
   </head>
-  <body class="antialiased bg-white text-ink font-body">
+  <body class="text-ink font-body bg-white antialiased">
     <slot />
   </body>
 </html>

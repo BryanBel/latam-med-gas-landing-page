@@ -10,9 +10,7 @@ export default defineType({
     defineField({ name: 'icon', title: 'Ícono (nombre lucide-react, ej: "wrench")', type: 'string' }),
     defineField({ name: 'order', title: 'Orden', type: 'number' }),
   ],
-  orderings: [
-    { title: 'Orden', name: 'orderAsc', by: [{ field: 'order', direction: 'asc' }] },
-  ],
+  orderings: [{ title: 'Orden', name: 'orderAsc', by: [{ field: 'order', direction: 'asc' }] }],
   preview: {
     select: { title: 'title', subtitle: 'description' },
   },

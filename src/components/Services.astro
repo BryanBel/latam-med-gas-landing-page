@@ -1,5 +1,5 @@
 ---
-import type { Service } from '../lib/sanity-queries';
+import type { Service } from '../lib/sanityQueries';
 import { DEFAULT_SERVICES } from '../lib/content';
 
 interface Props {
@@ -10,27 +10,27 @@ const { services } = Astro.props;
 const items = services.length > 0 ? services : DEFAULT_SERVICES;
 ---
 
-<section id="servicios" class="bg-slate-50 border-y border-slate-200">
-  <div class="max-w-7xl mx-auto px-5 md:px-9 py-20 md:py-24">
-    <div class="max-w-2xl mb-12">
-      <div class="text-[13px] font-semibold text-accent uppercase tracking-[0.08em] mb-3">Servicios</div>
-      <h2 class="font-display font-extrabold text-[28px] md:text-[34px] text-ink tracking-tight">
+<section id="servicios" class="border-y border-slate-200 bg-slate-50">
+  <div class="mx-auto max-w-7xl px-5 py-20 md:px-9 md:py-24">
+    <div class="mb-12 max-w-2xl">
+      <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Servicios</div>
+      <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight md:text-[34px]">
         Todo lo que su institución necesita en gases medicinales
       </h2>
-      <p class="mt-3 text-slate-600 text-[15.5px]">
+      <p class="mt-3 text-[15.5px] text-slate-600">
         Desde el diseño hasta la verificación final, cubrimos cada etapa bajo normativa ASSE y NFPA.
       </p>
     </div>
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {
         items.map((s) => (
-          <div class="rounded-2xl bg-white ring-1 ring-slate-200 p-6">
-            <div class="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center mb-4">
-              <span class="w-2 h-2 rounded-full bg-accent" />
+          <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200">
+            <div class="bg-accent/10 mb-4 flex h-10 w-10 items-center justify-center rounded-lg">
+              <span class="bg-accent h-2 w-2 rounded-full" />
             </div>
-            <h3 class="font-display font-bold text-[15.5px] text-ink mb-2">{s.title}</h3>
-            <p class="text-[13.5px] text-slate-600 leading-relaxed">{s.description}</p>
+            <h3 class="font-display text-ink mb-2 text-[15.5px] font-bold">{s.title}</h3>
+            <p class="text-[13.5px] leading-relaxed text-slate-600">{s.description}</p>
           </div>
         ))
       }
