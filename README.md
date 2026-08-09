@@ -1,3 +1,5 @@
+**English** | [Español](README.es.md)
+
 # Latam Med Gas — Landing Page
 
 Marketing site for **Latam Med Gas USA LLC**, a Miami-based provider of medical gas system inspection, design, maintenance, and ASSE 6000 / NFPA 99 certification training for hospitals and clinics across Latin America.
