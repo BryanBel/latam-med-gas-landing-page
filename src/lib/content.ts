@@ -4,9 +4,10 @@
 export const DEFAULT_SITE_SETTINGS = {
   siteName: 'Latam Med Gas USA LLC',
   tagline: 'Inspección · Mantenimiento · Diseño · Asesoría · Verificación de Sistemas de Gases Medicinales',
-  phone: '+1 (305) 900-2281',
-  email: 'gerencia@latammedgas.com',
-  address: '2 S Biscayne Boulevard Suite 3200 #2088, Miami, Florida 33132, Estados Unidos',
+  // Placeholders — pending confirmed contact info from the client (source docs disagreed on address).
+  phone: '[TELÉFONO]',
+  email: '[CORREO]',
+  address: '[DIRECCIÓN]',
 };
 
 export const DEFAULT_HERO = {
@@ -16,6 +17,17 @@ export const DEFAULT_HERO = {
     'Inspección, mantenimiento, diseño, asesoría y verificación de sistemas de gases medicinales para hospitales y centros de salud en Latinoamérica.',
   ctaLabel: 'Solicitar cotización',
   ctaLink: '#contacto',
+};
+
+export const DEFAULT_ABOUT = {
+  eyebrow: 'Sobre Nosotros',
+  heading: 'Especialistas en gases medicinales para instituciones de salud',
+  body: 'Latam Med Gas USA LLC es una empresa con sede en Miami, Florida, dedicada a la inspección, mantenimiento, diseño, asesoría y verificación de sistemas de gases medicinales. Acompañamos a hospitales y centros de salud en Latinoamérica en cada etapa de sus proyectos, bajo los estándares de la norma ASSE serie 6000 y el código NFPA 99, con un programa de certificación profesional en convenio con CONECOTEC y NITC.',
+  highlights: [
+    'Cobertura en instituciones de salud públicas y privadas en Latinoamérica',
+    'Capacitación y certificación bajo la norma ASSE serie 6000',
+    'Venta de equipos de prueba para instalación ASSE 6010 y verificación ASSE 6030',
+  ],
 };
 
 export const DEFAULT_SERVICES = [
@@ -99,6 +111,7 @@ export const DEFAULT_PROJECTS = [
 
 export const NAV_LINKS = [
   { label: 'Inicio', href: '#inicio' },
+  { label: 'Nosotros', href: '#nosotros' },
   { label: 'Servicios', href: '#servicios' },
   { label: 'Certificaciones', href: '#certificaciones' },
   { label: 'Proyectos', href: '#proyectos' },

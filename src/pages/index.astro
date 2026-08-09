@@ -2,24 +2,34 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
+import AboutUs from '../components/AboutUs.astro';
 import Services from '../components/Services.astro';
 import Certifications from '../components/Certifications.astro';
 import Projects from '../components/Projects.astro';
 import ContactSection from '../components/ContactSection.astro';
 import Footer from '../components/Footer.astro';
-import { getSiteSettings, getHeroSection, getServices, getCertifications, getProjects } from '../lib/sanityQueries';
+import {
+  getSiteSettings,
+  getHeroSection,
+  getAboutSection,
+  getServices,
+  getCertifications,
+  getProjects,
+} from '../lib/sanityQueries';
 import { DEFAULT_SITE_SETTINGS } from '../lib/content';
 
 let settings = null;
 let hero = null;
+let about = null;
 let services: Awaited<ReturnType<typeof getServices>> = [];
 let certifications: Awaited<ReturnType<typeof getCertifications>> = [];
 let projects: Awaited<ReturnType<typeof getProjects>> = [];
 
 try {
-  [settings, hero, services, certifications, projects] = await Promise.all([
+  [settings, hero, about, services, certifications, projects] = await Promise.all([
     getSiteSettings(),
     getHeroSection(),
+    getAboutSection(),
     getServices(),
     getCertifications(),
     getProjects(),
@@ -37,6 +47,7 @@ try {
   <Header />
   <main>
     <Hero hero={hero} />
+    <AboutUs about={about} />
     <Services services={services} />
     <Certifications certifications={certifications} />
     <Projects projects={projects} />

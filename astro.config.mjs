@@ -9,7 +9,11 @@ import sanity from '@sanity/astro';
 
 // astro.config.mjs runs in plain Node, so .env values must be loaded explicitly
 // (import.meta.env inside components is populated by Vite separately).
-const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), '');
+const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(
+  process.env.NODE_ENV ?? 'development',
+  process.cwd(),
+  '',
+);
 
 // https://astro.build/config
 export default defineConfig({

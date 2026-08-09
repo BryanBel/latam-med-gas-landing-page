@@ -19,6 +19,14 @@ export interface HeroSection {
   backgroundImage?: unknown;
 }
 
+export interface AboutSection {
+  eyebrow?: string;
+  heading: string;
+  body?: string;
+  highlights?: string[];
+  image?: unknown;
+}
+
 export interface Service {
   _id: string;
   title: string;
@@ -58,6 +66,10 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
 
 export async function getHeroSection(): Promise<HeroSection | null> {
   return sanityClient.fetch('*[_type == "heroSection"][0]');
+}
+
+export async function getAboutSection(): Promise<AboutSection | null> {
+  return sanityClient.fetch('*[_type == "aboutSection"][0]');
 }
 
 export async function getServices(): Promise<Service[]> {

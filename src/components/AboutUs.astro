@@ -1,0 +1,38 @@
+---
+import ImagePlaceholder from './ImagePlaceholder.astro';
+import type { AboutSection } from '../lib/sanityQueries';
+import { DEFAULT_ABOUT } from '../lib/content';
+
+interface Props {
+  about: AboutSection | null;
+}
+
+const { about } = Astro.props;
+const eyebrow = about?.eyebrow ?? DEFAULT_ABOUT.eyebrow;
+const heading = about?.heading ?? DEFAULT_ABOUT.heading;
+const body = about?.body ?? DEFAULT_ABOUT.body;
+const highlights = about?.highlights?.length ? about.highlights : DEFAULT_ABOUT.highlights;
+---
+
+<section id="nosotros" class="mx-auto max-w-7xl px-5 py-20 md:px-9 md:py-24">
+  <div class="grid items-center gap-12 lg:grid-cols-2">
+    <ImagePlaceholder caption="Latam Med Gas" aspect="aspect-[4/3]" class="order-2 lg:order-1" />
+
+    <div class="order-1 lg:order-2">
+      <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">{eyebrow}</div>
+      <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight md:text-[34px]">{heading}</h2>
+      <p class="mt-5 text-[15px] leading-relaxed text-slate-600">{body}</p>
+
+      <ul class="mt-7 space-y-3">
+        {
+          highlights.map((h) => (
+            <li class="flex gap-3 text-[14.5px] leading-relaxed text-slate-600">
+              <span class="bg-accent mt-2 h-1.5 w-1.5 shrink-0 rounded-full" />
+              <span>{h}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
