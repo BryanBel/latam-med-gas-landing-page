@@ -1,5 +1,5 @@
 ---
-import ImagePlaceholder from './ImagePlaceholder.astro';
+import SanityImage from './SanityImage.astro';
 import type { Project } from '../lib/sanityQueries';
 import { DEFAULT_PROJECTS } from '../lib/content';
 
@@ -24,7 +24,7 @@ const items = projects.length > 0 ? projects : DEFAULT_PROJECTS;
       {
         items.map((p) => (
           <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200">
-            <ImagePlaceholder caption={p.clientName} aspect="aspect-[21/9]" />
+            <SanityImage image={p.image} alt={p.clientName} caption={p.clientName} aspect="aspect-[21/9]" />
             <div class="p-7">
               <h3 class="font-display text-ink mb-1 text-[18px] font-bold">{p.clientName}</h3>
               {p.location && <p class="mb-3 text-[12.5px] font-medium text-slate-500">{p.location}</p>}

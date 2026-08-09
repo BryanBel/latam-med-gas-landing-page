@@ -1,5 +1,5 @@
 ---
-import ImagePlaceholder from './ImagePlaceholder.astro';
+import SanityImage from './SanityImage.astro';
 import type { HeroSection } from '../lib/sanityQueries';
 import { DEFAULT_HERO } from '../lib/content';
 
@@ -49,5 +49,10 @@ const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
     </div>
   </div>
 
-  <ImagePlaceholder caption="Sistema de Gases Medicinales" aspect="aspect-[4/3]" />
+  <SanityImage
+    image={hero?.backgroundImage}
+    alt={heading}
+    caption="Sistema de Gases Medicinales"
+    aspect="aspect-[4/3]"
+  />
 </section>

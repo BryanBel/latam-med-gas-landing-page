@@ -1,6 +1,8 @@
 // Seed/fallback copy — shown until the client fills in real content via /studio.
 // Sourced from client-assets/ (invoice, resale certs, LMG letterhead, ASSE verification report).
 
+import type { Service, Certification, Project } from './sanityQueries';
+
 export const DEFAULT_SITE_SETTINGS = {
   siteName: 'Latam Med Gas USA LLC',
   tagline: 'Inspección · Mantenimiento · Diseño · Asesoría · Verificación de Sistemas de Gases Medicinales',
@@ -30,7 +32,7 @@ export const DEFAULT_ABOUT = {
   ],
 };
 
-export const DEFAULT_SERVICES = [
+export const DEFAULT_SERVICES: Service[] = [
   {
     _id: 'seed-inspeccion',
     title: 'Inspección de Sistemas GM',
@@ -75,7 +77,7 @@ export const DEFAULT_SERVICES = [
   },
 ];
 
-export const DEFAULT_CERTIFICATIONS = [
+export const DEFAULT_CERTIFICATIONS: Certification[] = [
   { _id: 'seed-nfpa99', name: 'NFPA 99', description: 'Código de instalaciones para el cuidado de la salud.' },
   {
     _id: 'seed-asse6000',
@@ -94,7 +96,7 @@ export const DEFAULT_CERTIFICATIONS = [
   },
 ];
 
-export const DEFAULT_PROJECTS = [
+export const DEFAULT_PROJECTS: Project[] = [
   {
     _id: 'seed-imss-tuxtla',
     clientName: 'Hospital General IMSS Tuxtla-Chiapas',

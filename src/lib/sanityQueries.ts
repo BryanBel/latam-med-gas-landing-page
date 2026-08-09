@@ -1,9 +1,15 @@
 import { sanityClient } from 'sanity:client';
 
+export interface SanityImageRef {
+  _type: 'image';
+  asset: { _ref: string; _type: 'reference' };
+  hotspot?: { x: number; y: number; height: number; width: number };
+}
+
 export interface SiteSettings {
   siteName: string;
   tagline?: string;
-  logo?: unknown;
+  logo?: SanityImageRef;
   phone?: string;
   email?: string;
   address?: string;
@@ -16,7 +22,7 @@ export interface HeroSection {
   subheading?: string;
   ctaLabel?: string;
   ctaLink?: string;
-  backgroundImage?: unknown;
+  backgroundImage?: SanityImageRef;
 }
 
 export interface AboutSection {
@@ -24,7 +30,7 @@ export interface AboutSection {
   heading: string;
   body?: string;
   highlights?: string[];
-  image?: unknown;
+  image?: SanityImageRef;
 }
 
 export interface Service {
@@ -39,7 +45,7 @@ export interface Certification {
   _id: string;
   name: string;
   description?: string;
-  badge?: unknown;
+  badge?: SanityImageRef;
   order?: number;
 }
 
@@ -48,7 +54,7 @@ export interface Project {
   clientName: string;
   location?: string;
   description?: string;
-  image?: unknown;
+  image?: SanityImageRef;
   order?: number;
 }
 

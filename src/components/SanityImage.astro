@@ -1,0 +1,25 @@
+---
+import ImagePlaceholder from './ImagePlaceholder.astro';
+import { sanityImageUrl } from '../lib/sanityImage';
+import type { SanityImageRef } from '../lib/sanityQueries';
+
+interface Props {
+  image?: SanityImageRef;
+  alt: string;
+  caption: string;
+  aspect?: string;
+  class?: string;
+  width?: number;
+}
+
+const { image, alt, caption, aspect = 'aspect-[4/3]', class: className = '', width = 1200 } = Astro.props;
+const src = sanityImageUrl(image, width);
+---
+
+{
+  src ? (
+    <img src={src} alt={alt} class:list={['w-full object-cover', aspect, className]} loading="lazy" />
+  ) : (
+    <ImagePlaceholder caption={caption} aspect={aspect} class={className} />
+  )
+}
