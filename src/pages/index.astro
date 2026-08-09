@@ -1,17 +1,45 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Services from '../components/Services.astro';
+import Certifications from '../components/Certifications.astro';
+import Projects from '../components/Projects.astro';
+import ContactSection from '../components/ContactSection.astro';
+import Footer from '../components/Footer.astro';
+import { getSiteSettings, getHeroSection, getServices, getCertifications, getProjects } from '../lib/sanity-queries';
+import { DEFAULT_SITE_SETTINGS } from '../lib/content';
 
+let settings = null;
+let hero = null;
+let services: Awaited<ReturnType<typeof getServices>> = [];
+let certifications: Awaited<ReturnType<typeof getCertifications>> = [];
+let projects: Awaited<ReturnType<typeof getProjects>> = [];
+
+try {
+  [settings, hero, services, certifications, projects] = await Promise.all([
+    getSiteSettings(),
+    getHeroSection(),
+    getServices(),
+    getCertifications(),
+    getProjects(),
+  ]);
+} catch {
+  // Sanity unreachable at build time — page renders with seed content from lib/content.ts
+}
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout
+  title={`${settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName} — Gases Medicinales ASSE 6000 / NFPA 99`}
+  description={settings?.tagline ?? DEFAULT_SITE_SETTINGS.tagline}
+>
+  <Header />
+  <main>
+    <Hero hero={hero} />
+    <Services services={services} />
+    <Certifications certifications={certifications} />
+    <Projects projects={projects} />
+    <ContactSection settings={settings} />
+  </main>
+  <Footer />
+</Layout>

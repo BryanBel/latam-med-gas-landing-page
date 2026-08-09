@@ -1,0 +1,64 @@
+---
+import { NAV_LINKS, DEFAULT_SITE_SETTINGS } from '../lib/content';
+
+const siteName = DEFAULT_SITE_SETTINGS.siteName;
+---
+
+<header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200">
+  <div class="max-w-7xl mx-auto px-5 md:px-9 h-[76px] flex items-center justify-between gap-6">
+    <a href="#inicio" class="flex items-center gap-2 shrink-0">
+      <span class="flex items-center justify-center w-9 h-9 rounded-lg bg-accent text-white font-display font-bold text-[13px]">
+        LMG
+      </span>
+      <span class="font-display font-bold text-[16px] text-ink tracking-tight leading-none">
+        Latam Med Gas
+      </span>
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-7" aria-label="Navegación principal">
+      {
+        NAV_LINKS.map((l) => (
+          <a
+            href={l.href}
+            class="text-[14px] font-medium text-slate-600 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-sm transition-colors"
+          >
+            {l.label}
+          </a>
+        ))
+      }
+      <a
+        href="#contacto"
+        class="px-4 py-2 rounded-lg bg-accent text-white text-[14px] font-semibold hover:bg-accent-600 transition-colors"
+      >
+        Contáctenos
+      </a>
+    </nav>
+
+    <input type="checkbox" id="mobile-nav-toggle" class="peer hidden" />
+    <label
+      for="mobile-nav-toggle"
+      class="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg ring-1 ring-slate-200 cursor-pointer"
+      aria-label={`Abrir menú de ${siteName}`}
+    >
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path d="M2 4.5h14M2 9h14M2 13.5h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+      </svg>
+    </label>
+
+    <nav
+      class="hidden peer-checked:flex lg:hidden absolute top-[76px] left-0 right-0 bg-white border-b border-slate-200 flex-col p-5 gap-1"
+      aria-label="Navegación móvil"
+    >
+      {
+        NAV_LINKS.map((l) => (
+          <a href={l.href} class="text-[15px] font-medium text-slate-600 hover:text-accent px-2 py-2.5 rounded-lg">
+            {l.label}
+          </a>
+        ))
+      }
+      <a href="#contacto" class="mt-2 text-center px-4 py-2.5 rounded-lg bg-accent text-white text-[14px] font-semibold">
+        Contáctenos
+      </a>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,47 @@
+---
+import ContactForm from './ContactForm';
+import type { SiteSettings } from '../lib/sanity-queries';
+import { DEFAULT_SITE_SETTINGS } from '../lib/content';
+
+interface Props {
+  settings: SiteSettings | null;
+}
+
+const { settings } = Astro.props;
+const phone = settings?.phone ?? DEFAULT_SITE_SETTINGS.phone;
+const email = settings?.email ?? DEFAULT_SITE_SETTINGS.email;
+const address = settings?.address ?? DEFAULT_SITE_SETTINGS.address;
+---
+
+<section id="contacto" class="max-w-7xl mx-auto px-5 md:px-9 py-20 md:py-24">
+  <div class="grid lg:grid-cols-[0.8fr_1.2fr] gap-14">
+    <div>
+      <div class="text-[13px] font-semibold text-accent uppercase tracking-[0.08em] mb-3">Contacto</div>
+      <h2 class="font-display font-extrabold text-[28px] md:text-[34px] text-ink tracking-tight mb-5">
+        Conversemos sobre su proyecto
+      </h2>
+      <p class="text-slate-600 text-[15px] leading-relaxed mb-8">
+        Escríbanos y le responderemos con la información técnica y comercial que necesite.
+      </p>
+
+      <dl class="space-y-4">
+        <div>
+          <dt class="text-[12px] font-semibold text-slate-500 uppercase tracking-[0.08em] mb-1">Teléfono</dt>
+          <dd class="text-[14.5px] text-ink font-medium">{phone}</dd>
+        </div>
+        <div>
+          <dt class="text-[12px] font-semibold text-slate-500 uppercase tracking-[0.08em] mb-1">Correo</dt>
+          <dd class="text-[14.5px] text-ink font-medium">{email}</dd>
+        </div>
+        <div>
+          <dt class="text-[12px] font-semibold text-slate-500 uppercase tracking-[0.08em] mb-1">Dirección</dt>
+          <dd class="text-[14.5px] text-ink font-medium leading-relaxed">{address}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="rounded-2xl bg-white ring-1 ring-slate-200 p-7 md:p-9">
+      <ContactForm client:load />
+    </div>
+  </div>
+</section>

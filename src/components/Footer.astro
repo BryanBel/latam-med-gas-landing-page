@@ -1,0 +1,35 @@
+---
+import { NAV_LINKS, DEFAULT_SITE_SETTINGS } from '../lib/content';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-slate-200 bg-slate-50">
+  <div class="max-w-7xl mx-auto px-5 md:px-9 py-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-accent text-white font-display font-bold text-[12px]">
+          LMG
+        </span>
+        <span class="font-display font-bold text-[15px] text-ink">{DEFAULT_SITE_SETTINGS.siteName}</span>
+      </div>
+      <p class="mt-2 text-[13px] text-slate-500 max-w-[46ch]">{DEFAULT_SITE_SETTINGS.tagline}</p>
+    </div>
+
+    <nav class="flex flex-wrap gap-x-6 gap-y-2" aria-label="Enlaces del pie de página">
+      {
+        NAV_LINKS.map((l) => (
+          <a href={l.href} class="text-[13.5px] font-medium text-slate-600 hover:text-accent transition-colors">
+            {l.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+  <div class="border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-5 md:px-9 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-[12.5px] text-slate-500">
+      <span>© {year} {DEFAULT_SITE_SETTINGS.siteName}. Todos los derechos reservados.</span>
+      <span>Sus datos de contacto se utilizan únicamente para responder a su solicitud.</span>
+    </div>
+  </div>
+</footer>

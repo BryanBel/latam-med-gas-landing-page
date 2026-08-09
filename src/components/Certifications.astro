@@ -1,0 +1,35 @@
+---
+import ImagePlaceholder from './ImagePlaceholder.astro';
+import type { Certification } from '../lib/sanity-queries';
+import { DEFAULT_CERTIFICATIONS } from '../lib/content';
+
+interface Props {
+  certifications: Certification[];
+}
+
+const { certifications } = Astro.props;
+const items = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATIONS;
+---
+
+<section id="certificaciones" class="max-w-7xl mx-auto px-5 md:px-9 py-20 md:py-24">
+  <div class="max-w-2xl mb-12">
+    <div class="text-[13px] font-semibold text-accent uppercase tracking-[0.08em] mb-3">Certificaciones</div>
+    <h2 class="font-display font-extrabold text-[28px] md:text-[34px] text-ink tracking-tight">
+      Respaldados por los estándares internacionales de la industria
+    </h2>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    {
+      items.map((c) => (
+        <div class="rounded-2xl bg-white ring-1 ring-slate-200 overflow-hidden">
+          <ImagePlaceholder caption={c.name} aspect="aspect-[16/10]" />
+          <div class="p-5">
+            <h3 class="font-display font-bold text-[15px] text-ink mb-1.5">{c.name}</h3>
+            <p class="text-[13px] text-slate-600 leading-relaxed">{c.description}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>
