@@ -6,6 +6,10 @@ import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';
 import '@fontsource/inter/600.css';
 import '../styles/global.css';
+// Preloaded rather than left to the CSS-triggered fetch: these two cut the flash of
+// fallback text on the hero, which is the first thing rendered.
+import soraDisplay from '@fontsource/sora/files/sora-latin-700-normal.woff2?url';
+import interBody from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
 
 interface Props {
   title: string;
@@ -25,6 +29,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#ffffff" />
+
+    <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
+    <link rel="preload" href={soraDisplay} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={interBody} as="font" type="font/woff2" crossorigin />
 
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -41,14 +50,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:image" content={new URL('/og-image.png', Astro.site)} />
   </head>
   <body class="text-ink font-body bg-white antialiased">
+    <a
+      href="#contenido"
+      class="bg-accent focus:ring-accent sr-only rounded-lg px-4 py-2 text-[14px] font-semibold text-white focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:ring-2 focus:ring-offset-2 focus:outline-none"
+    >
+      Saltar al contenido
+    </a>
     <slot />
   </body>
 </html>
 
 <style is:global>
-  html {
-    scroll-behavior: smooth;
-  }
   .font-display {
     font-family: var(--font-display);
     letter-spacing: -0.015em;

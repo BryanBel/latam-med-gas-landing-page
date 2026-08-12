@@ -13,6 +13,8 @@ interface Props {
   // Local seed photo shown until the client uploads a real image in Sanity — takes
   // priority over the gray placeholder, but Sanity always wins once populated.
   fallbackSrc?: string;
+  // Above-the-fold images (the hero) must load eagerly — a lazy LCP image delays paint.
+  priority?: boolean;
 }
 
 const {
@@ -23,15 +25,29 @@ const {
   class: className = '',
   width = 1200,
   fallbackSrc,
+  priority = false,
 } = Astro.props;
-const src = sanityImageUrl(image, width);
+
+const src = sanityImageUrl(image, width) ?? fallbackSrc ?? null;
+
+// Reserve layout space from the same ratio the `aspect` class enforces, so the width/height
+// attributes and the CSS box can never disagree.
+const parsed = aspect.match(/(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)/);
+const height = Math.round((width * Number(parsed?.[2] ?? 3)) / Number(parsed?.[1] ?? 4));
 ---
 
 {
   src ? (
-    <img src={src} alt={alt} class:list={['w-full object-cover', aspect, className]} loading="lazy" />
-  ) : fallbackSrc ? (
-    <img src={fallbackSrc} alt={alt} class:list={['w-full object-cover', aspect, className]} loading="lazy" />
+    <img
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={priority ? 'eager' : 'lazy'}
+      fetchpriority={priority ? 'high' : 'auto'}
+      decoding={priority ? 'sync' : 'async'}
+      class:list={['w-full object-cover', aspect, className]}
+    />
   ) : (
     <ImagePlaceholder caption={caption} aspect={aspect} class={className} />
   )

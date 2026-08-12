@@ -17,14 +17,18 @@ const ctaLabel = hero?.ctaLabel ?? DEFAULT_HERO.ctaLabel;
 const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
 
 const NORM_DOTS = ['#15803d', '#b45309', '#2563eb', '#0d9488'];
-const TAGS = ['NFPA 99', 'ASSE 6000', 'ASSE 6010', 'ASSE 6030'];
+// Non-breaking spaces: a standard reference must never wrap as "ASSE" / "6030".
+const TAGS = ['NFPA 99', 'ASSE 6000', 'ASSE 6010', 'ASSE 6030'];
 ---
 
 <section id="inicio" class="from-accent-700 via-accent to-accent-400 relative overflow-hidden bg-gradient-to-br">
   <div
     class="pointer-events-none absolute inset-0 opacity-[0.12]"
     aria-hidden="true"
-    style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1.4px, transparent 1.4px)', backgroundSize: '26px 26px' }}
+    style={{
+      backgroundImage: 'radial-gradient(circle, #ffffff 1.4px, transparent 1.4px)',
+      backgroundSize: '26px 26px',
+    }}
   >
   </div>
   <div
@@ -34,14 +38,18 @@ const TAGS = ['NFPA 99', 'ASSE 6000', 'ASSE 6010', 'ASSE 6030'];
   >
   </div>
 
-  <div class="relative mx-auto grid max-w-7xl items-center gap-14 px-5 pt-16 pb-28 md:px-9 md:pt-20 md:pb-36 lg:grid-cols-[1.1fr_0.9fr]">
+  <div
+    class="relative mx-auto grid max-w-7xl items-center gap-14 px-5 pt-16 pb-28 md:px-9 md:pt-20 md:pb-36 lg:grid-cols-[1.1fr_0.9fr]"
+  >
     <div>
       <span
         class="mb-6 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-mono text-[12px] font-semibold text-white ring-1 ring-white/25 ring-inset"
       >
         {eyebrow}
       </span>
-      <h1 class="font-display text-[34px] leading-[1.1] font-extrabold tracking-tight text-white md:text-[50px]">
+      <h1
+        class="font-display text-[34px] leading-[1.1] font-extrabold tracking-tight text-balance text-white md:text-[50px]"
+      >
         {heading}
       </h1>
       <p class="mt-6 max-w-[52ch] text-[16px] leading-relaxed text-white/75 md:text-[17px]">
@@ -50,13 +58,13 @@ const TAGS = ['NFPA 99', 'ASSE 6000', 'ASSE 6010', 'ASSE 6030'];
       <div class="mt-9 flex flex-wrap gap-3">
         <a
           href={ctaLink}
-          class="press-feedback rounded-full bg-white px-7 py-3.5 text-[14.5px] font-semibold text-[var(--color-accent-700)] shadow-lg shadow-black/20 transition-transform hover:-translate-y-0.5"
+          class="press-feedback focus-visible:ring-accent-200 rounded-full bg-white px-7 py-3.5 text-[14.5px] font-semibold text-[var(--color-accent-700)] shadow-lg shadow-black/20 transition-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-accent)] focus-visible:outline-none motion-safe:hover:-translate-y-0.5"
         >
           {ctaLabel}
         </a>
         <a
           href="#servicios"
-          class="rounded-full border border-white/40 px-7 py-3.5 text-[14.5px] font-semibold text-white transition-colors hover:bg-white/10"
+          class="focus-visible:ring-accent-200 rounded-full border border-white/40 px-7 py-3.5 text-[14.5px] font-semibold text-white transition-colors hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-accent)] focus-visible:outline-none"
         >
           Ver servicios
         </a>
@@ -64,8 +72,15 @@ const TAGS = ['NFPA 99', 'ASSE 6000', 'ASSE 6010', 'ASSE 6030'];
       <div class="mt-9 flex flex-wrap gap-2">
         {
           TAGS.map((tag, i) => (
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-mono text-[12px] font-semibold text-white ring-1 ring-white/20 ring-inset">
-              <span class="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: NORM_DOTS[i % NORM_DOTS.length] }} />
+            <span
+              translate="no"
+              class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-mono text-[12px] font-semibold text-white ring-1 ring-white/20 ring-inset"
+            >
+              <span
+                class="h-1.5 w-1.5 rounded-full"
+                aria-hidden="true"
+                style={{ backgroundColor: NORM_DOTS[i % NORM_DOTS.length] }}
+              />
               {tag}
             </span>
           ))
@@ -73,15 +88,16 @@ const TAGS = ['NFPA 99', 'ASSE 6000', 'ASSE 6010', 'ASSE 6030'];
       </div>
     </div>
 
-    <div class="relative" aria-hidden="true">
+    <div class="relative">
       <div class="rotate-[-2deg] rounded-2xl bg-white/95 p-3 shadow-2xl ring-1 ring-white/40 backdrop-blur">
         <SanityImage
           image={hero?.backgroundImage}
-          alt={heading}
+          alt="Sala hospitalaria con tomas de gases medicinales instaladas"
           caption="Sistema de Gases Medicinales"
           aspect="aspect-[4/3]"
           class="rounded-xl"
           fallbackSrc={heroRoom.src}
+          priority
         />
       </div>
 
@@ -89,11 +105,14 @@ const TAGS = ['NFPA 99', 'ASSE 6000', 'ASSE 6010', 'ASSE 6030'];
         class="bg-accent-700/90 absolute -bottom-6 left-2 rotate-[3deg] rounded-2xl px-5 py-4 shadow-xl ring-1 ring-white/20 backdrop-blur sm:-left-6"
       >
         <div class="font-mono text-[11px] tracking-widest text-white/50 uppercase">Normativa</div>
-        <div class="font-display mt-1 text-[15px] font-bold text-white">ASSE 6000 · NFPA 99</div>
+        <div class="font-display mt-1 text-[15px] font-bold text-white" translate="no">
+          ASSE&nbsp;6000 · NFPA&nbsp;99
+        </div>
       </div>
 
       <div
         class="absolute -top-5 -right-4 hidden h-14 w-14 rotate-[8deg] items-center justify-center rounded-full bg-white shadow-xl md:flex"
+        aria-hidden="true"
       >
         <ShieldCheck size={22} color="#15803d" strokeWidth={2} />
       </div>

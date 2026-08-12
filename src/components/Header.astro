@@ -11,44 +11,41 @@ interface Props {
 const { settings } = Astro.props;
 const siteName = settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName;
 const logoUrl = sanityImageUrl(settings?.logo, 160);
+// Sanity gives no intrinsic height back from the URL builder, so reserve the rendered
+// box (36px tall, the h-9 below) for that branch and the real dimensions for the local mark.
+const logo = logoUrl ? { src: logoUrl, width: 160, height: 36 } : lmgMark;
+
+const linkClass =
+  'hover:text-accent focus-visible:ring-accent rounded-sm text-[14px] font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
+const ctaClass =
+  'bg-accent hover:bg-accent-600 focus-visible:ring-accent rounded-lg px-4 py-2 text-[14px] font-semibold text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
 ---
 
 <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
   <div class="mx-auto flex h-[76px] max-w-7xl items-center justify-between gap-6 px-5 md:px-9">
-    <a href="#inicio" class="flex shrink-0 items-center gap-2">
-      {
-        logoUrl ? (
-          <img src={logoUrl} alt={siteName} class="h-9 w-auto" />
-        ) : (
-          <img src={lmgMark.src} alt={siteName} class="h-9 w-auto" />
-        )
-      }
-      <span class="font-display text-ink text-[16px] leading-none font-bold tracking-tight"> {siteName} </span>
+    <a
+      href="#inicio"
+      class="focus-visible:ring-accent flex min-w-0 items-center gap-2 rounded-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+    >
+      <img src={logo.src} alt="" width={logo.width} height={logo.height} class="h-9 w-auto shrink-0" />
+      <span class="font-display text-ink truncate text-[16px] leading-none font-bold tracking-tight">{siteName}</span>
     </a>
 
     <nav class="hidden items-center gap-7 lg:flex" aria-label="Navegación principal">
       {
         NAV_LINKS.map((l) => (
-          <a
-            href={l.href}
-            class="hover:text-accent focus-visible:ring-accent rounded-sm text-[14px] font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-          >
+          <a href={l.href} class={linkClass}>
             {l.label}
           </a>
         ))
       }
-      <a
-        href="#contacto"
-        class="bg-accent hover:bg-accent-600 rounded-lg px-4 py-2 text-[14px] font-semibold text-white transition-colors"
-      >
-        Contáctenos
-      </a>
+      <a href="#contacto" class={ctaClass}>Contáctenos</a>
     </nav>
 
-    <input type="checkbox" id="mobile-nav-toggle" class="peer hidden" />
-    <label
-      for="mobile-nav-toggle"
-      class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg ring-1 ring-slate-200 lg:hidden"
+    <button
+      type="button"
+      id="mobile-nav-button"
+      class="focus-visible:ring-accent flex h-10 w-10 items-center justify-center rounded-lg ring-1 ring-slate-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:hidden"
       aria-label={`Abrir menú de ${siteName}`}
       aria-expanded="false"
       aria-controls="mobile-nav"
@@ -56,23 +53,26 @@ const logoUrl = sanityImageUrl(settings?.logo, 160);
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
         <path d="M2 4.5h14M2 9h14M2 13.5h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
       </svg>
-    </label>
+    </button>
 
     <nav
       id="mobile-nav"
-      class="absolute top-[76px] right-0 left-0 hidden flex-col gap-1 border-b border-slate-200 bg-white p-5 peer-checked:flex lg:hidden"
+      class="absolute top-[76px] right-0 left-0 hidden flex-col gap-1 border-b border-slate-200 bg-white p-5 lg:hidden"
       aria-label="Navegación móvil"
     >
       {
         NAV_LINKS.map((l) => (
-          <a href={l.href} class="hover:text-accent rounded-lg px-2 py-2.5 text-[15px] font-medium text-slate-600">
+          <a
+            href={l.href}
+            class="hover:text-accent focus-visible:ring-accent rounded-lg px-2 py-2.5 text-[15px] font-medium text-slate-600 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
+          >
             {l.label}
           </a>
         ))
       }
       <a
         href="#contacto"
-        class="bg-accent mt-2 rounded-lg px-4 py-2.5 text-center text-[14px] font-semibold text-white"
+        class="bg-accent focus-visible:ring-accent mt-2 rounded-lg px-4 py-2.5 text-center text-[14px] font-semibold text-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
       >
         Contáctenos
       </a>
@@ -81,17 +81,25 @@ const logoUrl = sanityImageUrl(settings?.logo, 160);
 </header>
 
 <script>
-  const toggle = document.getElementById('mobile-nav-toggle') as HTMLInputElement | null;
-  const label = document.querySelector('label[for="mobile-nav-toggle"]');
+  // Real <button> rather than a hidden checkbox + <label>: a display:none checkbox is
+  // unfocusable, which left the mobile nav unreachable by keyboard entirely.
+  const button = document.getElementById('mobile-nav-button');
+  const nav = document.getElementById('mobile-nav');
 
-  toggle?.addEventListener('change', () => {
-    label?.setAttribute('aria-expanded', String(toggle.checked));
-  });
+  function setOpen(open: boolean) {
+    button?.setAttribute('aria-expanded', String(open));
+    nav?.classList.toggle('hidden', !open);
+    nav?.classList.toggle('flex', open);
+  }
+
+  button?.addEventListener('click', () => setOpen(button.getAttribute('aria-expanded') !== 'true'));
+
+  nav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setOpen(false)));
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && toggle?.checked) {
-      toggle.checked = false;
-      label?.setAttribute('aria-expanded', 'false');
+    if (e.key === 'Escape' && button?.getAttribute('aria-expanded') === 'true') {
+      setOpen(false);
+      button.focus();
     }
   });
 </script>

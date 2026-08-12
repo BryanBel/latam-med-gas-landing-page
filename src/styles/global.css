@@ -30,8 +30,7 @@
 .bg-blueprint {
   --flow: none;
   background-image:
-    var(--flow),
-    radial-gradient(circle at 88% 0%, rgba(10, 10, 137, 0.09), transparent 55%),
+    var(--flow), radial-gradient(circle at 88% 0%, rgba(10, 10, 137, 0.09), transparent 55%),
     radial-gradient(circle at 0% 100%, rgba(21, 128, 61, 0.05), transparent 50%),
     linear-gradient(rgba(10, 10, 137, 0.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(10, 10, 137, 0.06) 1px, transparent 1px);
@@ -50,8 +49,7 @@
 .bg-topo {
   --flow: none;
   background-image:
-    var(--flow),
-    radial-gradient(circle at 94% 92%, rgba(180, 83, 9, 0.08), transparent 45%),
+    var(--flow), radial-gradient(circle at 94% 92%, rgba(180, 83, 9, 0.08), transparent 45%),
     radial-gradient(circle, rgba(10, 10, 137, 0.32) 1.4px, transparent 1.4px);
   background-size:
     100% 100%,
@@ -71,6 +69,26 @@
 }
 .bg-flow-continue {
   --flow: linear-gradient(to bottom, var(--color-accent-200) 0%, var(--color-accent-50) 100%);
+}
+
+/* Sections double as anchor targets under a 76px sticky header — without this the
+   heading lands behind it on every nav click. */
+:target,
+section[id] {
+  scroll-margin-top: 92px;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Kills the 300ms double-tap delay on touch; keeps pinch-zoom intact. */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(10, 10, 137, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 .press-feedback {

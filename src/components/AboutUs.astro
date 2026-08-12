@@ -35,10 +35,10 @@ const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
 
   <div class="relative grid items-center gap-12 lg:grid-cols-2">
     <div class="relative order-2 lg:order-1">
-      <div class="rotate-[2deg] rounded-2xl bg-white p-3 shadow-xl shadow-slate-200/70 ring-1 ring-slate-100">
+      <div class="rotate-[2deg] rounded-2xl bg-white p-3 shadow-xl ring-1 shadow-slate-200/70 ring-slate-100">
         <SanityImage
           image={about?.image}
-          alt={heading}
+          alt="Pasillo hospitalario con red de gases medicinales instalada"
           caption="Latam Med Gas"
           aspect="aspect-[4/3]"
           class="rounded-xl"
@@ -48,14 +48,16 @@ const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
       <div
         class="bg-accent-700 absolute -bottom-5 -left-4 hidden -rotate-3 items-center gap-2 rounded-xl px-4 py-3 shadow-lg sm:flex"
       >
-        <BadgeCheck size={18} color="#ffffff" strokeWidth={2} />
-        <span class="font-display text-[13px] font-bold text-white">ASSE · NFPA 99</span>
+        <BadgeCheck size={18} color="#ffffff" strokeWidth={2} aria-hidden="true" />
+        <span class="font-display text-[13px] font-bold text-white" translate="no">ASSE · NFPA&nbsp;99</span>
       </div>
     </div>
 
     <div class="order-1 lg:order-2">
       <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">{eyebrow}</div>
-      <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight md:text-[34px]">{heading}</h2>
+      <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight text-balance md:text-[34px]">
+        {heading}
+      </h2>
       <p class="mt-5 text-[15px] leading-relaxed text-slate-600">{body}</p>
     </div>
   </div>
@@ -70,8 +72,9 @@ const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
             <div
               class="mb-4 flex h-11 w-11 items-center justify-center rounded-lg"
               style={{ backgroundColor: `${accent}1a` }}
+              aria-hidden="true"
             >
-              <Icon size={20} color={accent} strokeWidth={2} />
+              <Icon size={20} color={accent} strokeWidth={2} aria-hidden="true" />
             </div>
             <p class="text-[14px] leading-relaxed text-slate-600">{h}</p>
           </div>

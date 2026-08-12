@@ -12,6 +12,8 @@ const { settings } = Astro.props;
 const siteName = settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName;
 const tagline = settings?.tagline ?? DEFAULT_SITE_SETTINGS.tagline;
 const logoUrl = sanityImageUrl(settings?.logo, 140);
+// Same reasoning as Header: Sanity returns no intrinsic height, so reserve the rendered box.
+const logo = logoUrl ? { src: logoUrl, width: 140, height: 32 } : lmgMark;
 const year = new Date().getFullYear();
 ---
 
@@ -21,13 +23,7 @@ const year = new Date().getFullYear();
   >
     <div>
       <div class="flex items-center gap-2">
-        {
-          logoUrl ? (
-            <img src={logoUrl} alt={siteName} class="h-8 w-auto" />
-          ) : (
-            <img src={lmgMark.src} alt={siteName} class="h-8 w-auto" />
-          )
-        }
+        <img src={logo.src} alt="" width={logo.width} height={logo.height} class="h-8 w-auto shrink-0" />
         <span class="font-display text-ink text-[15px] font-bold">{siteName}</span>
       </div>
       <p class="mt-2 max-w-[46ch] text-[13px] text-slate-500">{tagline}</p>
@@ -36,7 +32,10 @@ const year = new Date().getFullYear();
     <nav class="flex flex-wrap gap-x-6 gap-y-2" aria-label="Enlaces del pie de página">
       {
         NAV_LINKS.map((l) => (
-          <a href={l.href} class="hover:text-accent text-[13.5px] font-medium text-slate-600 transition-colors">
+          <a
+            href={l.href}
+            class="hover:text-accent focus-visible:ring-accent rounded-sm text-[13.5px] font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+          >
             {l.label}
           </a>
         ))
