@@ -10,15 +10,28 @@ interface Props {
   aspect?: string;
   class?: string;
   width?: number;
+  // Local seed photo shown until the client uploads a real image in Sanity — takes
+  // priority over the gray placeholder, but Sanity always wins once populated.
+  fallbackSrc?: string;
 }
 
-const { image, alt, caption, aspect = 'aspect-[4/3]', class: className = '', width = 1200 } = Astro.props;
+const {
+  image,
+  alt,
+  caption,
+  aspect = 'aspect-[4/3]',
+  class: className = '',
+  width = 1200,
+  fallbackSrc,
+} = Astro.props;
 const src = sanityImageUrl(image, width);
 ---
 
 {
   src ? (
     <img src={src} alt={alt} class:list={['w-full object-cover', aspect, className]} loading="lazy" />
+  ) : fallbackSrc ? (
+    <img src={fallbackSrc} alt={alt} class:list={['w-full object-cover', aspect, className]} loading="lazy" />
   ) : (
     <ImagePlaceholder caption={caption} aspect={aspect} class={className} />
   )

@@ -2,6 +2,8 @@
 import SanityImage from './SanityImage.astro';
 import type { Project } from '../lib/sanityQueries';
 import { DEFAULT_PROJECTS } from '../lib/content';
+import projectVerification from '../assets/photos/project-verification-room.png';
+import projectPediatric from '../assets/photos/project-pediatric-headwall.png';
 
 interface Props {
   projects: Project[];
@@ -9,9 +11,11 @@ interface Props {
 
 const { projects } = Astro.props;
 const items = projects.length > 0 ? projects : DEFAULT_PROJECTS;
+// Shown for any project (seed or real Sanity doc) that doesn't have its own uploaded image yet.
+const fallbackPhotos = [projectVerification.src, projectPediatric.src];
 ---
 
-<section id="proyectos" class="border-y border-slate-200 bg-slate-50">
+<section id="proyectos" class="bg-flow-continue bg-topo border-y border-slate-200">
   <div class="mx-auto max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl">
       <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Proyectos</div>
@@ -22,9 +26,20 @@ const items = projects.length > 0 ? projects : DEFAULT_PROJECTS;
 
     <div class="grid gap-6 md:grid-cols-2">
       {
-        items.map((p) => (
-          <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200">
-            <SanityImage image={p.image} alt={p.clientName} caption={p.clientName} aspect="aspect-[21/9]" />
+        items.map((p, i) => (
+          <div class="group overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/60">
+            <div class="relative">
+              <SanityImage
+                image={p.image}
+                alt={p.clientName}
+                caption={p.clientName}
+                aspect="aspect-[21/9]"
+                fallbackSrc={fallbackPhotos[i % fallbackPhotos.length]}
+              />
+              <span class="text-accent-700 font-display absolute top-4 left-4 rounded-full bg-white/90 px-2.5 py-1 text-[12px] font-bold backdrop-blur">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+            </div>
             <div class="p-7">
               <h3 class="font-display text-ink mb-1 text-[18px] font-bold">{p.clientName}</h3>
               {p.location && <p class="mb-3 text-[12.5px] font-medium text-slate-500">{p.location}</p>}

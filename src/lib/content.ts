@@ -6,10 +6,10 @@ import type { Service, Certification, Project } from './sanityQueries';
 export const DEFAULT_SITE_SETTINGS = {
   siteName: 'Latam Med Gas USA LLC',
   tagline: 'Inspección · Mantenimiento · Diseño · Asesoría · Verificación de Sistemas de Gases Medicinales',
-  // Placeholders — pending confirmed contact info from the client (source docs disagreed on address).
-  phone: '[TELÉFONO]',
-  email: '[CORREO]',
-  address: '[DIRECCIÓN]',
+  // Contact info provided directly by the client (2026-08-11) — confirmed, not placeholder.
+  phone: '+58 414-2349582 / +57 318 3588075',
+  email: 'LatamMedGasUSA@gmail.com',
+  address: '2 S Biscayne Boulevard, Suite 3200 #2088, Miami, Florida 33132, Estados Unidos',
 };
 
 export const DEFAULT_HERO = {
@@ -37,43 +37,51 @@ export const DEFAULT_SERVICES: Service[] = [
     _id: 'seed-inspeccion',
     title: 'Inspección de Sistemas GM',
     description: 'Revisión técnica de redes y centrales de gases medicinales conforme a la normativa vigente.',
+    icon: 'clipboard-check',
   },
   {
     _id: 'seed-mantenimiento',
     title: 'Mantenimiento',
     description: 'Planes de mantenimiento preventivo y correctivo para sistemas de gases medicinales en operación.',
+    icon: 'wrench',
   },
   {
     _id: 'seed-diseno',
     title: 'Diseño',
     description: 'Diseño de redes de distribución de gases medicinales para proyectos nuevos y ampliaciones.',
+    icon: 'ruler',
   },
   {
     _id: 'seed-asesoria',
     title: 'Asesoría',
     description: 'Acompañamiento técnico y normativo en cada etapa del proyecto de gases medicinales.',
+    icon: 'headphones',
   },
   {
     _id: 'seed-verificacion',
     title: 'Verificación ASSE 6030',
     description:
       'Verificación de sistemas de tubería de gases medicinales bajo la norma ASSE 6030, con informe final y anexos.',
+    icon: 'shield-check',
   },
   {
     _id: 'seed-cursos',
     title: 'Cursos de Capacitación ASSE 6000',
     description:
       'Formación profesional bajo la norma ASSE serie 6000, código NFPA 99, dictada por instructores certificados ASSE 6050.',
+    icon: 'graduation-cap',
   },
   {
     _id: 'seed-certificacion',
     title: 'Certificación Profesional',
     description: 'Programa de certificación profesional en convenio con CONECOTEC y NITC.',
+    icon: 'award',
   },
   {
     _id: 'seed-equipos',
     title: 'Venta de Equipos de Prueba',
     description: 'Equipos para instalación bajo ASSE 6010 y verificación bajo ASSE 6030.',
+    icon: 'package',
   },
 ];
 

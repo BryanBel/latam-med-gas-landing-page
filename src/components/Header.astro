@@ -2,6 +2,7 @@
 import { NAV_LINKS, DEFAULT_SITE_SETTINGS } from '../lib/content';
 import { sanityImageUrl } from '../lib/sanityImage';
 import type { SiteSettings } from '../lib/sanityQueries';
+import lmgMark from '../assets/brand/lmg-mark.png';
 
 interface Props {
   settings: SiteSettings | null;
@@ -19,9 +20,7 @@ const logoUrl = sanityImageUrl(settings?.logo, 160);
         logoUrl ? (
           <img src={logoUrl} alt={siteName} class="h-9 w-auto" />
         ) : (
-          <span class="bg-accent font-display flex h-9 w-9 items-center justify-center rounded-lg text-[13px] font-bold text-white">
-            LMG
-          </span>
+          <img src={lmgMark.src} alt={siteName} class="h-9 w-auto" />
         )
       }
       <span class="font-display text-ink text-[16px] leading-none font-bold tracking-tight"> {siteName} </span>

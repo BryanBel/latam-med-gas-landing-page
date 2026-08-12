@@ -1,14 +1,86 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Neutral placeholder palette — swap once real brand colors land */
-  --color-ink: #1b2430;
-  --color-accent: #3b4a6b;
-  --color-accent-400: #5a6d94;
-  --color-accent-500: #46587d;
-  --color-accent-600: #2f3c58;
-  --color-accent-700: #232d42;
+  /* Navy sampled from the client's real letterhead logo (client-assets/logo-latam.pdf).
+     See BRANDING.md — confirmed as the final brand treatment, not a placeholder. */
+  --color-ink: #1a1f36;
+  --color-accent: #0a0a89;
+  --color-accent-400: #4747b8;
+  --color-accent-500: #26268f;
+  --color-accent-600: #08087a;
+  --color-accent-700: #06065c;
+  /* Same hue continued lighter — not a separate palette, the tail end of the same
+     700→600→500→400 ramp above. Lets Servicios/Proyectos pick up exactly where the
+     Inicio hero's gradient (from-accent-700 via-accent to-accent-400) leaves off.
+     Nudges green up relative to red as it lightens — a pure navy hue read straight
+     to white goes lilac, this keeps it reading as blue the whole way. */
+  --color-accent-300: #6b7fd1;
+  --color-accent-200: #a8c2f0;
+  --color-accent-100: #d3e3fa;
+  --color-accent-50: #eef4fd;
 
   --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif;
   --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Faint engineering-grid texture — nods to the "Diseño de sistemas" side of the
+   business without competing with content. --flow is the relay gradient (see
+   .bg-flow-start/.bg-flow-continue below) layered underneath; defaults to none so
+   this class alone still works as a plain textured background. */
+.bg-blueprint {
+  --flow: none;
+  background-image:
+    var(--flow),
+    radial-gradient(circle at 88% 0%, rgba(10, 10, 137, 0.09), transparent 55%),
+    radial-gradient(circle at 0% 100%, rgba(21, 128, 61, 0.05), transparent 50%),
+    linear-gradient(rgba(10, 10, 137, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 10, 137, 0.06) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    28px 28px,
+    28px 28px;
+}
+
+/* Dot field — same formula as the Inicio hero's texture (26px circles), just navy
+   dots on a light section instead of white dots on navy, so Proyectos reads as the
+   same texture language as Inicio, with Servicios' grid as the deliberate change of
+   rhythm in between. Warm wash in one corner keeps it from feeling like a copy. */
+.bg-topo {
+  --flow: none;
+  background-image:
+    var(--flow),
+    radial-gradient(circle at 94% 92%, rgba(180, 83, 9, 0.08), transparent 45%),
+    radial-gradient(circle, rgba(10, 10, 137, 0.32) 1.4px, transparent 1.4px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    26px 26px;
+}
+
+/* One gradient, chained across three stops of the same accent scale — not three
+   independently-picked colors. Nosotros and Certificaciones stay plain (no blue), so
+   it reads as a relay: Servicios runs accent-400→accent-200 (accent-400 is exactly
+   where the Inicio hero's gradient ends), Proyectos runs accent-200→accent-50 (picking
+   up exactly where Servicios ends). Sets only the --flow custom property (read by
+   .bg-blueprint/.bg-topo above), so it combines with the grid/dot texture instead of
+   replacing it. */
+.bg-flow-start {
+  --flow: linear-gradient(to bottom, var(--color-accent-400) 0%, var(--color-accent-200) 100%);
+}
+.bg-flow-continue {
+  --flow: linear-gradient(to bottom, var(--color-accent-200) 0%, var(--color-accent-50) 100%);
+}
+
+.press-feedback {
+  transition: transform 100ms ease;
+}
+.press-feedback:active {
+  transform: scale(0.97);
+}
+@media (prefers-reduced-motion: reduce) {
+  .press-feedback:active {
+    transform: none;
+  }
 }

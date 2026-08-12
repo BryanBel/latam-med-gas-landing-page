@@ -2,6 +2,8 @@
 import ContactForm from './ContactForm';
 import type { SiteSettings } from '../lib/sanityQueries';
 import { DEFAULT_SITE_SETTINGS } from '../lib/content';
+import { accentFor } from '../lib/icons';
+import { Phone, Mail, MapPin } from 'lucide-react';
 
 interface Props {
   settings: SiteSettings | null;
@@ -11,6 +13,12 @@ const { settings } = Astro.props;
 const phone = settings?.phone ?? DEFAULT_SITE_SETTINGS.phone;
 const email = settings?.email ?? DEFAULT_SITE_SETTINGS.email;
 const address = settings?.address ?? DEFAULT_SITE_SETTINGS.address;
+
+const CONTACT_ROWS = [
+  { label: 'Teléfono', value: phone, Icon: Phone },
+  { label: 'Correo', value: email, Icon: Mail },
+  { label: 'Dirección', value: address, Icon: MapPin },
+];
 ---
 
 <section id="contacto" class="mx-auto max-w-7xl px-5 py-20 md:px-9 md:py-24">
@@ -25,18 +33,25 @@ const address = settings?.address ?? DEFAULT_SITE_SETTINGS.address;
       </p>
 
       <dl class="space-y-4">
-        <div>
-          <dt class="mb-1 text-[12px] font-semibold tracking-[0.08em] text-slate-500 uppercase">Teléfono</dt>
-          <dd class="text-ink text-[14.5px] font-medium">{phone}</dd>
-        </div>
-        <div>
-          <dt class="mb-1 text-[12px] font-semibold tracking-[0.08em] text-slate-500 uppercase">Correo</dt>
-          <dd class="text-ink text-[14.5px] font-medium">{email}</dd>
-        </div>
-        <div>
-          <dt class="mb-1 text-[12px] font-semibold tracking-[0.08em] text-slate-500 uppercase">Dirección</dt>
-          <dd class="text-ink text-[14.5px] leading-relaxed font-medium">{address}</dd>
-        </div>
+        {
+          CONTACT_ROWS.map(({ label, value, Icon }, i) => {
+            const accent = accentFor(i);
+            return (
+              <div class="flex items-start gap-3.5">
+                <span
+                  class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                  style={{ backgroundColor: `${accent}1a` }}
+                >
+                  <Icon size={16} color={accent} strokeWidth={2} />
+                </span>
+                <div>
+                  <dt class="mb-0.5 text-[12px] font-semibold tracking-[0.08em] text-slate-500 uppercase">{label}</dt>
+                  <dd class="text-ink text-[14.5px] leading-relaxed font-medium">{value}</dd>
+                </div>
+              </div>
+            );
+          })
+        }
       </dl>
     </div>
 

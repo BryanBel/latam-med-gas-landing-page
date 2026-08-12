@@ -2,6 +2,8 @@
 import SanityImage from './SanityImage.astro';
 import type { HeroSection } from '../lib/sanityQueries';
 import { DEFAULT_HERO } from '../lib/content';
+import heroRoom from '../assets/photos/hero-room.png';
+import { ShieldCheck } from 'lucide-react';
 
 interface Props {
   hero: HeroSection | null;
@@ -13,46 +15,97 @@ const heading = hero?.heading ?? DEFAULT_HERO.heading;
 const subheading = hero?.subheading ?? DEFAULT_HERO.subheading;
 const ctaLabel = hero?.ctaLabel ?? DEFAULT_HERO.ctaLabel;
 const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
+
+const NORM_DOTS = ['#15803d', '#b45309', '#2563eb', '#0d9488'];
+const TAGS = ['NFPA 99', 'ASSE 6000', 'ASSE 6010', 'ASSE 6030'];
 ---
 
-<section id="inicio" class="mx-auto grid max-w-7xl items-center gap-12 px-5 py-16 md:px-9 md:py-24 lg:grid-cols-2">
-  <div>
-    <div class="text-accent mb-4 text-[13px] font-semibold tracking-[0.08em] uppercase">{eyebrow}</div>
-    <h1 class="font-display text-ink text-[32px] leading-[1.1] font-extrabold tracking-tight md:text-[44px]">
-      {heading}
-    </h1>
-    <p class="mt-5 max-w-[52ch] text-[16px] leading-relaxed text-slate-600 md:text-[17px]">
-      {subheading}
-    </p>
-    <div class="mt-8 flex flex-wrap gap-3">
-      <a
-        href={ctaLink}
-        class="bg-accent hover:bg-accent-600 rounded-lg px-6 py-3 text-[14.5px] font-semibold text-white transition-colors"
+<section id="inicio" class="from-accent-700 via-accent to-accent-400 relative overflow-hidden bg-gradient-to-br">
+  <div
+    class="pointer-events-none absolute inset-0 opacity-[0.12]"
+    aria-hidden="true"
+    style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1.4px, transparent 1.4px)', backgroundSize: '26px 26px' }}
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute -top-24 -right-24 h-[420px] w-[420px] rounded-full blur-3xl"
+    aria-hidden="true"
+    style={{ backgroundColor: '#15803d33' }}
+  >
+  </div>
+
+  <div class="relative mx-auto grid max-w-7xl items-center gap-14 px-5 pt-16 pb-28 md:px-9 md:pt-20 md:pb-36 lg:grid-cols-[1.1fr_0.9fr]">
+    <div>
+      <span
+        class="mb-6 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-mono text-[12px] font-semibold text-white ring-1 ring-white/25 ring-inset"
       >
-        {ctaLabel}
-      </a>
-      <a
-        href="#servicios"
-        class="text-ink hover:ring-accent/40 rounded-lg px-6 py-3 text-[14.5px] font-semibold ring-1 ring-slate-200 transition-colors"
-      >
-        Ver servicios
-      </a>
+        {eyebrow}
+      </span>
+      <h1 class="font-display text-[34px] leading-[1.1] font-extrabold tracking-tight text-white md:text-[50px]">
+        {heading}
+      </h1>
+      <p class="mt-6 max-w-[52ch] text-[16px] leading-relaxed text-white/75 md:text-[17px]">
+        {subheading}
+      </p>
+      <div class="mt-9 flex flex-wrap gap-3">
+        <a
+          href={ctaLink}
+          class="press-feedback rounded-full bg-white px-7 py-3.5 text-[14.5px] font-semibold text-[var(--color-accent-700)] shadow-lg shadow-black/20 transition-transform hover:-translate-y-0.5"
+        >
+          {ctaLabel}
+        </a>
+        <a
+          href="#servicios"
+          class="rounded-full border border-white/40 px-7 py-3.5 text-[14.5px] font-semibold text-white transition-colors hover:bg-white/10"
+        >
+          Ver servicios
+        </a>
+      </div>
+      <div class="mt-9 flex flex-wrap gap-2">
+        {
+          TAGS.map((tag, i) => (
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-mono text-[12px] font-semibold text-white ring-1 ring-white/20 ring-inset">
+              <span class="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: NORM_DOTS[i % NORM_DOTS.length] }} />
+              {tag}
+            </span>
+          ))
+        }
+      </div>
     </div>
-    <div class="mt-8 flex flex-wrap gap-2">
-      {
-        ['NFPA 99', 'ASSE 6000', 'ASSE 6010', 'ASSE 6030'].map((tag) => (
-          <span class="rounded-full bg-slate-100 px-3 py-1 font-mono text-[12px] font-semibold text-slate-600 ring-1 ring-slate-200">
-            {tag}
-          </span>
-        ))
-      }
+
+    <div class="relative" aria-hidden="true">
+      <div class="rotate-[-2deg] rounded-2xl bg-white/95 p-3 shadow-2xl ring-1 ring-white/40 backdrop-blur">
+        <SanityImage
+          image={hero?.backgroundImage}
+          alt={heading}
+          caption="Sistema de Gases Medicinales"
+          aspect="aspect-[4/3]"
+          class="rounded-xl"
+          fallbackSrc={heroRoom.src}
+        />
+      </div>
+
+      <div
+        class="bg-accent-700/90 absolute -bottom-6 left-2 rotate-[3deg] rounded-2xl px-5 py-4 shadow-xl ring-1 ring-white/20 backdrop-blur sm:-left-6"
+      >
+        <div class="font-mono text-[11px] tracking-widest text-white/50 uppercase">Normativa</div>
+        <div class="font-display mt-1 text-[15px] font-bold text-white">ASSE 6000 · NFPA 99</div>
+      </div>
+
+      <div
+        class="absolute -top-5 -right-4 hidden h-14 w-14 rotate-[8deg] items-center justify-center rounded-full bg-white shadow-xl md:flex"
+      >
+        <ShieldCheck size={22} color="#15803d" strokeWidth={2} />
+      </div>
     </div>
   </div>
 
-  <SanityImage
-    image={hero?.backgroundImage}
-    alt={heading}
-    caption="Sistema de Gases Medicinales"
-    aspect="aspect-[4/3]"
-  />
+  <svg
+    class="absolute -bottom-1 left-0 w-full text-white"
+    viewBox="0 0 1440 90"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <path d="M0 90L1440 20V90H0Z" fill="currentColor"></path>
+  </svg>
 </section>

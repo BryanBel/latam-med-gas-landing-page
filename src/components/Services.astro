@@ -1,6 +1,7 @@
 ---
 import type { Service } from '../lib/sanityQueries';
 import { DEFAULT_SERVICES } from '../lib/content';
+import { resolveServiceIcon, accentFor } from '../lib/icons';
 
 interface Props {
   services: Service[];
@@ -10,7 +11,7 @@ const { services } = Astro.props;
 const items = services.length > 0 ? services : DEFAULT_SERVICES;
 ---
 
-<section id="servicios" class="border-y border-slate-200 bg-slate-50">
+<section id="servicios" class="bg-flow-start bg-blueprint border-y border-slate-200">
   <div class="mx-auto max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl">
       <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Servicios</div>
@@ -24,15 +25,22 @@ const items = services.length > 0 ? services : DEFAULT_SERVICES;
 
     <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {
-        items.map((s) => (
-          <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200">
-            <div class="bg-accent/10 mb-4 flex h-10 w-10 items-center justify-center rounded-lg">
-              <span class="bg-accent h-2 w-2 rounded-full" />
+        items.map((s, i) => {
+          const Icon = resolveServiceIcon(s.icon);
+          const accent = accentFor(i);
+          return (
+            <div class="group rounded-2xl bg-white p-6 ring-1 ring-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/60">
+              <div
+                class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-105"
+                style={{ backgroundColor: `${accent}1a` }}
+              >
+                <Icon size={20} color={accent} strokeWidth={2} />
+              </div>
+              <h3 class="font-display text-ink mb-2 text-[15.5px] font-bold">{s.title}</h3>
+              <p class="text-[13.5px] leading-relaxed text-slate-600">{s.description}</p>
             </div>
-            <h3 class="font-display text-ink mb-2 text-[15.5px] font-bold">{s.title}</h3>
-            <p class="text-[13.5px] leading-relaxed text-slate-600">{s.description}</p>
-          </div>
-        ))
+          );
+        })
       }
     </div>
   </div>

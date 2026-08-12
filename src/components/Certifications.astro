@@ -2,6 +2,7 @@
 import SanityImage from './SanityImage.astro';
 import type { Certification } from '../lib/sanityQueries';
 import { DEFAULT_CERTIFICATIONS } from '../lib/content';
+import { accentFor } from '../lib/icons';
 
 interface Props {
   certifications: Certification[];
@@ -21,8 +22,9 @@ const items = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATION
 
   <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
     {
-      items.map((c) => (
-        <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200">
+      items.map((c, i) => (
+        <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 transition-shadow hover:shadow-lg hover:shadow-slate-200/60">
+          <div class="h-1.5" style={{ backgroundColor: accentFor(i) }} />
           <SanityImage image={c.badge} alt={c.name} caption={c.name} aspect="aspect-[16/10]" />
           <div class="p-5">
             <h3 class="font-display text-ink mb-1.5 text-[15px] font-bold">{c.name}</h3>
