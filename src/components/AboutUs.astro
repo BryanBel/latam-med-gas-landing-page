@@ -56,15 +56,15 @@ const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
           class="bg-accent-700 absolute -bottom-5 -left-4 hidden -rotate-3 items-center gap-2 rounded-xl px-4 py-3 shadow-lg sm:flex"
         >
           <BadgeCheck size={18} color="#ffffff" strokeWidth={2} aria-hidden="true" />
-          <span class="font-display text-[13px] font-bold text-white" translate="no">ASSE · NFPA&nbsp;99</span>
+          <span class="font-display text-xs font-bold text-white" translate="no">ASSE · NFPA&nbsp;99</span>
         </div>
       </div>
 
       <div class="order-1 lg:order-2">
-        <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight text-balance md:text-[34px]">
+        <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
           {heading}
         </h2>
-        <p class="mt-5 text-[15px] leading-relaxed text-slate-600">{body}</p>
+        <p class="mt-5 text-base leading-relaxed text-slate-600">{body}</p>
 
         {
           /* Was a band of three equal cards below the section, which is the textbook
@@ -86,7 +86,7 @@ const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
                   >
                     <Icon size={18} color={accent} strokeWidth={2} aria-hidden="true" />
                   </div>
-                  <p class="min-w-0 text-[14px] leading-relaxed text-slate-600">{h}</p>
+                  <p class="min-w-0 text-sm leading-relaxed text-slate-600">{h}</p>
                 </li>
               );
             })

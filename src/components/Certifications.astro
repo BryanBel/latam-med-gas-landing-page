@@ -23,7 +23,7 @@ const items = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATION
 
   <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl">
-      <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight text-balance md:text-[34px]">
+      <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
         Respaldados por los estándares internacionales de la industria
       </h2>
     </div>
@@ -50,10 +50,10 @@ const items = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATION
                 width={480}
               />
             )}
-            <h3 class="font-display text-ink mb-2 text-[16px] font-bold" translate="no">
+            <h3 class="font-display text-ink mb-2 text-base font-bold" translate="no">
               {c.name}
             </h3>
-            <p class="text-[13.5px] leading-relaxed text-slate-600">{c.description}</p>
+            <p class="text-xs leading-relaxed text-slate-600">{c.description}</p>
           </div>
         ))
       }

@@ -24,7 +24,7 @@ const fallbackPhotos = [projectVerification.src, projectPediatric.src];
 
   <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl">
-      <h2 class="font-display text-[28px] font-extrabold tracking-tight text-balance text-white md:text-[34px]">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-balance text-white md:text-3xl">
         Instituciones que confían en nuestro trabajo
       </h2>
     </div>
@@ -42,16 +42,16 @@ const fallbackPhotos = [projectVerification.src, projectPediatric.src];
                 fallbackSrc={fallbackPhotos[i % fallbackPhotos.length]}
               />
               <span
-                class="text-accent-700 font-display absolute top-4 left-4 rounded-full bg-white/90 px-2.5 py-1 text-[12px] font-bold tabular-nums backdrop-blur"
+                class="text-accent-700 font-display text-2xs absolute top-4 left-4 rounded-full bg-white/90 px-2.5 py-1 font-bold tabular-nums backdrop-blur"
                 aria-hidden="true"
               >
                 {String(i + 1).padStart(2, '0')}
               </span>
             </div>
             <div class="p-7">
-              <h3 class="font-display text-ink mb-1 text-[18px] font-bold">{p.clientName}</h3>
-              {p.location && <p class="mb-3 text-[12.5px] font-medium text-slate-500">{p.location}</p>}
-              <p class="text-[14px] leading-relaxed text-slate-600">{p.description}</p>
+              <h3 class="font-display text-ink mb-1 text-xl font-bold">{p.clientName}</h3>
+              {p.location && <p class="text-2xs mb-3 font-medium text-slate-500">{p.location}</p>}
+              <p class="text-sm leading-relaxed text-slate-600">{p.description}</p>
             </div>
           </div>
         ))

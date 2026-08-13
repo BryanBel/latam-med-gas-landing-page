@@ -26,9 +26,9 @@ const year = new Date().getFullYear();
     <div>
       <div class="flex items-center gap-2">
         <img src={logo.src} alt="" width={logo.width} height={logo.height} class="h-8 w-auto shrink-0" />
-        <span class="font-display text-ink text-[15px] font-bold">{siteName}</span>
+        <span class="font-display text-ink text-base font-bold">{siteName}</span>
       </div>
-      <p class="mt-2 max-w-[46ch] text-[13px] text-slate-500">{tagline}</p>
+      <p class="mt-2 max-w-[46ch] text-xs text-slate-500">{tagline}</p>
     </div>
 
     <nav class="flex flex-wrap gap-x-6 gap-y-2" aria-label="Enlaces del pie de página">
@@ -36,7 +36,7 @@ const year = new Date().getFullYear();
         NAV_LINKS.map((l) => (
           <a
             href={l.href}
-            class="hover:text-accent focus-visible:ring-accent rounded-sm text-[13.5px] font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+            class="hover:text-accent focus-visible:ring-accent rounded-sm text-xs font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
           >
             {l.label}
           </a>
@@ -46,7 +46,7 @@ const year = new Date().getFullYear();
   </div>
   <div class="border-t border-slate-200">
     <div
-      class="mx-auto flex max-w-7xl flex-col items-start justify-between gap-2 px-5 py-5 text-[12.5px] text-slate-500 sm:flex-row sm:items-center md:px-9"
+      class="text-2xs mx-auto flex max-w-7xl flex-col items-start justify-between gap-2 px-5 py-5 text-slate-500 sm:flex-row sm:items-center md:px-9"
     >
       <span>© {year} {siteName}. Todos los derechos reservados.</span>
       <span class="flex flex-wrap items-center gap-x-2">

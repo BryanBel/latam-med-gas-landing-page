@@ -21,6 +21,30 @@
 
   --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif;
   --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* TYPE SCALE — 9 steps replacing the 18 one-off pixel values the page had accumulated
+     (13 and 13.5, 14 and 14.5 and 15 and 15.5, 17 and 18 and 19 …). Differences that small
+     read as drift, not intent. These override Tailwind's defaults, so components use
+     text-sm / text-base / text-2xl rather than arbitrary values, and a size can only
+     change here. Line heights are paired: tight for display, generous for body. */
+  --text-2xs: 0.75rem; /* 12px — uppercase labels, legal fine print */
+  --text-2xs--line-height: 1.4;
+  --text-xs: 0.8125rem; /* 13px — captions, card body */
+  --text-xs--line-height: 1.55;
+  --text-sm: 0.875rem; /* 14px — dense body, form labels */
+  --text-sm--line-height: 1.6;
+  --text-base: 0.9375rem; /* 15px — default body */
+  --text-base--line-height: 1.65;
+  --text-lg: 1.0625rem; /* 17px — lead paragraphs */
+  --text-lg--line-height: 1.6;
+  --text-xl: 1.25rem; /* 20px — card titles */
+  --text-xl--line-height: 1.35;
+  --text-2xl: 1.75rem; /* 28px — section headings, mobile hero */
+  --text-2xl--line-height: 1.2;
+  --text-3xl: 2.125rem; /* 34px — section headings at md, hero at base */
+  --text-3xl--line-height: 1.15;
+  --text-4xl: 3.125rem; /* 50px — hero at md */
+  --text-4xl--line-height: 1.1;
 }
 
 /* SHAPE SYSTEM — one documented rule, so the page does not mix radii by accident:

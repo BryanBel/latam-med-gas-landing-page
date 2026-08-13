@@ -27,28 +27,26 @@ const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
   >
     <div>
       <span
-        class="mb-6 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-mono text-[12px] font-semibold text-white ring-1 ring-white/25 ring-inset"
+        class="text-2xs mb-6 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-mono font-semibold text-white ring-1 ring-white/25 ring-inset"
       >
         {eyebrow}
       </span>
-      <h1
-        class="font-display text-[34px] leading-[1.1] font-extrabold tracking-tight text-balance text-white md:text-[50px]"
-      >
+      <h1 class="font-display text-3xl leading-[1.1] font-extrabold tracking-tight text-balance text-white md:text-4xl">
         {heading}
       </h1>
-      <p class="mt-6 max-w-[52ch] text-[16px] leading-relaxed text-white/75 md:text-[17px]">
+      <p class="mt-6 max-w-[52ch] text-base leading-relaxed text-white/75 md:text-lg">
         {subheading}
       </p>
       <div class="mt-9 flex flex-wrap gap-3">
         <a
           href={ctaLink}
-          class="press-feedback focus-visible:ring-accent-200 rounded-full bg-white px-7 py-3.5 text-[14.5px] font-semibold text-[var(--color-accent-700)] shadow-lg shadow-black/20 transition-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-accent)] focus-visible:outline-none motion-safe:hover:-translate-y-0.5"
+          class="press-feedback focus-visible:ring-accent-200 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-[var(--color-accent-700)] shadow-lg shadow-black/20 transition-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-accent)] focus-visible:outline-none motion-safe:hover:-translate-y-0.5"
         >
           {ctaLabel}
         </a>
         <a
           href="#servicios"
-          class="focus-visible:ring-accent-200 rounded-full border border-white/40 px-7 py-3.5 text-[14.5px] font-semibold text-white transition-colors hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-accent)] focus-visible:outline-none"
+          class="focus-visible:ring-accent-200 rounded-full border border-white/40 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-accent)] focus-visible:outline-none"
         >
           Ver servicios
         </a>
@@ -71,10 +69,8 @@ const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
       <div
         class="bg-accent-700/90 absolute -bottom-6 left-2 rotate-[3deg] rounded-2xl px-5 py-4 shadow-xl ring-1 ring-white/20 backdrop-blur sm:-left-6"
       >
-        <div class="font-mono text-[11px] tracking-widest text-white/50 uppercase">Normativa</div>
-        <div class="font-display mt-1 text-[15px] font-bold text-white" translate="no">
-          ASSE&nbsp;6000 · NFPA&nbsp;99
-        </div>
+        <div class="text-2xs font-mono tracking-widest text-white/50 uppercase">Normativa</div>
+        <div class="font-display mt-1 text-base font-bold text-white" translate="no">ASSE&nbsp;6000 · NFPA&nbsp;99</div>
       </div>
 
       <div

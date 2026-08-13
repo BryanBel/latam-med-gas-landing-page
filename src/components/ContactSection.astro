@@ -42,10 +42,10 @@ const contactLinkClass =
   <div class="relative mx-auto w-full max-w-7xl px-5 py-10 md:px-9 md:py-12">
     <div class="grid gap-14 lg:grid-cols-[0.8fr_1.2fr]">
       <div>
-        <h2 class="font-display text-ink mb-5 text-[28px] font-extrabold tracking-tight text-balance md:text-[34px]">
+        <h2 class="font-display text-ink mb-5 text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
           Conversemos sobre su proyecto
         </h2>
-        <p class="mb-8 text-[15px] leading-relaxed text-slate-600">
+        <p class="mb-8 text-base leading-relaxed text-slate-600">
           Escríbanos y le responderemos con la información técnica y comercial que necesite.
         </p>
 
@@ -63,8 +63,8 @@ const contactLinkClass =
                     <Icon size={16} color={accent} strokeWidth={2} aria-hidden="true" />
                   </span>
                   <div class="min-w-0">
-                    <dt class="mb-0.5 text-[12px] font-semibold tracking-[0.08em] text-slate-500 uppercase">{label}</dt>
-                    <dd class="text-ink text-[14.5px] leading-relaxed font-medium break-words">
+                    <dt class="text-2xs mb-0.5 font-semibold tracking-[0.08em] text-slate-500 uppercase">{label}</dt>
+                    <dd class="text-ink text-sm leading-relaxed font-medium break-words">
                       {links.length > 0 ? (
                         <span class="flex flex-col gap-0.5">
                           {links.map((l) => (

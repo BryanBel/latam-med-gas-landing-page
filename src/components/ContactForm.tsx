@@ -5,9 +5,9 @@ type Status = 'idle' | 'submitting' | 'success' | 'error';
 type FieldErrors = Partial<Record<'name' | 'email' | 'message', string>>;
 
 const inputClass =
-  'w-full rounded-lg ring-1 ring-slate-200 px-4 py-2.5 text-[14.5px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent';
-const labelClass = 'mb-1.5 block text-[13.5px] font-semibold text-slate-600';
-const errorClass = 'mt-1 text-[12.5px] text-red-600';
+  'w-full rounded-lg ring-1 ring-slate-200 px-4 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent';
+const labelClass = 'mb-1.5 block text-xs font-semibold text-slate-600';
+const errorClass = 'mt-1 text-2xs text-red-600';
 
 function validate(data: FormData): FieldErrors {
   const errors: FieldErrors = {};
@@ -73,10 +73,10 @@ export default function ContactForm() {
   if (status === 'success') {
     return (
       <div className="rounded-2xl bg-white p-8 text-center ring-1 ring-slate-200" role="status" aria-live="polite">
-        <p ref={successRef} tabIndex={-1} className="text-ink text-[15px] font-semibold focus-visible:outline-none">
+        <p ref={successRef} tabIndex={-1} className="text-ink text-base font-semibold focus-visible:outline-none">
           Gracias por contactarnos.
         </p>
-        <p className="mt-2 text-[14px] text-slate-600">Le responderemos a la brevedad.</p>
+        <p className="mt-2 text-sm text-slate-600">Le responderemos a la brevedad.</p>
       </div>
     );
   }
@@ -173,14 +173,14 @@ export default function ContactForm() {
         )}
       </div>
 
-      <p role="status" aria-live="polite" className="text-[13.5px] text-red-600 empty:hidden">
+      <p role="status" aria-live="polite" className="text-xs text-red-600 empty:hidden">
         {status === 'error' && 'No se pudo enviar el mensaje. Intente de nuevo o escríbanos directamente por correo.'}
       </p>
 
       <button
         type="submit"
         disabled={status === 'submitting'}
-        className="bg-accent hover:bg-accent-600 focus-visible:ring-accent w-full cursor-pointer rounded-full px-7 py-3 text-[14.5px] font-semibold text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+        className="bg-accent hover:bg-accent-600 focus-visible:ring-accent w-full cursor-pointer rounded-full px-7 py-3 text-sm font-semibold text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
       >
         {status === 'submitting' ? 'Enviando…' : 'Enviar mensaje'}
       </button>
