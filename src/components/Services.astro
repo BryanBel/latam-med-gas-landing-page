@@ -1,5 +1,6 @@
 ---
 import NavyTexture from './NavyTexture.astro';
+import SectionWedge from './SectionWedge.astro';
 import type { Service } from '../lib/sanityQueries';
 import { DEFAULT_SERVICES } from '../lib/content';
 import { resolveServiceIcon, accentFor } from '../lib/icons';
@@ -12,12 +13,22 @@ const { services } = Astro.props;
 const items = services.length > 0 ? services : DEFAULT_SERVICES;
 ---
 
-<section id="servicios" class="from-accent-700 via-accent to-accent-400 relative overflow-hidden bg-gradient-to-br">
+{
+  /* Gradient runs the opposite way to Inicio's: light at the top left into navy at the
+    bottom right, so the scroll reads navy→light, light→navy, navy→light. */
+}
+<section id="servicios" class="from-accent-400 via-accent to-accent-700 relative overflow-hidden bg-gradient-to-br">
   <NavyTexture glow="#b4530933" glowClass="-bottom-24 -left-24 h-[420px] w-[420px]" />
+  <SectionWedge edge="top" fill="bg-white" />
+  <SectionWedge edge="bottom" fill="bg-white" />
 
   <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl">
-      <div class="text-accent-200 mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Servicios</div>
+      {
+        /* accent-100 rather than Proyectos' accent-200: the inverted gradient puts its lightest
+          blue right here, and accent-200 only reached 4.07:1 against it. */
+      }
+      <div class="text-accent-100 mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Servicios</div>
       <h2 class="font-display text-[28px] font-extrabold tracking-tight text-balance text-white md:text-[34px]">
         Todo lo que su institución necesita en gases medicinales
       </h2>

@@ -3,6 +3,7 @@ import SanityImage from './SanityImage.astro';
 import type { AboutSection } from '../lib/sanityQueries';
 import { DEFAULT_ABOUT } from '../lib/content';
 import aboutCorridor from '../assets/photos/about-corridor.png';
+import SectionWedge from './SectionWedge.astro';
 import { accentFor } from '../lib/icons';
 import { ShieldCheck, Globe2, Award, BadgeCheck } from 'lucide-react';
 
@@ -21,17 +22,11 @@ const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
 
 <section id="nosotros" class="relative overflow-hidden">
   {
-    /* Left half of the hero's diagonal, continuing below the seam on the same slope, so the
-      two halves read as a single cut: navy above the line, white below it. */
+    /* Inicio's diagonal continuing below the seam, then the same cut again where Servicios
+      starts. Both navy halves are textured so the dot field carries through the wedge. */
   }
-  <svg
-    class="text-accent pointer-events-none absolute -top-px left-0 w-full"
-    viewBox="0 0 1440 35"
-    preserveAspectRatio="none"
-    aria-hidden="true"
-  >
-    <path d="M0 0H720L0 35Z" fill="currentColor"></path>
-  </svg>
+  <SectionWedge edge="top" fill="bg-accent" textured />
+  <SectionWedge edge="bottom" fill="bg-accent-600" textured />
   <div
     class="pointer-events-none absolute -top-16 -left-24 h-[380px] w-[380px] rounded-full blur-3xl"
     aria-hidden="true"

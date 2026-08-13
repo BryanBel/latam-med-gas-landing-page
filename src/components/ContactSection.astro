@@ -2,6 +2,7 @@
 import ContactForm from './ContactForm';
 import type { SiteSettings } from '../lib/sanityQueries';
 import { DEFAULT_SITE_SETTINGS } from '../lib/content';
+import SectionWedge from './SectionWedge.astro';
 import { accentFor } from '../lib/icons';
 import { Phone, Mail, MapPin } from 'lucide-react';
 
@@ -32,12 +33,13 @@ const contactLinkClass =
   'hover:text-accent focus-visible:ring-accent rounded-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
 ---
 
-<section id="contacto">
+<section id="contacto" class="relative overflow-hidden">
+  <SectionWedge edge="top" fill="bg-accent-600" textured />
   {
     /* Tighter vertical padding than the other sections: this one shares its screen with the
       footer, so the padding has to leave room for it. */
   }
-  <div class="mx-auto w-full max-w-7xl px-5 py-10 md:px-9 md:py-12">
+  <div class="relative mx-auto w-full max-w-7xl px-5 py-10 md:px-9 md:py-12">
     <div class="grid gap-14 lg:grid-cols-[0.8fr_1.2fr]">
       <div>
         <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Contacto</div>

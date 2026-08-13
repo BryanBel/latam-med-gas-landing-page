@@ -2,6 +2,7 @@
 import SanityImage from './SanityImage.astro';
 import type { Certification } from '../lib/sanityQueries';
 import { DEFAULT_CERTIFICATIONS } from '../lib/content';
+import SectionWedge from './SectionWedge.astro';
 import { accentFor } from '../lib/icons';
 
 interface Props {
@@ -12,8 +13,15 @@ const { certifications } = Astro.props;
 const items = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATIONS;
 ---
 
-<section id="certificaciones">
-  <div class="mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
+{
+  /* Light section between two navy ones, so both of its wedges are navy: accent-500 matches
+    where Servicios' inverted gradient lands above and where Proyectos' starts below. */
+}
+<section id="certificaciones" class="relative overflow-hidden">
+  <SectionWedge edge="top" fill="bg-accent-500" textured />
+  <SectionWedge edge="bottom" fill="bg-accent-500" textured />
+
+  <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl">
       <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Certificaciones</div>
       <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight md:text-[34px]">

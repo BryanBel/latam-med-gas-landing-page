@@ -1,6 +1,7 @@
 ---
 import SanityImage from './SanityImage.astro';
 import NavyTexture from './NavyTexture.astro';
+import SectionWedge from './SectionWedge.astro';
 import type { Project } from '../lib/sanityQueries';
 import { DEFAULT_PROJECTS } from '../lib/content';
 import projectVerification from '../assets/photos/project-verification-room.png';
@@ -18,6 +19,8 @@ const fallbackPhotos = [projectVerification.src, projectPediatric.src];
 
 <section id="proyectos" class="from-accent-700 via-accent to-accent-400 relative overflow-hidden bg-gradient-to-br">
   <NavyTexture glow="#0d948833" glowClass="-top-20 -right-20 h-[380px] w-[380px]" />
+  <SectionWedge edge="top" fill="bg-white" />
+  <SectionWedge edge="bottom" fill="bg-white" />
 
   <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl">
