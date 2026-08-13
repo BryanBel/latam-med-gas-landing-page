@@ -12,28 +12,30 @@ const { certifications } = Astro.props;
 const items = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATIONS;
 ---
 
-<section id="certificaciones" class="mx-auto max-w-7xl px-5 py-20 md:px-9 md:py-24">
-  <div class="mb-12 max-w-2xl">
-    <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Certificaciones</div>
-    <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight md:text-[34px]">
-      Respaldados por los estándares internacionales de la industria
-    </h2>
-  </div>
+<section id="certificaciones">
+  <div class="mx-auto max-w-7xl px-5 py-20 md:px-9 md:py-24">
+    <div class="mb-12 max-w-2xl">
+      <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Certificaciones</div>
+      <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight md:text-[34px]">
+        Respaldados por los estándares internacionales de la industria
+      </h2>
+    </div>
 
-  <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-    {
-      items.map((c, i) => (
-        <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 transition-shadow hover:shadow-lg hover:shadow-slate-200/60">
-          <div class="h-1.5" style={{ backgroundColor: accentFor(i) }} aria-hidden="true" />
-          <SanityImage image={c.badge} alt={c.name} caption={c.name} aspect="aspect-[16/10]" />
-          <div class="p-5">
-            <h3 class="font-display text-ink mb-1.5 text-[15px] font-bold" translate="no">
-              {c.name}
-            </h3>
-            <p class="text-[13px] leading-relaxed text-slate-600">{c.description}</p>
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        items.map((c, i) => (
+          <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 transition-shadow hover:shadow-lg hover:shadow-slate-200/60">
+            <div class="h-1.5" style={{ backgroundColor: accentFor(i) }} aria-hidden="true" />
+            <SanityImage image={c.badge} alt={c.name} caption={c.name} aspect="aspect-[16/10]" />
+            <div class="p-5">
+              <h3 class="font-display text-ink mb-1.5 text-[15px] font-bold" translate="no">
+                {c.name}
+              </h3>
+              <p class="text-[13px] leading-relaxed text-slate-600">{c.description}</p>
+            </div>
           </div>
-        </div>
-      ))
-    }
+        ))
+      }
+    </div>
   </div>
 </section>

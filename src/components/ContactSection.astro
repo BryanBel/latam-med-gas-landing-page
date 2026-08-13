@@ -32,55 +32,57 @@ const contactLinkClass =
   'hover:text-accent focus-visible:ring-accent rounded-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
 ---
 
-<section id="contacto" class="mx-auto max-w-7xl px-5 py-20 md:px-9 md:py-24">
-  <div class="grid gap-14 lg:grid-cols-[0.8fr_1.2fr]">
-    <div>
-      <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Contacto</div>
-      <h2 class="font-display text-ink mb-5 text-[28px] font-extrabold tracking-tight text-balance md:text-[34px]">
-        Conversemos sobre su proyecto
-      </h2>
-      <p class="mb-8 text-[15px] leading-relaxed text-slate-600">
-        Escríbanos y le responderemos con la información técnica y comercial que necesite.
-      </p>
+<section id="contacto">
+  <div class="mx-auto max-w-7xl px-5 py-20 md:px-9 md:py-24">
+    <div class="grid gap-14 lg:grid-cols-[0.8fr_1.2fr]">
+      <div>
+        <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Contacto</div>
+        <h2 class="font-display text-ink mb-5 text-[28px] font-extrabold tracking-tight text-balance md:text-[34px]">
+          Conversemos sobre su proyecto
+        </h2>
+        <p class="mb-8 text-[15px] leading-relaxed text-slate-600">
+          Escríbanos y le responderemos con la información técnica y comercial que necesite.
+        </p>
 
-      <dl class="space-y-4">
-        {
-          CONTACT_ROWS.map(({ label, Icon, links, text }, i) => {
-            const accent = accentFor(i);
-            return (
-              <div class="flex items-start gap-3.5">
-                <span
-                  class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                  style={{ backgroundColor: `${accent}1a` }}
-                  aria-hidden="true"
-                >
-                  <Icon size={16} color={accent} strokeWidth={2} aria-hidden="true" />
-                </span>
-                <div class="min-w-0">
-                  <dt class="mb-0.5 text-[12px] font-semibold tracking-[0.08em] text-slate-500 uppercase">{label}</dt>
-                  <dd class="text-ink text-[14.5px] leading-relaxed font-medium break-words">
-                    {links.length > 0 ? (
-                      <span class="flex flex-col gap-0.5">
-                        {links.map((l) => (
-                          <a href={l.href} class={contactLinkClass}>
-                            {l.text}
-                          </a>
-                        ))}
-                      </span>
-                    ) : (
-                      text
-                    )}
-                  </dd>
+        <dl class="space-y-4">
+          {
+            CONTACT_ROWS.map(({ label, Icon, links, text }, i) => {
+              const accent = accentFor(i);
+              return (
+                <div class="flex items-start gap-3.5">
+                  <span
+                    class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                    style={{ backgroundColor: `${accent}1a` }}
+                    aria-hidden="true"
+                  >
+                    <Icon size={16} color={accent} strokeWidth={2} aria-hidden="true" />
+                  </span>
+                  <div class="min-w-0">
+                    <dt class="mb-0.5 text-[12px] font-semibold tracking-[0.08em] text-slate-500 uppercase">{label}</dt>
+                    <dd class="text-ink text-[14.5px] leading-relaxed font-medium break-words">
+                      {links.length > 0 ? (
+                        <span class="flex flex-col gap-0.5">
+                          {links.map((l) => (
+                            <a href={l.href} class={contactLinkClass}>
+                              {l.text}
+                            </a>
+                          ))}
+                        </span>
+                      ) : (
+                        text
+                      )}
+                    </dd>
+                  </div>
                 </div>
-              </div>
-            );
-          })
-        }
-      </dl>
-    </div>
+              );
+            })
+          }
+        </dl>
+      </div>
 
-    <div class="rounded-2xl bg-white p-7 ring-1 ring-slate-200 md:p-9">
-      <ContactForm client:visible />
+      <div class="rounded-2xl bg-white p-7 ring-1 ring-slate-200 md:p-9">
+        <ContactForm client:visible />
+      </div>
     </div>
   </div>
 </section>
