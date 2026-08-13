@@ -20,6 +20,18 @@ const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
 ---
 
 <section id="nosotros" class="relative overflow-hidden">
+  {
+    /* Continues the hero's diagonal: the navy left over above the same line, thick at the
+      left and thinning to the right, so the wedge reads as one cut across both sections. */
+  }
+  <svg
+    class="text-accent pointer-events-none absolute top-0 left-0 w-full"
+    viewBox="0 0 1440 70"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <path d="M0 0H1440L0 70Z" fill="currentColor"></path>
+  </svg>
   <div
     class="pointer-events-none absolute -top-16 -left-24 h-[380px] w-[380px] rounded-full blur-3xl"
     aria-hidden="true"
@@ -33,7 +45,7 @@ const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
   >
   </div>
 
-  <div class="relative mx-auto max-w-7xl px-5 py-20 md:px-9 md:py-24">
+  <div class="relative mx-auto w-full max-w-7xl px-5 pt-24 pb-20 md:px-9 md:pt-28 md:pb-24">
     <div class="grid items-center gap-12 lg:grid-cols-2">
       <div class="relative order-2 lg:order-1">
         <div class="rotate-[2deg] rounded-2xl bg-white p-3 shadow-xl ring-1 shadow-slate-200/70 ring-slate-100">
