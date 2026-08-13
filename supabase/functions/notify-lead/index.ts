@@ -45,6 +45,24 @@ serve(async (req) => {
     return new Response('Invalid JSON payload', { status: 400 });
   }
 
+  // Plain-text alternative alongside the HTML. An HTML-only message is itself a spam
+  // signal, and this one already sends from Resend's shared onboarding@resend.dev with no
+  // SPF/DKIM alignment — which lands it in Gmail's spam folder. The real fix is verifying
+  // send.latammedgas.com in Resend and swapping the `from` below; that is deliberately
+  // deferred until the Cloudflare DNS cutover, because the root domain already carries an
+  // SPF record and a second one would invalidate both. See ROADMAP.md.
+  const text = [
+    'Nuevo mensaje desde el sitio web',
+    '',
+    `Nombre: ${lead.name}`,
+    `Correo: ${lead.email}`,
+    `Teléfono: ${lead.phone || '—'}`,
+    `Empresa: ${lead.company || '—'}`,
+    '',
+    'Mensaje:',
+    lead.message,
+  ].join('\n');
+
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -56,6 +74,7 @@ serve(async (req) => {
       to: [NOTIFY_EMAIL],
       reply_to: lead.email,
       subject: `Nuevo contacto: ${lead.name}`,
+      text,
       html: `
         <h2>Nuevo mensaje desde el sitio web</h2>
         <p><strong>Nombre:</strong> ${escapeHtml(lead.name)}</p>
@@ -72,6 +91,12 @@ serve(async (req) => {
     console.error('Resend error:', await res.text());
     return new Response('Failed to send notification', { status: 502 });
   }
+
+  // Log the Resend id so a Supabase invocation can be traced to the actual message in
+  // Resend's dashboard — the success path was previously silent, which made "it returned
+  // 200 but nothing arrived" impossible to diagnose from this side.
+  const sent = await res.json().catch(() => null);
+  console.log(`Notification sent to ${NOTIFY_EMAIL} — Resend id: ${sent?.id ?? 'unknown'}`);
 
   return new Response('OK', { status: 200 });
 });
