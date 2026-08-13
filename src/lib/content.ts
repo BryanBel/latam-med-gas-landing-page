@@ -5,7 +5,9 @@ import type { Service, Certification, Project } from './sanityQueries';
 
 export const DEFAULT_SITE_SETTINGS = {
   siteName: 'Latam Med Gas USA LLC',
-  tagline: 'Inspección · Mantenimiento · Diseño · Asesoría · Verificación de Sistemas de Gases Medicinales',
+  // Prose rather than a dot-separated list: middle dots are rationed to one per line, and
+  // four of them in a row reads as decoration rather than punctuation.
+  tagline: 'Inspección, mantenimiento, diseño, asesoría y verificación de sistemas de gases medicinales',
   // Contact info provided directly by the client (2026-08-11) — confirmed, not placeholder.
   phone: '+58 414-2349582 / +57 318 3588075',
   email: 'LatamMedGasUSA@gmail.com',
@@ -13,7 +15,8 @@ export const DEFAULT_SITE_SETTINGS = {
 };
 
 export const DEFAULT_HERO = {
-  eyebrow: 'ASSE Serie 6000 · NFPA 99 · Gases Medicinales',
+  // One middle dot, not two. "Gases Medicinales" was redundant with the headline below it.
+  eyebrow: 'ASSE Serie 6000 · NFPA 99',
   heading: 'Sistemas de gases medicinales seguros, certificados y verificados',
   subheading:
     'Inspección, mantenimiento, diseño, asesoría y verificación de sistemas de gases medicinales para hospitales y centros de salud en Latinoamérica.',

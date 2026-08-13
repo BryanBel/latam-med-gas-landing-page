@@ -12,7 +12,6 @@ interface Props {
 }
 
 const { about } = Astro.props;
-const eyebrow = about?.eyebrow ?? DEFAULT_ABOUT.eyebrow;
 const heading = about?.heading ?? DEFAULT_ABOUT.heading;
 const body = about?.body ?? DEFAULT_ABOUT.body;
 const highlights = about?.highlights?.length ? about.highlights : DEFAULT_ABOUT.highlights;
@@ -62,33 +61,38 @@ const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
       </div>
 
       <div class="order-1 lg:order-2">
-        <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">{eyebrow}</div>
         <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight text-balance md:text-[34px]">
           {heading}
         </h2>
         <p class="mt-5 text-[15px] leading-relaxed text-slate-600">{body}</p>
-      </div>
-    </div>
 
-    <div class="mt-14 grid gap-5 sm:grid-cols-3">
-      {
-        highlights.map((h, i) => {
-          const Icon = PILLAR_ICONS[i % PILLAR_ICONS.length];
-          const accent = accentFor(i);
-          return (
-            <div class="flex items-start gap-3.5 rounded-xl bg-white p-6 ring-1 ring-slate-200">
-              <div
-                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg"
-                style={{ backgroundColor: `${accent}1a` }}
-                aria-hidden="true"
-              >
-                <Icon size={20} color={accent} strokeWidth={2} aria-hidden="true" />
-              </div>
-              <p class="min-w-0 text-[14px] leading-relaxed text-slate-600">{h}</p>
-            </div>
-          );
-        })
-      }
+        {
+          /* Was a band of three equal cards below the section, which is the textbook
+            "three identical feature cards" block. These are supporting facts about the
+            company, so they belong with the company copy: one column, hairline-separated,
+            no card chrome. */
+        }
+        <ul class="mt-8 divide-y divide-slate-200 border-t border-slate-200">
+          {
+            highlights.map((h, i) => {
+              const Icon = PILLAR_ICONS[i % PILLAR_ICONS.length];
+              const accent = accentFor(i);
+              return (
+                <li class="flex items-start gap-3.5 py-4">
+                  <div
+                    class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                    style={{ backgroundColor: `${accent}1a` }}
+                    aria-hidden="true"
+                  >
+                    <Icon size={18} color={accent} strokeWidth={2} aria-hidden="true" />
+                  </div>
+                  <p class="min-w-0 text-[14px] leading-relaxed text-slate-600">{h}</p>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </div>
     </div>
   </div>
 </section>

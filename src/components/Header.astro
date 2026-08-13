@@ -18,7 +18,7 @@ const logo = logoUrl ? { src: logoUrl, width: 160, height: 36 } : lmgMark;
 const linkClass =
   'hover:text-accent focus-visible:ring-accent rounded-sm text-[14px] font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
 const ctaClass =
-  'bg-accent hover:bg-accent-600 focus-visible:ring-accent rounded-lg px-4 py-2 text-[14px] font-semibold text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
+  'bg-accent hover:bg-accent-600 focus-visible:ring-accent rounded-full px-5 py-2 text-[14px] font-semibold text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
 ---
 
 <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
@@ -45,7 +45,7 @@ const ctaClass =
     <button
       type="button"
       id="mobile-nav-button"
-      class="focus-visible:ring-accent flex h-10 w-10 items-center justify-center rounded-lg ring-1 ring-slate-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:hidden"
+      class="focus-visible:ring-accent flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg ring-1 ring-slate-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:hidden"
       aria-label={`Abrir menú de ${siteName}`}
       aria-expanded="false"
       aria-controls="mobile-nav"
@@ -72,7 +72,7 @@ const ctaClass =
       }
       <a
         href="/#contacto"
-        class="bg-accent focus-visible:ring-accent mt-2 rounded-lg px-4 py-2.5 text-center text-[14px] font-semibold text-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+        class="bg-accent focus-visible:ring-accent mt-2 rounded-full px-4 py-2.5 text-center text-[14px] font-semibold text-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
       >
         Contáctenos
       </a>

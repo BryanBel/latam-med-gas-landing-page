@@ -17,10 +17,6 @@ const heading = hero?.heading ?? DEFAULT_HERO.heading;
 const subheading = hero?.subheading ?? DEFAULT_HERO.subheading;
 const ctaLabel = hero?.ctaLabel ?? DEFAULT_HERO.ctaLabel;
 const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
-
-const NORM_DOTS = ['#15803d', '#b45309', '#2563eb', '#0d9488'];
-// Non-breaking spaces: a standard reference must never wrap as "ASSE" / "6030".
-const TAGS = ['NFPA 99', 'ASSE 6000', 'ASSE 6010', 'ASSE 6030'];
 ---
 
 <section id="inicio" class="from-accent-700 via-accent to-accent-400 relative overflow-hidden bg-gradient-to-br">
@@ -56,23 +52,6 @@ const TAGS = ['NFPA 99', 'ASSE 6000', 'ASSE 6010', 'ASSE 6030'];
         >
           Ver servicios
         </a>
-      </div>
-      <div class="mt-9 flex flex-wrap gap-2">
-        {
-          TAGS.map((tag, i) => (
-            <span
-              translate="no"
-              class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-mono text-[12px] font-semibold text-white ring-1 ring-white/20 ring-inset"
-            >
-              <span
-                class="h-1.5 w-1.5 rounded-full"
-                aria-hidden="true"
-                style={{ backgroundColor: NORM_DOTS[i % NORM_DOTS.length] }}
-              />
-              {tag}
-            </span>
-          ))
-        }
       </div>
     </div>
 

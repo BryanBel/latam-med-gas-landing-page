@@ -23,6 +23,13 @@
   --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
 }
 
+/* SHAPE SYSTEM — one documented rule, so the page does not mix radii by accident:
+     - anything you click (buttons, CTAs, pills, tags): fully round
+     - surfaces (cards, panels, image frames): 16px, i.e. rounded-2xl
+     - elements nested inside a surface (icon tiles, form inputs): 8px, rounded-lg
+   The header CTA and the form submit used to be 8px while the hero CTAs were pills, which
+   made the same action look like two different components depending on where you met it. */
+
 /* Servicios and Proyectos used to carry their own pale grid/dot textures over a light
    gradient relay; they now share Inicio's navy backdrop via the NavyTexture component, so
    those four classes were dead and came out. The page alternates navy and light instead:

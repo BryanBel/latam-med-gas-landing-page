@@ -23,24 +23,37 @@ const items = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATION
 
   <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl">
-      <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Certificaciones</div>
-      <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight md:text-[34px]">
+      <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight text-balance md:text-[34px]">
         Respaldados por los estándares internacionales de la industria
       </h2>
     </div>
 
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      /* Deliberately not the card grid Servicios uses - a layout family gets one appearance
+        per page. These are four standards, not four products: a rule above each one carries
+        the accent, and the absence of card chrome lets them read as a reference list.
+        The badge only renders once the client uploads a real one, so the section no longer
+        shows four empty placeholder boxes. */
+    }
+    <div class="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
       {
         items.map((c, i) => (
-          <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 transition-shadow hover:shadow-lg hover:shadow-slate-200/60">
-            <div class="h-1.5" style={{ backgroundColor: accentFor(i) }} aria-hidden="true" />
-            <SanityImage image={c.badge} alt={c.name} caption={c.name} aspect="aspect-[16/10]" />
-            <div class="p-5">
-              <h3 class="font-display text-ink mb-1.5 text-[15px] font-bold" translate="no">
-                {c.name}
-              </h3>
-              <p class="text-[13px] leading-relaxed text-slate-600">{c.description}</p>
-            </div>
+          <div>
+            <div class="mb-4 h-[3px] w-12" style={{ backgroundColor: accentFor(i) }} aria-hidden="true" />
+            {c.badge && (
+              <SanityImage
+                image={c.badge}
+                alt={c.name}
+                caption={c.name}
+                aspect="aspect-[16/10]"
+                class="mb-4 rounded-lg"
+                width={480}
+              />
+            )}
+            <h3 class="font-display text-ink mb-2 text-[16px] font-bold" translate="no">
+              {c.name}
+            </h3>
+            <p class="text-[13.5px] leading-relaxed text-slate-600">{c.description}</p>
           </div>
         ))
       }
