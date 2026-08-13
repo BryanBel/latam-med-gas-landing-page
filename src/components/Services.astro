@@ -1,4 +1,5 @@
 ---
+import NavyTexture from './NavyTexture.astro';
 import type { Service } from '../lib/sanityQueries';
 import { DEFAULT_SERVICES } from '../lib/content';
 import { resolveServiceIcon, accentFor } from '../lib/icons';
@@ -11,14 +12,16 @@ const { services } = Astro.props;
 const items = services.length > 0 ? services : DEFAULT_SERVICES;
 ---
 
-<section id="servicios" class="bg-flow-start bg-blueprint border-y border-slate-200">
-  <div class="mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
+<section id="servicios" class="from-accent-700 via-accent to-accent-400 relative overflow-hidden bg-gradient-to-br">
+  <NavyTexture glow="#b4530933" glowClass="-bottom-24 -left-24 h-[420px] w-[420px]" />
+
+  <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl">
-      <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Servicios</div>
-      <h2 class="font-display text-ink text-[28px] font-extrabold tracking-tight text-balance md:text-[34px]">
+      <div class="text-accent-200 mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Servicios</div>
+      <h2 class="font-display text-[28px] font-extrabold tracking-tight text-balance text-white md:text-[34px]">
         Todo lo que su institución necesita en gases medicinales
       </h2>
-      <p class="mt-3 text-[15.5px] text-slate-600">
+      <p class="mt-3 text-[15.5px] text-white/75">
         Desde el diseño hasta la verificación final, cubrimos cada etapa bajo normativa ASSE y NFPA.
       </p>
     </div>

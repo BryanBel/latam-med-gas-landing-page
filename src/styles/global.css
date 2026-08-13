@@ -23,53 +23,10 @@
   --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Faint engineering-grid texture — nods to the "Diseño de sistemas" side of the
-   business without competing with content. --flow is the relay gradient (see
-   .bg-flow-start/.bg-flow-continue below) layered underneath; defaults to none so
-   this class alone still works as a plain textured background. */
-.bg-blueprint {
-  --flow: none;
-  background-image:
-    var(--flow), radial-gradient(circle at 88% 0%, rgba(10, 10, 137, 0.09), transparent 55%),
-    radial-gradient(circle at 0% 100%, rgba(21, 128, 61, 0.05), transparent 50%),
-    linear-gradient(rgba(10, 10, 137, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(10, 10, 137, 0.06) 1px, transparent 1px);
-  background-size:
-    100% 100%,
-    100% 100%,
-    100% 100%,
-    28px 28px,
-    28px 28px;
-}
-
-/* Dot field — same formula as the Inicio hero's texture (26px circles), just navy
-   dots on a light section instead of white dots on navy, so Proyectos reads as the
-   same texture language as Inicio, with Servicios' grid as the deliberate change of
-   rhythm in between. Warm wash in one corner keeps it from feeling like a copy. */
-.bg-topo {
-  --flow: none;
-  background-image:
-    var(--flow), radial-gradient(circle at 94% 92%, rgba(180, 83, 9, 0.08), transparent 45%),
-    radial-gradient(circle, rgba(10, 10, 137, 0.32) 1.4px, transparent 1.4px);
-  background-size:
-    100% 100%,
-    100% 100%,
-    26px 26px;
-}
-
-/* One gradient, chained across three stops of the same accent scale — not three
-   independently-picked colors. Nosotros and Certificaciones stay plain (no blue), so
-   it reads as a relay: Servicios runs accent-400→accent-200 (accent-400 is exactly
-   where the Inicio hero's gradient ends), Proyectos runs accent-200→accent-50 (picking
-   up exactly where Servicios ends). Sets only the --flow custom property (read by
-   .bg-blueprint/.bg-topo above), so it combines with the grid/dot texture instead of
-   replacing it. */
-.bg-flow-start {
-  --flow: linear-gradient(to bottom, var(--color-accent-400) 0%, var(--color-accent-200) 100%);
-}
-.bg-flow-continue {
-  --flow: linear-gradient(to bottom, var(--color-accent-200) 0%, var(--color-accent-50) 100%);
-}
+/* Servicios and Proyectos used to carry their own pale grid/dot textures over a light
+   gradient relay; they now share Inicio's navy backdrop via the NavyTexture component, so
+   those four classes were dead and came out. The page alternates navy and light instead:
+   Inicio, Servicios and Proyectos dark, Nosotros, Certificaciones and Contacto light. */
 
 /* Every section is a nav target under the 76px sticky header. It owns the whole screen
    below that header and centers its own content, so jumping to one never leaves the next

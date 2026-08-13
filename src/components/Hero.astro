@@ -3,6 +3,7 @@ import SanityImage from './SanityImage.astro';
 import type { HeroSection } from '../lib/sanityQueries';
 import { DEFAULT_HERO } from '../lib/content';
 import heroRoom from '../assets/photos/hero-room.png';
+import NavyTexture from './NavyTexture.astro';
 import { ShieldCheck } from 'lucide-react';
 
 interface Props {
@@ -22,21 +23,7 @@ const TAGS = ['NFPA 99', 'ASSE 6000', 'ASSE 6010', 'ASSE 6030'];
 ---
 
 <section id="inicio" class="from-accent-700 via-accent to-accent-400 relative overflow-hidden bg-gradient-to-br">
-  <div
-    class="pointer-events-none absolute inset-0 opacity-[0.12]"
-    aria-hidden="true"
-    style={{
-      backgroundImage: 'radial-gradient(circle, #ffffff 1.4px, transparent 1.4px)',
-      backgroundSize: '26px 26px',
-    }}
-  >
-  </div>
-  <div
-    class="pointer-events-none absolute -top-24 -right-24 h-[420px] w-[420px] rounded-full blur-3xl"
-    aria-hidden="true"
-    style={{ backgroundColor: '#15803d33' }}
-  >
-  </div>
+  <NavyTexture glow="#15803d33" />
 
   <div
     class="relative mx-auto grid w-full max-w-7xl items-center gap-14 px-5 pt-16 pb-28 md:px-9 md:pt-20 md:pb-36 lg:grid-cols-[1.1fr_0.9fr]"

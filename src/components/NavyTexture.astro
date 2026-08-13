@@ -1,0 +1,31 @@
+---
+// The Inicio backdrop, shared by every navy section: a white dot field over the accent
+// gradient plus one soft colored glow. Pair it with `relative overflow-hidden` and the
+// `from-accent-700 via-accent to-accent-400 bg-gradient-to-br` classes on the section.
+
+interface Props {
+  // Hex with alpha for the glow, e.g. '#15803d33'. Use a gas-identification color from
+  // lib/icons.ts so the wash stays on-topic rather than arbitrary.
+  glow: string;
+  // Placement and size of the glow, so each section reads slightly differently.
+  glowClass?: string;
+}
+
+const { glow, glowClass = '-top-24 -right-24 h-[420px] w-[420px]' } = Astro.props;
+---
+
+<div
+  class="pointer-events-none absolute inset-0 opacity-[0.12]"
+  aria-hidden="true"
+  style={{
+    backgroundImage: 'radial-gradient(circle, #ffffff 1.4px, transparent 1.4px)',
+    backgroundSize: '26px 26px',
+  }}
+>
+</div>
+<div
+  class:list={['pointer-events-none absolute rounded-full blur-3xl', glowClass]}
+  aria-hidden="true"
+  style={{ backgroundColor: glow }}
+>
+</div>
