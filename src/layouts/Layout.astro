@@ -18,6 +18,12 @@ interface Props {
 
 const { title, description } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// Cloudflare Web Analytics: cookieless, so no consent banner is required (see /privacidad).
+// The token is a public identifier that ships in the HTML of every page, not a secret — but
+// it still comes from the environment so it isn't duplicated across environments. Absent
+// token simply means no beacon, which keeps local dev out of the numbers.
+const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
 ---
 
 <!doctype html>
@@ -32,6 +38,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="theme-color" content="#ffffff" />
 
     <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
+    {cfBeaconToken && <link rel="preconnect" href="https://static.cloudflareinsights.com" crossorigin />}
     <link rel="preload" href={soraDisplay} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={interBody} as="font" type="font/woff2" crossorigin />
 
@@ -57,6 +64,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       Saltar al contenido
     </a>
     <slot />
+    {
+      cfBeaconToken && (
+        <script
+          is:inline
+          type="module"
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: cfBeaconToken })}
+        />
+      )
+    }
   </body>
 </html>
 
