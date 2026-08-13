@@ -1,0 +1,88 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { DEFAULT_SITE_SETTINGS } from '../lib/content';
+
+// Plain <div> rather than <section>: the `main > section` rule in global.css forces a
+// full-screen minimum, which is wrong for a long text page.
+const { siteName, email, address } = DEFAULT_SITE_SETTINGS;
+
+const SECTIONS = [
+  {
+    heading: 'Qué información recogemos',
+    body: 'Únicamente la que usted escribe en el formulario de contacto: nombre, correo electrónico, teléfono (opcional), empresa o institución (opcional) y el mensaje. No recogemos ningún otro dato personal, y el sitio no le pide crear una cuenta.',
+  },
+  {
+    heading: 'Para qué la usamos',
+    body: 'Solo para responder a su solicitud y darle seguimiento comercial o técnico. No vendemos, alquilamos ni cedemos su información a terceros, y no la usamos para enviarle publicidad no solicitada.',
+  },
+  {
+    heading: 'Dónde se guarda',
+    body: 'Los mensajes del formulario se almacenan en Supabase, nuestro proveedor de base de datos, y se envía una notificación por correo electrónico al equipo mediante Resend para poder responderle. Ambos proveedores actúan por cuenta nuestra y solo procesan los datos de este formulario.',
+  },
+  {
+    heading: 'Cuánto tiempo la conservamos',
+    body: 'Conservamos los mensajes durante *[por definir]*. Puede pedirnos que eliminemos el suyo en cualquier momento escribiendo a la dirección indicada abajo.',
+  },
+  {
+    heading: 'Cookies y analítica',
+    body: 'Este sitio no utiliza cookies de seguimiento ni de publicidad. Para medir el tráfico usamos Cloudflare Web Analytics, que no emplea cookies ni identifica a visitantes individuales: solo agrega páginas vistas, procedencia y rendimiento.',
+  },
+  {
+    heading: 'Sus derechos',
+    body: 'Puede solicitarnos acceder a la información que tenemos sobre usted, corregirla o eliminarla. Escríbanos y atenderemos la solicitud en un plazo razonable.',
+  },
+];
+---
+
+<Layout
+  title={`Política de Privacidad — ${siteName}`}
+  description="Cómo Latam Med Gas USA LLC recoge, usa y protege la información enviada a través de este sitio."
+>
+  <Header settings={null} />
+  <main id="contenido">
+    <div class="mx-auto max-w-3xl px-5 py-16 md:px-9 md:py-20">
+      <div class="text-accent mb-3 text-[13px] font-semibold tracking-[0.08em] uppercase">Legal</div>
+      <h1 class="font-display text-ink text-[32px] font-extrabold tracking-tight text-balance md:text-[40px]">
+        Política de Privacidad
+      </h1>
+
+      <p
+        class="border-accent bg-accent-50 text-ink mt-8 rounded-lg border-l-[3px] px-5 py-4 text-[14px] leading-relaxed"
+      >
+        <strong>Borrador.</strong> Este texto describe con exactitud qué hace el sitio, pero
+        <strong>aún no ha sido revisado legalmente</strong>. Debe ser aprobado o reemplazado por el texto definitivo de
+        {siteName} antes del lanzamiento.
+      </p>
+
+      {
+        SECTIONS.map(({ heading, body }) => (
+          <section class="mt-10">
+            <h2 class="font-display text-ink mb-3 text-[19px] font-bold">{heading}</h2>
+            <p class="text-[15px] leading-relaxed text-slate-600">{body}</p>
+          </section>
+        ))
+      }
+
+      <section class="mt-10">
+        <h2 class="font-display text-ink mb-3 text-[19px] font-bold">Contacto</h2>
+        <p class="text-[15px] leading-relaxed text-slate-600">
+          Para cualquier consulta sobre esta política, escríbanos a{' '}
+          <a
+            href={`mailto:${email}`}
+            class="text-accent hover:text-accent-600 focus-visible:ring-accent rounded-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+          >
+            {email}
+          </a>
+          . Nuestra dirección es {address}.
+        </p>
+      </section>
+
+      <p class="mt-12 text-[13px] text-slate-500">
+        Última actualización: <em>pendiente de aprobación</em>.
+      </p>
+    </div>
+  </main>
+  <Footer settings={null} />
+</Layout>

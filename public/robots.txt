@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# The Sanity Studio is behind auth, but there is no reason to spend crawl budget on it.
+Disallow: /studio
+
+Sitemap: https://latammedgas.com/sitemap-index.xml

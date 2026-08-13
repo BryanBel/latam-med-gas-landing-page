@@ -119,11 +119,14 @@ export const DEFAULT_PROJECTS: Project[] = [
   },
 ];
 
+// Root-relative rather than bare fragments: Header and Footer also render on /404 and
+// /privacidad, where a plain "#servicios" points at an anchor that isn't on the page.
+// From the home page these still resolve as same-document fragment navigation.
 export const NAV_LINKS = [
-  { label: 'Inicio', href: '#inicio' },
-  { label: 'Nosotros', href: '#nosotros' },
-  { label: 'Servicios', href: '#servicios' },
-  { label: 'Certificaciones', href: '#certificaciones' },
-  { label: 'Proyectos', href: '#proyectos' },
-  { label: 'Contacto', href: '#contacto' },
+  { label: 'Inicio', href: '/#inicio' },
+  { label: 'Nosotros', href: '/#nosotros' },
+  { label: 'Servicios', href: '/#servicios' },
+  { label: 'Certificaciones', href: '/#certificaciones' },
+  { label: 'Proyectos', href: '/#proyectos' },
+  { label: 'Contacto', href: '/#contacto' },
 ];
