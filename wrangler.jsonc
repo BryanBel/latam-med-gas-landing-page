@@ -3,5 +3,8 @@
   "compatibility_date": "2025-01-01",
   "assets": {
     "directory": "./dist",
+    // Without this, Workers Assets defaults to "none" and answers unknown paths with an
+    // empty 0-byte 404 — the built dist/404.html is deployed but never served.
+    "not_found_handling": "404-page",
   },
 }

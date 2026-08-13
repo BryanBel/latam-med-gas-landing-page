@@ -4,6 +4,8 @@ dist/
 .astro/
 # wrangler local state
 .wrangler/
+# supabase CLI local state (linked project ref, etc.)
+supabase/.temp/
 
 # dependencies
 node_modules/

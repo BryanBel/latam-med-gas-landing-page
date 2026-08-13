@@ -20,7 +20,9 @@ export default defineConfig({
   site: 'https://latammedgas.com',
   integrations: [
     react(),
-    sitemap(),
+    // The Studio is an admin surface behind auth and is disallowed in robots.txt — listing
+    // it in the sitemap contradicts that and wastes crawl budget.
+    sitemap({ filter: (page) => !page.includes('/studio') }),
     sanity({
       projectId: PUBLIC_SANITY_PROJECT_ID,
       dataset: PUBLIC_SANITY_DATASET || 'production',
