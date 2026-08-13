@@ -119,12 +119,17 @@ const TAGS = ['NFPA 99', 'ASSE 6000', 'ASSE 6010', 'ASSE 6030'];
     </div>
   </div>
 
+  {
+    /* Right half of one diagonal that crosses the section seam at its midpoint. Same slope
+      as before (70px of drop across the full width) — Inicio keeps the white sliver, and
+      AboutUs picks the same line up on the left. */
+  }
   <svg
-    class="absolute -bottom-1 left-0 w-full text-white"
-    viewBox="0 0 1440 90"
+    class="absolute bottom-0 left-0 w-full text-white"
+    viewBox="0 0 1440 35"
     preserveAspectRatio="none"
     aria-hidden="true"
   >
-    <path d="M0 90L1440 20V90H0Z" fill="currentColor"></path>
+    <path d="M720 35L1440 0V35H720Z" fill="currentColor"></path>
   </svg>
 </section>

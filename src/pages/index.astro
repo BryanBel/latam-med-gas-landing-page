@@ -51,7 +51,9 @@ try {
     <Services services={services} />
     <Certifications certifications={certifications} />
     <Projects projects={projects} />
-    <ContactSection settings={settings} />
+    <div class="contact-screen">
+      <ContactSection settings={settings} />
+      <Footer settings={settings} />
+    </div>
   </main>
-  <Footer settings={settings} />
 </Layout>
