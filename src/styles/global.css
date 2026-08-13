@@ -19,8 +19,11 @@
   --color-accent-100: #d3e3fa;
   --color-accent-50: #eef4fd;
 
-  --font-display: 'Sora', ui-sans-serif, system-ui, sans-serif;
-  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  /* Figtree is rounder and less industrial than the Sora it replaced; Noto Sans is built for
+     maximum language coverage, which matters for a Spanish site serving all of Latin
+     America. Chosen from a side-by-side comparison of four pairings on real page copy. */
+  --font-display: 'Figtree', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Noto Sans', ui-sans-serif, system-ui, sans-serif;
 
   /* TYPE SCALE — 9 steps replacing the 18 one-off pixel values the page had accumulated
      (13 and 13.5, 14 and 14.5 and 15 and 15.5, 17 and 18 and 19 …). Differences that small

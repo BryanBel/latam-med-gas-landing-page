@@ -1,15 +1,15 @@
 ---
-import '@fontsource/sora/600.css';
-import '@fontsource/sora/700.css';
-import '@fontsource/sora/800.css';
-import '@fontsource/inter/400.css';
-import '@fontsource/inter/500.css';
-import '@fontsource/inter/600.css';
+import '@fontsource/figtree/600.css';
+import '@fontsource/figtree/700.css';
+import '@fontsource/figtree/800.css';
+import '@fontsource/noto-sans/400.css';
+import '@fontsource/noto-sans/500.css';
+import '@fontsource/noto-sans/600.css';
 import '../styles/global.css';
 // Preloaded rather than left to the CSS-triggered fetch: these two cut the flash of
 // fallback text on the hero, which is the first thing rendered.
-import soraDisplay from '@fontsource/sora/files/sora-latin-700-normal.woff2?url';
-import interBody from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
+import displayFont from '@fontsource/figtree/files/figtree-latin-700-normal.woff2?url';
+import bodyFont from '@fontsource/noto-sans/files/noto-sans-latin-400-normal.woff2?url';
 
 interface Props {
   title: string;
@@ -39,8 +39,8 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
 
     <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
     {cfBeaconToken && <link rel="preconnect" href="https://static.cloudflareinsights.com" crossorigin />}
-    <link rel="preload" href={soraDisplay} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={interBody} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
 
     <title>{title}</title>
     <meta name="description" content={description} />
