@@ -45,12 +45,10 @@ serve(async (req) => {
     return new Response('Invalid JSON payload', { status: 400 });
   }
 
-  // Plain-text alternative alongside the HTML. An HTML-only message is itself a spam
-  // signal, and this one already sends from Resend's shared onboarding@resend.dev with no
-  // SPF/DKIM alignment — which lands it in Gmail's spam folder. The real fix is verifying
-  // send.latammedgas.com in Resend and swapping the `from` below; that is deliberately
-  // deferred until the Cloudflare DNS cutover, because the root domain already carries an
-  // SPF record and a second one would invalidate both. See ROADMAP.md.
+  // Plain-text alternative alongside the HTML. An HTML-only message is itself a spam signal.
+  // The bigger deliverability fix is the `from` address below: this used to send from
+  // Resend's shared onboarding@resend.dev, with no SPF or DKIM alignment for a domain we
+  // control, which landed every notification in Gmail's spam folder.
   const text = [
     'Nuevo mensaje desde el sitio web',
     '',
@@ -70,7 +68,10 @@ serve(async (req) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'Latam Med Gas — Sitio Web <onboarding@resend.dev>',
+      // send.latammedgas.com, deliberately a subdomain: the root domain already publishes an
+      // SPF record for the company's own mailboxes, and a second SPF record on the root
+      // would invalidate both and break mail that people actually depend on.
+      from: 'Latam Med Gas <notificaciones@send.latammedgas.com>',
       to: [NOTIFY_EMAIL],
       reply_to: lead.email,
       subject: `Nuevo contacto: ${lead.name}`,
