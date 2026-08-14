@@ -4,7 +4,7 @@
 
 Sitio web de **Latam Med Gas USA LLC**, empresa con sede en Miami dedicada a la inspección, diseño, mantenimiento y capacitación de certificación ASSE 6000 / NFPA 99 para sistemas de gases medicinales en hospitales y clínicas de Latinoamérica.
 
-Actualmente en **etapa de wireframe**: la arquitectura completa y el flujo de contenido ya están funcionando, pero la identidad de marca real (logo, colores, fotografía) todavía no — cada elemento visual es un marcador de posición que se reemplaza en cuanto lleguen los assets de marca.
+**En línea en [latammedgas.com](https://latammedgas.com)** desde agosto de 2026, con la marca, la fotografía y los datos de contacto reales del cliente.
 
 ## Stack Tecnológico
 
@@ -15,14 +15,14 @@ Actualmente en **etapa de wireframe**: la arquitectura completa y el flujo de co
 | Estilos        | [Tailwind CSS v4](https://tailwindcss.com)                | Tokens de diseño (`--color-ink`, `--color-accent*`) centralizados en [`src/styles/global.css`](src/styles/global.css), fáciles de reemplazar |
 | CMS            | [Sanity](https://sanity.io), Studio embebido en `/studio` | El cliente edita el contenido directamente en el sitio publicado — sin necesidad de alojar un CMS aparte                                     |
 | Backend        | [Supabase](https://supabase.com)                          | Solo para los leads del formulario de contacto, política RLS de solo inserción — sin acceso de lectura desde el cliente                      |
-| Hosting        | [Cloudflare Pages](https://pages.cloudflare.com)          | Plan gratuito, despliegue automático con git push, CDN global                                                                                |
-| DNS            | the registrar                                         | Solo como registrador del dominio — el hosting vive en Cloudflare                                                                            |
+| Hosting        | [Cloudflare Workers](https://workers.cloudflare.com)      | Plan gratuito, despliegue automático con git push, CDN global                                                                                |
+| DNS            | Cloudflare                                                | El registrador no cambia; además aloja los buzones de la empresa                                                    |
 | Lenguaje       | TypeScript (estricto)                                     | `astro check` corre sin errores en todo el proyecto                                                                                          |
 
 ## Características
 
 - **Impulsado por CMS con respaldo seguro** — cada sección (hero, servicios, certificaciones, proyectos) obtiene su contenido de Sanity al momento del build y usa contenido semilla de [`src/lib/content.ts`](src/lib/content.ts) si el CMS está vacío o inaccesible, para que el sitio nunca se vea en blanco.
-- **Sin marca, sin problema** — el componente reutilizable [`ImagePlaceholder`](src/components/ImagePlaceholder.astro) reemplaza cada imagen con un wireframe; una paleta neutra de grises/acento reemplaza los colores de marca. Ambos se cambian en un solo lugar cuando existan los assets reales.
+- **Sistema de diseño tokenizado** — una escala tipográfica de 9 pasos y una única regla de radios documentada viven en [`src/styles/global.css`](src/styles/global.css); los componentes usan `text-sm` / `text-2xl`, nunca valores en píxeles sueltos, así que la tipografía sólo puede cambiar en un lugar.
 - **Captura de leads protegida contra spam** — el formulario de contacto usa un campo honeypot y seguridad a nivel de fila (RLS) en Supabase que solo permite `insert`, nunca `select`/`update`/`delete`, desde la llave pública anónima.
 - **Navegación móvil accesible primero** — menú móvil solo con CSS (sin JavaScript adicional), con estado `aria-expanded` y cierre con la tecla Escape.
 - **Contenido en español, vocabulario técnico heredado** — la redacción está en español para el público de LATAM; los términos de la industria (ASSE, NFPA, DISS, CGA) se mantienen sin traducir, tal como se usan en el sector.
@@ -55,12 +55,13 @@ pnpm dev                # http://localhost:4321
 
 ### Variables de entorno
 
-| Variable                   | Dónde obtenerla                                                                   |
-| -------------------------- | --------------------------------------------------------------------------------- |
-| `PUBLIC_SANITY_PROJECT_ID` | [sanity.io/manage](https://sanity.io/manage) → tu proyecto                        |
-| `PUBLIC_SANITY_DATASET`    | Normalmente `production`                                                          |
-| `PUBLIC_SUPABASE_URL`      | [supabase.com/dashboard](https://supabase.com/dashboard) → Project Settings → API |
-| `PUBLIC_SUPABASE_ANON_KEY` | Misma página — la llave pública/anónima, nunca la service role key                |
+| Variable                   | Dónde obtenerla                                                                                                                                                   |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PUBLIC_SANITY_PROJECT_ID` | [sanity.io/manage](https://sanity.io/manage) → tu proyecto                                                                                                        |
+| `PUBLIC_SANITY_DATASET`    | Normalmente `production`                                                                                                                                          |
+| `PUBLIC_SUPABASE_URL`      | [supabase.com/dashboard](https://supabase.com/dashboard) → Project Settings → API                                                                                 |
+| `PUBLIC_CF_BEACON_TOKEN`   | Cloudflare → Analytics & Logs → Web Analytics. Identificador público, no es secreto. Dejar vacío en local para que el tráfico de desarrollo no entre en los datos |
+| `PUBLIC_SUPABASE_ANON_KEY` | Misma página — la llave pública/anónima, nunca la service role key                                                                                                |
 
 ## Scripts
 
@@ -90,6 +91,7 @@ Los envíos se insertan directamente en una tabla `leads` de Supabase ([migraci�
 
 ## Despliegue
 
-1. **Cloudflare Pages** — conectar este repositorio, comando de build `pnpm build`, directorio de salida `dist`. Cada push a `master` despliega automáticamente.
-2. **Dominio** — apuntar el DNS del dominio registrado en the registrar hacia Cloudflare (nameservers o CNAME), en lugar de alojar el sitio directamente en the registrar.
-3. Configurar las mismas variables de entorno del `.env` en la configuración del proyecto de Cloudflare Pages.
+1. **Cloudflare Workers** — el repositorio ya está conectado; comando de build `pnpm build`, salida `dist`. Cada push a `master` despliega. `wrangler.jsonc` define `not_found_handling: "404-page"`; sin eso las rutas desconocidas devuelven un 404 vacío en vez de la página con diseño.
+2. **Dominio** — hecho. Los nameservers apuntan a Cloudflare y hay Custom Domains para la raíz y `www`. El procedimiento y sus trampas están en [`CUTOVER.md`](CUTOVER.md).
+3. **Variables de entorno** — configurar las mismas claves del `.env` en Cloudflare, incluida `PUBLIC_CF_BEACON_TOKEN`. Si falta, el sitio compila sin analítica y sin error.
+4. **Notificaciones de leads** — la función de Supabase debe desplegarse con `--no-verify-jwt`, o el webhook se rechaza antes de llegar a ella. Ver [`supabase/functions/notify-lead/README.md`](supabase/functions/notify-lead/README.md).
