@@ -6,6 +6,7 @@ import heroRoom from '../assets/photos/hero-room.png';
 import NavyTexture from './NavyTexture.astro';
 import SectionWedge from './SectionWedge.astro';
 import { ShieldCheck } from 'lucide-react';
+import GasFlowLine from './GasFlowLine.astro';
 
 interface Props {
   hero: HeroSection | null;
@@ -14,12 +15,18 @@ interface Props {
 const { hero } = Astro.props;
 const eyebrow = hero?.eyebrow ?? DEFAULT_HERO.eyebrow;
 const heading = hero?.heading ?? DEFAULT_HERO.heading;
+const headingWords = heading.split(' ');
 const subheading = hero?.subheading ?? DEFAULT_HERO.subheading;
 const ctaLabel = hero?.ctaLabel ?? DEFAULT_HERO.ctaLabel;
 const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
 ---
 
 <section id="inicio" class="from-accent-700 via-accent to-accent-400 relative overflow-hidden bg-gradient-to-br">
+  <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <span class="aurora-blob" style="--x:12%;--y:22%;--c:#2563eb;--d:0s"></span>
+    <span class="aurora-blob" style="--x:82%;--y:26%;--c:#0d9488;--d:-6s"></span>
+    <span class="aurora-blob" style="--x:55%;--y:82%;--c:#15803d;--d:-12s"></span>
+  </div>
   <NavyTexture glow="#15803d33" />
 
   <div
@@ -32,12 +39,14 @@ const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
       >
         {eyebrow}
       </span>
-      <h1
-        data-reveal
-        data-reveal-delay="80"
-        class="font-display text-3xl leading-[1.1] font-extrabold tracking-tight text-balance text-white md:text-4xl"
-      >
-        {heading}
+      <h1 class="font-display text-3xl leading-[1.1] font-extrabold tracking-tight text-white md:text-4xl">
+        {
+          headingWords.map((w, i) => (
+            <span data-reveal data-reveal-delay={80 + i * 55} class="mr-[0.28em] inline-block">
+              {w}
+            </span>
+          ))
+        }
       </h1>
       <p
         data-reveal
@@ -60,6 +69,7 @@ const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
           Ver servicios
         </a>
       </div>
+      <GasFlowLine class="mt-10 max-w-xs" />
     </div>
 
     <div class="float-slow relative">

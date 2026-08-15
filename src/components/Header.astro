@@ -80,26 +80,5 @@ const ctaClass =
   </div>
 </header>
 
-<script>
-  // Real <button> rather than a hidden checkbox + <label>: a display:none checkbox is
-  // unfocusable, which left the mobile nav unreachable by keyboard entirely.
-  const button = document.getElementById('mobile-nav-button');
-  const nav = document.getElementById('mobile-nav');
-
-  function setOpen(open: boolean) {
-    button?.setAttribute('aria-expanded', String(open));
-    nav?.classList.toggle('hidden', !open);
-    nav?.classList.toggle('flex', open);
-  }
-
-  button?.addEventListener('click', () => setOpen(button.getAttribute('aria-expanded') !== 'true'));
-
-  nav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setOpen(false)));
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && button?.getAttribute('aria-expanded') === 'true') {
-      setOpen(false);
-      button.focus();
-    }
-  });
-</script>
+<!-- Mobile-nav toggle + Escape handling live in src/scripts/site.ts, which re-binds on every
+     View Transitions navigation. The button is a real <button> so it stays keyboard-reachable. -->

@@ -174,3 +174,77 @@ html {
 #scroll-progress {
   transform: scaleX(var(--progress, 0));
 }
+
+/* AURORA — soft coloured blobs drifting behind the navy hero for depth. Base styles always
+   apply (static blobs); the drift is motion-gated. */
+.aurora-blob {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 42vw;
+  height: 42vw;
+  max-width: 560px;
+  max-height: 560px;
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  background: radial-gradient(circle, var(--c) 0%, transparent 70%);
+  opacity: 0.32;
+  filter: blur(64px);
+}
+
+/* GAS-FLOW — dots gliding along a hairline, a nod to a medical-gas pipeline. */
+.gas-flow {
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.28), transparent);
+}
+.gas-dot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 6px;
+  width: 6px;
+  margin-top: -3px;
+  border-radius: 9999px;
+  background: #a8c2f0;
+  box-shadow: 0 0 8px 2px rgb(168 194 240 / 0.6);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes auroraFloat {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    33% {
+      transform: translate(-50%, -50%) translate(7%, -9%) scale(1.15);
+    }
+    66% {
+      transform: translate(-50%, -50%) translate(-9%, 7%) scale(0.9);
+    }
+  }
+  .aurora-blob {
+    animation: auroraFloat 18s ease-in-out infinite;
+    animation-delay: var(--d, 0s);
+  }
+
+  @keyframes gasFlow {
+    0% {
+      left: 0;
+      opacity: 0;
+    }
+    12% {
+      opacity: 1;
+    }
+    88% {
+      opacity: 1;
+    }
+    100% {
+      left: 100%;
+      opacity: 0;
+    }
+  }
+  .gas-dot {
+    animation: gasFlow 3.2s linear infinite;
+    animation-delay: var(--d, 0s);
+  }
+}

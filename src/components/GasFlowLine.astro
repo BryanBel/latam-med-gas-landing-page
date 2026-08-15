@@ -1,0 +1,14 @@
+---
+// A hairline with dots gliding along it — a subtle nod to a medical-gas pipeline. Decorative
+// only. The dots animate via CSS (gated behind prefers-reduced-motion in global.css).
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['gas-flow relative h-px w-full', className]} aria-hidden="true">
+  <span class="gas-dot" style="--d:0s"></span>
+  <span class="gas-dot" style="--d:1.1s"></span>
+  <span class="gas-dot" style="--d:2.2s"></span>
+</div>

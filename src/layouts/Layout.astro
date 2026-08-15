@@ -6,6 +6,7 @@ import '@fontsource/noto-sans/400.css';
 import '@fontsource/noto-sans/500.css';
 import '@fontsource/noto-sans/600.css';
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 import StructuredData from '../components/StructuredData.astro';
 import type { SiteSettings } from '../lib/sanityQueries';
 // Preloaded rather than left to the CSS-triggered fetch: these two cut the flash of
@@ -88,6 +89,7 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
     <meta name="twitter:image:alt" content="Latam Med Gas USA LLC — sistemas de gases medicinales" />
 
     <StructuredData settings={settings} graph={graph} />
+    <ClientRouter />
   </head>
   <body class="text-ink font-body bg-white antialiased">
     <div
@@ -104,20 +106,7 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
     </a>
     <slot />
     <script>
-      import '../scripts/reveal';
-
-      // Scroll-progress bar: drives the --progress scaleX on #scroll-progress.
-      const bar = document.getElementById('scroll-progress');
-      if (bar) {
-        const update = () => {
-          const el = document.documentElement;
-          const max = el.scrollHeight - el.clientHeight;
-          bar.style.setProperty('--progress', String(max > 0 ? el.scrollTop / max : 0));
-        };
-        update();
-        addEventListener('scroll', update, { passive: true });
-        addEventListener('resize', update, { passive: true });
-      }
+      import '../scripts/site';
     </script>
     {
       cfBeaconToken && (
