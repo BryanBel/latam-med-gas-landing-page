@@ -1,0 +1,70 @@
+---
+// JSON-LD structured data. Emits an Organization + WebSite graph on every page, plus any
+// page-specific nodes passed via `graph` (Course, ItemList, BreadcrumbList, …). Business
+// facts come from the USA LLC identity in content.ts, overridable by Sanity site settings.
+import { DEFAULT_SITE_SETTINGS } from '../lib/content';
+import type { SiteSettings } from '../lib/sanityQueries';
+
+interface Props {
+  settings?: SiteSettings | null;
+  graph?: Record<string, unknown>[];
+}
+
+const { settings, graph = [] } = Astro.props;
+
+const siteName = settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName;
+const email = settings?.email ?? DEFAULT_SITE_SETTINGS.email;
+const phones = (settings?.phone ?? DEFAULT_SITE_SETTINGS.phone)
+  .split('/')
+  .map((p) => p.trim())
+  .filter(Boolean);
+
+const site = Astro.site?.toString().replace(/\/$/, '') ?? 'https://latammedgas.com';
+const logo = `${site}/og-image.png`;
+
+// Properties operated by the same client. Declaring them as sameAs helps Google associate
+// the entities and consolidate brand signals across the three related domains.
+const sameAs = [
+  'https://www.unidadverificadoragasesmedicinales.com',
+  'https://www.sensor-medical.com',
+  ...(settings?.socialLinks?.map((s) => s.url).filter(Boolean) ?? []),
+];
+
+const organization = {
+  '@type': ['Organization', 'ProfessionalService'],
+  '@id': `${site}/#organization`,
+  name: siteName,
+  url: `${site}/`,
+  logo,
+  image: logo,
+  email,
+  telephone: phones,
+  sameAs,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '2 S Biscayne Boulevard, Suite 3200 #2088',
+    addressLocality: 'Miami',
+    addressRegion: 'FL',
+    postalCode: '33132',
+    addressCountry: 'US',
+  },
+  areaServed: 'Latinoamérica',
+  description: DEFAULT_SITE_SETTINGS.tagline,
+};
+
+const website = {
+  '@type': 'WebSite',
+  '@id': `${site}/#website`,
+  url: `${site}/`,
+  name: siteName,
+  inLanguage: 'es',
+  publisher: { '@id': `${site}/#organization` },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [organization, website, ...graph],
+};
+---
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />

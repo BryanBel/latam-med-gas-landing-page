@@ -27,7 +27,11 @@ export default defineConfig({
       projectId: PUBLIC_SANITY_PROJECT_ID,
       dataset: PUBLIC_SANITY_DATASET || 'production',
       studioBasePath: '/studio',
-      useCdn: true,
+      // The site is fully static, so this client only runs at build time — read fresh from the
+      // live API rather than the CDN, which otherwise serves a stale cached result for the
+      // fixed query strings (getProjects etc.) until its TTL expires, so a rebuild after a
+      // Sanity change could still ship the old content.
+      useCdn: false,
     }),
   ],
 

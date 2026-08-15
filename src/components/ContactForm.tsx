@@ -71,8 +71,11 @@ export default function ContactForm() {
   }
 
   if (status === 'success') {
+    // No card chrome here: this replaces the form inside the panel, which already provides the
+    // white surface and centres it vertically (see ContactSection). A nested card would double
+    // the border and strand the message at the top of the stretched panel.
     return (
-      <div className="rounded-2xl bg-white p-8 text-center ring-1 ring-slate-200" role="status" aria-live="polite">
+      <div className="py-6 text-center" role="status" aria-live="polite">
         <p ref={successRef} tabIndex={-1} className="text-ink text-base font-semibold focus-visible:outline-none">
           Gracias por contactarnos.
         </p>

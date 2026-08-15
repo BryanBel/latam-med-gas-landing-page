@@ -11,7 +11,7 @@ export default [
   ...astro.configs.recommended,
   eslintConfigPrettier,
   {
-    files: ['*.config.{js,mjs,ts}'],
+    files: ['*.config.{js,mjs,ts}', 'scripts/**/*.{js,mjs,ts}'],
     languageOptions: {
       globals: globals.node,
     },

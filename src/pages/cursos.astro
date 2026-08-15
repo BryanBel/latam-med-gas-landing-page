@@ -1,0 +1,92 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PageHero from '../components/PageHero.astro';
+import ContactCta from '../components/ContactCta.astro';
+import { getSiteSettings } from '../lib/sanityQueries';
+import { DEFAULT_COURSES } from '../lib/content';
+import { accentFor } from '../lib/icons';
+
+let settings = null;
+try {
+  settings = await getSiteSettings();
+} catch (err) {
+  console.warn('[Sanity] falling back to seed content:', err);
+}
+
+const graph = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://latammedgas.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Cursos ASSE 6000', item: 'https://latammedgas.com/cursos' },
+    ],
+  },
+  {
+    '@type': 'ItemList',
+    name: 'Cursos de capacitación ASSE serie 6000',
+    itemListElement: DEFAULT_COURSES.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: `ASSE ${c.code} — ${c.title} en sistemas de gases medicinales`,
+    })),
+  },
+];
+---
+
+<Layout
+  title="Cursos de Capacitación ASSE 6000 (6005–6060)"
+  description="Cursos de capacitación y certificación profesional bajo la norma ASSE serie 6000 y el código NFPA 99: generalista, instalador, inspector, verificador, diseñador y más."
+  settings={settings}
+  graph={graph}
+>
+  <Header settings={settings} />
+  <main id="contenido">
+    <PageHero
+      eyebrow="Capacitación"
+      title="Cursos de Capacitación ASSE serie 6000"
+      subtitle="Formación para todos los perfiles del código ASSE 6000, orientada a aplicar con propiedad lo establecido en la norma NFPA 99."
+      glow="#2563eb33"
+    />
+
+    <section class="bg-white">
+      <div class="mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
+        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {
+            DEFAULT_COURSES.map((c, i) => (
+              <div
+                data-reveal
+                data-reveal-delay={(i % 3) * 60}
+                class="hover:ring-accent-200 rounded-2xl bg-white p-6 ring-1 ring-slate-200 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-slate-200/60 motion-safe:hover:-translate-y-0.5"
+              >
+                <div class="mb-3 flex items-center gap-3">
+                  <span
+                    class="font-display text-2xs shrink-0 rounded-full px-2.5 py-1 font-bold text-white"
+                    style={{ backgroundColor: accentFor(i) }}
+                    translate="no"
+                  >
+                    ASSE {c.code}
+                  </span>
+                  <h2 class="font-display text-ink min-w-0 text-base font-bold text-balance">{c.title}</h2>
+                </div>
+                <p class="text-xs leading-relaxed text-slate-600">{c.description}</p>
+              </div>
+            ))
+          }
+        </div>
+
+        <p class="mt-10 max-w-3xl text-sm leading-relaxed text-slate-500" data-reveal>
+          Los cursos se dictan conforme al código ASSE serie 6000. Escríbanos para conocer fechas, modalidades y el
+          temario detallado de cada perfil.
+        </p>
+      </div>
+    </section>
+
+    <ContactCta
+      title="Capacite a su equipo bajo la norma ASSE 6000"
+      text="Solicite información sobre nuestros cursos de capacitación y certificación profesional."
+    />
+    <Footer settings={settings} />
+  </main>
+</Layout>

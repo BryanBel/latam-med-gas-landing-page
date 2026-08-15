@@ -9,6 +9,7 @@ export interface SanityImageRef {
 export interface SiteSettings {
   siteName: string;
   tagline?: string;
+  metaDescription?: string;
   logo?: SanityImageRef;
   phone?: string;
   email?: string;
@@ -56,6 +57,11 @@ export interface Project {
   description?: string;
   image?: SanityImageRef;
   order?: number;
+  // Added for the redesign's Trayectoria timeline: a display date ("Noviembre 2024"), the
+  // country, and the kind of work (Verificación / Inspección / …).
+  date?: string;
+  country?: string;
+  serviceType?: string;
 }
 
 export interface Testimonial {

@@ -6,6 +6,8 @@ import '@fontsource/noto-sans/400.css';
 import '@fontsource/noto-sans/500.css';
 import '@fontsource/noto-sans/600.css';
 import '../styles/global.css';
+import StructuredData from '../components/StructuredData.astro';
+import type { SiteSettings } from '../lib/sanityQueries';
 // Preloaded rather than left to the CSS-triggered fetch: these two cut the flash of
 // fallback text on the hero, which is the first thing rendered.
 import displayFont from '@fontsource/figtree/files/figtree-latin-700-normal.woff2?url';
@@ -14,10 +16,26 @@ import bodyFont from '@fontsource/noto-sans/files/noto-sans-latin-400-normal.wof
 interface Props {
   title: string;
   description: string;
+  // Composed as `%s | Latam Med Gas USA LLC` by default. Pass `false` when the page title is
+  // already brand-led (the home page) so it isn't suffixed twice.
+  titleTemplate?: string | false;
+  ogImage?: string;
+  settings?: SiteSettings | null;
+  // Page-specific JSON-LD nodes (Course, ItemList, BreadcrumbList, …).
+  graph?: Record<string, unknown>[];
 }
 
-const { title, description } = Astro.props;
+const {
+  title,
+  description,
+  titleTemplate = '%s | Latam Med Gas USA LLC',
+  ogImage,
+  settings = null,
+  graph = [],
+} = Astro.props;
+const fullTitle = titleTemplate ? titleTemplate.replace('%s', title) : title;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(ogImage ?? '/og-image.png', Astro.site);
 
 // Cloudflare Web Analytics: cookieless, so no consent banner is required (see /privacidad).
 // The token is a public identifier that ships in the HTML of every page, not a secret — but
@@ -29,34 +47,55 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
 <!doctype html>
 <html lang="es">
   <head>
+    <script is:inline>
+      // Set before paint so scroll-reveal's hidden start state only applies when JS can
+      // undo it — no-JS visitors keep everything visible (see global.css .js [data-reveal]).
+      document.documentElement.classList.add('js');
+    </script>
     <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#0a0a89" />
 
     <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
     {cfBeaconToken && <link rel="preconnect" href="https://static.cloudflareinsights.com" crossorigin />}
     <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
 
-    <title>{title}</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
 
     <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
+    <meta property="og:site_name" content="Latam Med Gas USA LLC" />
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
-    <meta property="og:image" content={new URL('/og-image.png', Astro.site)} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Latam Med Gas USA LLC — sistemas de gases medicinales" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
+    <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL('/og-image.png', Astro.site)} />
+    <meta name="twitter:image" content={ogImageURL} />
+    <meta name="twitter:image:alt" content="Latam Med Gas USA LLC — sistemas de gases medicinales" />
+
+    <StructuredData settings={settings} graph={graph} />
   </head>
   <body class="text-ink font-body bg-white antialiased">
+    <div
+      id="scroll-progress"
+      class="from-accent-300 to-accent fixed top-0 left-0 z-50 h-0.5 w-full origin-left bg-gradient-to-r"
+      aria-hidden="true"
+    >
+    </div>
     <a
       href="#contenido"
       class="bg-accent focus:ring-accent sr-only rounded-lg px-4 py-2 text-sm font-semibold text-white focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:ring-2 focus:ring-offset-2 focus:outline-none"
@@ -64,6 +103,22 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
       Saltar al contenido
     </a>
     <slot />
+    <script>
+      import '../scripts/reveal';
+
+      // Scroll-progress bar: drives the --progress scaleX on #scroll-progress.
+      const bar = document.getElementById('scroll-progress');
+      if (bar) {
+        const update = () => {
+          const el = document.documentElement;
+          const max = el.scrollHeight - el.clientHeight;
+          bar.style.setProperty('--progress', String(max > 0 ? el.scrollTop / max : 0));
+        };
+        update();
+        addEventListener('scroll', update, { passive: true });
+        addEventListener('resize', update, { passive: true });
+      }
+    </script>
     {
       cfBeaconToken && (
         <script

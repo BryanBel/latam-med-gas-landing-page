@@ -65,8 +65,10 @@
 /* Every section is a nav target under the 76px sticky header. It owns the whole screen
    below that header and centers its own content, so jumping to one never leaves the next
    section peeking in at the bottom. Sections with more content than fits (Servicios) just
-   grow past the minimum. svh, not vh, so mobile browser chrome doesn't cause a jump. */
-main > section {
+   grow past the minimum. svh, not vh, so mobile browser chrome doesn't cause a jump.
+   Scoped to `.screens` (the home page) so the interior pages — /servicios, /cursos,
+   /trayectoria — can stack normal-height sections instead of one screen each. */
+.screens > section {
   display: flex;
   min-height: calc(100svh - 76px);
   scroll-margin-top: 76px;
@@ -117,4 +119,58 @@ html {
   .press-feedback:active {
     transform: none;
   }
+}
+
+/* SCROLL-REVEAL — elements tagged data-reveal start lowered and faded, then settle when the
+   reveal script adds .is-visible on viewport entry. Gated three ways so content is never
+   trapped hidden: only under `.js` (set inline in the head, so no-JS keeps everything
+   visible), only when motion is welcome, and the script also reveals immediately for
+   reduced-motion or missing IntersectionObserver. data-reveal-delay staggers siblings. */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s ease;
+  }
+  .js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Gentle continuous float for the hero image group — enough to feel alive, small enough to
+   stay professional. Motion only; disabled entirely under reduced-motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes floatSlow {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  .float-slow {
+    animation: floatSlow 6s ease-in-out infinite;
+  }
+
+  @keyframes glowDrift {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(22px, -18px);
+    }
+  }
+  .glow-drift {
+    animation: glowDrift 16s ease-in-out infinite;
+  }
+}
+
+/* Scroll-progress bar fill — width driven by a --progress custom property set in JS. */
+#scroll-progress {
+  transform: scaleX(var(--progress, 0));
 }

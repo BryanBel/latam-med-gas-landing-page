@@ -7,6 +7,15 @@ export default defineType({
   fields: [
     defineField({ name: 'siteName', title: 'Nombre del sitio', type: 'string', validation: (r) => r.required() }),
     defineField({ name: 'tagline', title: 'Eslogan', type: 'string' }),
+    defineField({
+      name: 'metaDescription',
+      title: 'Meta descripción (SEO)',
+      description:
+        'Descripción para buscadores y redes sociales (140–160 caracteres). Si se deja vacío se usa el eslogan.',
+      type: 'text',
+      rows: 2,
+      validation: (r) => r.max(200).warning('Lo ideal es menos de 160 caracteres.'),
+    }),
     defineField({ name: 'logo', title: 'Logo', type: 'image', options: { hotspot: true } }),
     defineField({ name: 'phone', title: 'Teléfono', type: 'string' }),
     defineField({ name: 'email', title: 'Correo', type: 'string' }),

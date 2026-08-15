@@ -1,0 +1,65 @@
+---
+// Animated market-presence figures. Counts up from 0 when scrolled into view; reduced-motion
+// and no-JS visitors simply see the final number. Designed to sit on a navy background.
+import type { Stat } from '../lib/content';
+import { DEFAULT_STATS } from '../lib/content';
+import { accentFor } from '../lib/icons';
+
+interface Props {
+  stats?: Stat[];
+  class?: string;
+}
+const { stats = DEFAULT_STATS, class: className = '' } = Astro.props;
+---
+
+<div class:list={['grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4', className]}>
+  {
+    stats.map((s, i) => (
+      <div data-reveal data-reveal-delay={i * 80}>
+        <div class="mb-3 h-[3px] w-10" style={{ backgroundColor: accentFor(i) }} aria-hidden="true" />
+        <div class="font-display flex items-baseline text-3xl font-extrabold tracking-tight text-white md:text-4xl">
+          <span class="tabular-nums" data-count-to={s.value}>
+            0
+          </span>
+          {s.suffix && <span aria-hidden="true">{s.suffix}</span>}
+        </div>
+        <div class="mt-2 text-sm leading-snug font-medium text-white/70">{s.label}</div>
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const nums = document.querySelectorAll<HTMLElement>('[data-count-to]');
+
+  function run(el: HTMLElement) {
+    const target = Number(el.dataset.countTo || '0');
+    const duration = 1200;
+    const start = performance.now();
+    function tick(now: number) {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+      el.textContent = String(Math.round(eased * target));
+      if (p < 1) requestAnimationFrame(tick);
+      else el.textContent = String(target);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  if (reduce || !('IntersectionObserver' in window)) {
+    nums.forEach((el) => (el.textContent = el.dataset.countTo || '0'));
+  } else {
+    const io = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          run(entry.target as HTMLElement);
+          obs.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.4 },
+    );
+    nums.forEach((el) => io.observe(el));
+  }
+</script>

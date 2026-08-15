@@ -16,7 +16,7 @@ const logoUrl = sanityImageUrl(settings?.logo, 160);
 const logo = logoUrl ? { src: logoUrl, width: 160, height: 36 } : lmgMark;
 
 const linkClass =
-  'hover:text-accent focus-visible:ring-accent rounded-sm text-sm font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
+  "hover:text-accent focus-visible:ring-accent relative rounded-sm text-sm font-medium text-slate-600 transition-colors after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 after:content-[''] hover:after:scale-x-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:after:transition-none";
 const ctaClass =
   'bg-accent hover:bg-accent-600 focus-visible:ring-accent rounded-full px-5 py-2 text-sm font-semibold text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
 ---

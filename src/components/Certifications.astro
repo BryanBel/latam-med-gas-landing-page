@@ -22,7 +22,7 @@ const items = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATION
   <SectionWedge edge="bottom" fill="bg-accent-500" textured />
 
   <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
-    <div class="mb-12 max-w-2xl">
+    <div class="mb-12 max-w-2xl" data-reveal>
       <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
         Respaldados por los estándares internacionales de la industria
       </h2>
@@ -38,7 +38,7 @@ const items = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATION
     <div class="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
       {
         items.map((c, i) => (
-          <div>
+          <div data-reveal data-reveal-delay={(i % 4) * 70}>
             <div class="mb-4 h-[3px] w-12" style={{ backgroundColor: accentFor(i) }} aria-hidden="true" />
             {c.badge && (
               <SanityImage

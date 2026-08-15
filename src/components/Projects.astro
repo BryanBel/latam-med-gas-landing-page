@@ -2,17 +2,23 @@
 import SanityImage from './SanityImage.astro';
 import NavyTexture from './NavyTexture.astro';
 import SectionWedge from './SectionWedge.astro';
+import StatStrip from './StatStrip.astro';
 import type { Project } from '../lib/sanityQueries';
 import { DEFAULT_PROJECTS } from '../lib/content';
 import projectVerification from '../assets/photos/project-verification-room.png';
 import projectPediatric from '../assets/photos/project-pediatric-headwall.png';
+import { ArrowRight } from 'lucide-react';
 
 interface Props {
   projects: Project[];
+  // Home shows a few highlights and links on to /trayectoria; the full list lives there.
+  limit?: number;
+  moreHref?: string;
 }
 
-const { projects } = Astro.props;
-const items = projects.length > 0 ? projects : DEFAULT_PROJECTS;
+const { projects, limit, moreHref } = Astro.props;
+const source = projects.length > 0 ? projects : DEFAULT_PROJECTS;
+const items = limit ? source.slice(0, limit) : source;
 // Shown for any project (seed or real Sanity doc) that doesn't have its own uploaded image yet.
 const fallbackPhotos = [projectVerification.src, projectPediatric.src];
 ---
@@ -23,16 +29,27 @@ const fallbackPhotos = [projectVerification.src, projectPediatric.src];
   <SectionWedge edge="bottom" fill="bg-white" />
 
   <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
-    <div class="mb-12 max-w-2xl">
+    <div class="mb-12 max-w-2xl" data-reveal>
+      <div class="text-accent-100 mb-3 text-xs font-semibold tracking-[0.08em] uppercase">Trayectoria</div>
       <h2 class="font-display text-2xl font-extrabold tracking-tight text-balance text-white md:text-3xl">
-        Instituciones que confían en nuestro trabajo
+        Presencia comprobada en Latinoamérica
       </h2>
+      <p class="mt-3 text-base text-white/75">
+        Desde 2020 acompañamos a instituciones de salud en la inspección y verificación de sus sistemas de gases
+        medicinales.
+      </p>
     </div>
+
+    <StatStrip class="mb-16" />
 
     <div class="grid gap-6 md:grid-cols-2">
       {
         items.map((p, i) => (
-          <div class="group overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-slate-200/60 motion-safe:hover:-translate-y-0.5">
+          <div
+            data-reveal
+            data-reveal-delay={(i % 2) * 100}
+            class="group hover:ring-accent-200 overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-slate-200/60 motion-safe:hover:-translate-y-0.5"
+          >
             <div class="relative">
               <SanityImage
                 image={p.image}
@@ -41,21 +58,39 @@ const fallbackPhotos = [projectVerification.src, projectPediatric.src];
                 aspect="aspect-[21/9]"
                 fallbackSrc={fallbackPhotos[i % fallbackPhotos.length]}
               />
-              <span
-                class="text-accent-700 font-display text-2xs absolute top-4 left-4 rounded-full bg-white/90 px-2.5 py-1 font-bold tabular-nums backdrop-blur"
-                aria-hidden="true"
-              >
-                {String(i + 1).padStart(2, '0')}
-              </span>
+              {p.serviceType && (
+                <span class="text-accent-700 font-display text-2xs absolute top-4 left-4 rounded-full bg-white/90 px-2.5 py-1 font-bold backdrop-blur">
+                  {p.serviceType}
+                </span>
+              )}
             </div>
             <div class="p-7">
               <h3 class="font-display text-ink mb-1 text-xl font-bold">{p.clientName}</h3>
-              {p.location && <p class="text-2xs mb-3 font-medium text-slate-500">{p.location}</p>}
+              {(p.location || p.country || p.date) && (
+                <p class="text-2xs mb-3 font-medium text-slate-500">
+                  {[p.location, p.country].filter(Boolean).join(', ')}
+                  {p.date && ` · ${p.date}`}
+                </p>
+              )}
               <p class="text-sm leading-relaxed text-slate-600">{p.description}</p>
             </div>
           </div>
         ))
       }
     </div>
+
+    {
+      moreHref && (
+        <div class="mt-10" data-reveal>
+          <a
+            href={moreHref}
+            class="press-feedback focus-visible:ring-accent-200 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-[var(--color-accent-700)] shadow-lg shadow-black/20 transition-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-accent)] focus-visible:outline-none motion-safe:hover:-translate-y-0.5 [&_svg]:transition-transform [&_svg]:duration-200 hover:[&_svg]:translate-x-1 motion-reduce:[&_svg]:transform-none"
+          >
+            Ver toda la trayectoria
+            <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
+          </a>
+        </div>
+      )
+    }
   </div>
 </section>

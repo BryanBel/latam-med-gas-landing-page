@@ -27,17 +27,26 @@ const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
   >
     <div>
       <span
+        data-reveal
         class="text-2xs mb-6 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-mono font-semibold text-white ring-1 ring-white/25 ring-inset"
       >
         {eyebrow}
       </span>
-      <h1 class="font-display text-3xl leading-[1.1] font-extrabold tracking-tight text-balance text-white md:text-4xl">
+      <h1
+        data-reveal
+        data-reveal-delay="80"
+        class="font-display text-3xl leading-[1.1] font-extrabold tracking-tight text-balance text-white md:text-4xl"
+      >
         {heading}
       </h1>
-      <p class="mt-6 max-w-[52ch] text-base leading-relaxed text-white/75 md:text-lg">
+      <p
+        data-reveal
+        data-reveal-delay="160"
+        class="mt-6 max-w-[52ch] text-base leading-relaxed text-white/75 md:text-lg"
+      >
         {subheading}
       </p>
-      <div class="mt-9 flex flex-wrap gap-3">
+      <div data-reveal data-reveal-delay="240" class="mt-9 flex flex-wrap gap-3">
         <a
           href={ctaLink}
           class="press-feedback focus-visible:ring-accent-200 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-[var(--color-accent-700)] shadow-lg shadow-black/20 transition-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-accent)] focus-visible:outline-none motion-safe:hover:-translate-y-0.5"
@@ -53,7 +62,7 @@ const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
       </div>
     </div>
 
-    <div class="relative">
+    <div class="float-slow relative">
       <div class="rotate-[-2deg] rounded-2xl bg-white/95 p-3 shadow-2xl ring-1 ring-white/40 backdrop-blur">
         <SanityImage
           image={hero?.backgroundImage}

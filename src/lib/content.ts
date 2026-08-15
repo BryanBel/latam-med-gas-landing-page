@@ -107,29 +107,241 @@ export const DEFAULT_CERTIFICATIONS: Certification[] = [
   },
 ];
 
+// Real trajectory from the client source docs — presence in the market since 2020, listed
+// newest-first. Used in full by /trayectoria and sliced to a few highlights on the home page.
 export const DEFAULT_PROJECTS: Project[] = [
   {
-    _id: 'seed-imss-tuxtla',
-    clientName: 'Hospital General IMSS Tuxtla-Chiapas',
-    location: 'Tuxtla Gutiérrez, Chiapas, México',
-    description: 'Verificación de sistema de gases medicinales bajo la norma ASSE 6030, con informe final y anexos.',
+    _id: 'seed-tuxtla',
+    clientName: 'Hospital General de Tuxtla Gutiérrez',
+    location: 'Tuxtla Gutiérrez, Chiapas',
+    country: 'México',
+    date: 'Noviembre 2024',
+    serviceType: 'Inspección y diagnóstico',
+    description: 'Inspección y diagnóstico del sistema de gases medicinales y vacío médico-quirúrgico.',
+  },
+  {
+    _id: 'seed-tegucigalpa',
+    clientName: 'Hospital Escuela Ciudad de Tegucigalpa',
+    location: 'Tegucigalpa',
+    country: 'Honduras',
+    date: 'Junio 2024',
+    serviceType: 'Inspección y diagnóstico',
+    description: 'Inspección y diagnóstico del sistema de gases medicinales y vacío médico-quirúrgico.',
+  },
+  {
+    _id: 'seed-isla-mujeres',
+    clientName: 'Hospital Naval de Isla Mujeres',
+    location: 'Isla Mujeres, Quintana Roo',
+    country: 'México',
+    date: 'Marzo 2024',
+    serviceType: 'Verificación',
+    description:
+      'Verificación de sistemas de gases medicinales, vacío médico-quirúrgico y disposición de desechos de gases anestésicos (WAGD).',
+  },
+  {
+    _id: 'seed-boca-chila',
+    clientName: 'Clínica Naval de Boca de Chila',
+    location: 'Nayarit',
+    country: 'México',
+    date: 'Marzo 2024',
+    serviceType: 'Verificación',
+    description:
+      'Verificación de sistemas de gases medicinales, vacío médico-quirúrgico y disposición de desechos de gases anestésicos (WAGD).',
+  },
+  {
+    _id: 'seed-troncoso',
+    clientName: 'Centro de Atención de Salud Troncoso',
+    location: 'México',
+    country: 'México',
+    date: 'Febrero 2024',
+    serviceType: 'Verificación',
+    description:
+      'Verificación de sistemas de gases medicinales, vacío médico-quirúrgico y disposición de desechos de gases anestésicos (WAGD).',
+  },
+  {
+    _id: 'seed-isla-mujeres-2023',
+    clientName: 'Hospital Naval de Isla Mujeres',
+    location: 'Quintana Roo',
+    country: 'México',
+    date: 'Octubre 2023',
+    serviceType: 'Inspección',
+    description:
+      'Inspección de sistemas de gases medicinales, vacío médico-quirúrgico y disposición de desechos de gases anestésicos (WAGD).',
+  },
+  {
+    _id: 'seed-san-cristobal',
+    clientName: 'Centro Clínico San Cristóbal',
+    location: 'San Cristóbal',
+    country: 'Venezuela',
+    date: 'Febrero 2023',
+    serviceType: 'Inspección',
+    description:
+      'Inspección de sistemas de gases medicinales, vacío médico-quirúrgico y disposición de desechos de gases anestésicos (WAGD).',
+  },
+  {
+    _id: 'seed-la-paz',
+    clientName: 'Hospital Naval de La Paz',
+    location: 'La Paz, Baja California Sur',
+    country: 'México',
+    date: 'Diciembre 2022',
+    serviceType: 'Verificación',
+    description:
+      'Verificación de sistemas de gases medicinales, vacío médico-quirúrgico y disposición de desechos de gases anestésicos (WAGD).',
+  },
+  {
+    _id: 'seed-montero',
+    clientName: 'Hospital Montero',
+    location: 'Santa Cruz de la Sierra',
+    country: 'Bolivia',
+    date: 'Octubre 2022',
+    serviceType: 'Inspección',
+    description:
+      'Inspección de sistemas de gases medicinales, vacío médico-quirúrgico y disposición de desechos de gases anestésicos (WAGD).',
+  },
+  {
+    _id: 'seed-coatzacoalcos',
+    clientName: 'Hospital General Naval de Coatzacoalcos',
+    location: 'Coatzacoalcos, Veracruz',
+    country: 'México',
+    date: 'Mayo 2022',
+    serviceType: 'Verificación',
+    description:
+      'Verificación de sistemas de gases medicinales, vacío médico-quirúrgico y disposición de desechos de gases anestésicos (WAGD).',
+  },
+  {
+    _id: 'seed-panama-covid',
+    clientName: 'Hospital Covid de la Salud',
+    location: 'Ciudad de Panamá',
+    country: 'Panamá',
+    date: 'Febrero 2021',
+    serviceType: 'Verificación',
+    description: 'Verificación de sistemas de gases medicinales y vacío médico.',
+  },
+  {
+    _id: 'seed-santa-fe',
+    clientName: 'Hospital Fundación Santa Fe de Bogotá',
+    location: 'Bogotá',
+    country: 'Colombia',
+    date: 'Febrero 2020',
+    serviceType: 'Inspección',
+    description:
+      'Inspección de sistemas de gases medicinales, vacío médico-quirúrgico y disposición de desechos de gases anestésicos (WAGD).',
   },
   {
     _id: 'seed-gas-solutions',
     clientName: 'Gas Solutions Services, S.A.',
-    location: 'Panamá, República de Panamá',
-    description: 'Capacitación profesional para certificación bajo la norma ASSE 6000, versión NFPA 99-2024.',
+    location: 'Panamá',
+    country: 'Panamá',
+    serviceType: 'Capacitación ASSE 6000',
+    description: 'Capacitación profesional para certificación bajo la norma ASSE serie 6000, versión NFPA 99-2024.',
   },
+];
+
+export const DEFAULT_MISSION_VISION = {
+  mission:
+    'Garantizar la seguridad, calidad y eficiencia de los sistemas de distribución de gases medicinales mediante inspecciones, pruebas y mantenimientos regulares, asegurando el cumplimiento de las normativas y estándares establecidos para proteger la salud de los pacientes y del personal médico.',
+  vision:
+    'Ser una unidad líder en la promoción de la transparencia, la eficiencia y el cumplimiento normativo, garantizando que cada verificación se realice con el más alto nivel de integridad y contribuyendo a la confianza pública y la mejora continua del sector salud.',
+};
+
+// Market-presence figures for the animated stat strip. Present in the market since 2020; the
+// project count and country spread are grounded in DEFAULT_PROJECTS above.
+export interface Stat {
+  value: number;
+  suffix?: string;
+  label: string;
+}
+export const DEFAULT_STATS: Stat[] = [
+  { value: 5, suffix: '+', label: 'Años en el mercado' },
+  { value: 12, suffix: '+', label: 'Proyectos de inspección y verificación' },
+  { value: 6, label: 'Países en Latinoamérica' },
+  { value: 10, label: 'Perfiles ASSE serie 6000' },
+];
+
+// ASSE Series 6000 course catalogue. Short, faithful one-line role summaries (core + selective —
+// the full profile text lives in the client source docs).
+export interface Course {
+  code: string;
+  title: string;
+  description: string;
+}
+export const DEFAULT_COURSES: Course[] = [
+  {
+    code: '6005',
+    title: 'Generalista',
+    description: 'Comprensión integral de los sistemas y normativas de gases medicinales; rol de apoyo y supervisión.',
+  },
+  {
+    code: '6010',
+    title: 'Instalador',
+    description: 'Instalación certificada de sistemas de tubería para gases medicinales.',
+  },
+  {
+    code: '6015',
+    title: 'Instalador a granel',
+    description: 'Instalación de sistemas de suministro a granel (criogénicos) de oxígeno y gases medicinales.',
+  },
+  {
+    code: '6020',
+    title: 'Inspector',
+    description: 'Inspección de sistemas de gases medicinales y prevención de reflujo en instalaciones médicas.',
+  },
+  {
+    code: '6030',
+    title: 'Verificador',
+    description: 'Inspección y pruebas de sistemas de gas medicinal, con certificación e informe final.',
+  },
+  {
+    code: '6035',
+    title: 'Verificador a granel',
+    description: 'Verificación y certificación de sistemas de suministro a granel (criogénicos).',
+  },
+  {
+    code: '6040',
+    title: 'Mantenimiento',
+    description: 'Mantenimiento preventivo y correctivo de sistemas de gases médicos.',
+  },
+  {
+    code: '6050',
+    title: 'Instructor',
+    description: 'Formación e instrucción certificada en sistemas de gases medicinales.',
+  },
+  {
+    code: '6055',
+    title: 'Instructor a granel',
+    description: 'Instrucción en instalación, inspección y mantenimiento de sistemas a granel.',
+  },
+  {
+    code: '6060',
+    title: 'Diseñador',
+    description: 'Diseño de sistemas de suministro de gas médico conforme a la norma NFPA 99.',
+  },
+];
+
+// "Portafolio de Soluciones" — products and spare parts sourced through our supplier network.
+export const DEFAULT_PRODUCTS: string[] = [
+  'Reguladores de vacío',
+  'Reguladores de presión',
+  'Eyectores',
+  'Trampas',
+  'Blender / mezcladores',
+  'Flujómetros de O₂ y aire',
+  'Tomas con flujómetro',
+  'Tomas para gases medicinales',
+  'Monitores de oxígeno',
+  'Acoples y conectores',
+  'Mangueras para gases medicinales',
+  'Repuestos y refacciones',
 ];
 
 // Root-relative rather than bare fragments: Header and Footer also render on /404 and
 // /privacidad, where a plain "#servicios" points at an anchor that isn't on the page.
 // From the home page these still resolve as same-document fragment navigation.
+// "Inicio" and "Contacto" are intentionally omitted: the logo already links home and the
+// header's "Contáctenos" button covers contact, so listing them again is redundant.
 export const NAV_LINKS = [
-  { label: 'Inicio', href: '/#inicio' },
   { label: 'Nosotros', href: '/#nosotros' },
-  { label: 'Servicios', href: '/#servicios' },
-  { label: 'Certificaciones', href: '/#certificaciones' },
-  { label: 'Proyectos', href: '/#proyectos' },
-  { label: 'Contacto', href: '/#contacto' },
+  { label: 'Servicios', href: '/servicios' },
+  { label: 'Cursos ASSE 6000', href: '/cursos' },
+  { label: 'Trayectoria', href: '/trayectoria' },
 ];

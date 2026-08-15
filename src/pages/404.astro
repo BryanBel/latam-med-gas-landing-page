@@ -4,16 +4,12 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import NavyTexture from '../components/NavyTexture.astro';
 import SectionWedge from '../components/SectionWedge.astro';
-import { DEFAULT_SITE_SETTINGS } from '../lib/content';
 
 // No Sanity query here on purpose: an error page should render even when the CMS is
 // unreachable, and Header/Footer fall back to the seed settings and the local mark.
 ---
 
-<Layout
-  title={`Página no encontrada - ${DEFAULT_SITE_SETTINGS.siteName}`}
-  description="La página que busca no existe o fue movida."
->
+<Layout title="Página no encontrada" description="La página que busca no existe o fue movida.">
   <Header settings={null} />
   <main id="contenido">
     {

@@ -1,0 +1,15 @@
+{
+  "name": "Latam Med Gas USA LLC",
+  "short_name": "Latam Med Gas",
+  "description": "Inspección, mantenimiento, diseño, asesoría y verificación de sistemas de gases medicinales.",
+  "lang": "es",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0a0a89",
+  "background_color": "#ffffff",
+  "icons": [
+    { "src": "/favicon-32.png", "type": "image/png", "sizes": "32x32" },
+    { "src": "/apple-touch-icon.png", "type": "image/png", "sizes": "180x180" },
+    { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512" }
+  ]
+}

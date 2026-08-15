@@ -1,0 +1,114 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PageHero from '../components/PageHero.astro';
+import ContactCta from '../components/ContactCta.astro';
+import { getSiteSettings, getServices } from '../lib/sanityQueries';
+import { DEFAULT_SERVICES, DEFAULT_PRODUCTS } from '../lib/content';
+import { resolveServiceIcon, accentFor } from '../lib/icons';
+import { Check } from 'lucide-react';
+
+let settings = null;
+let services: Awaited<ReturnType<typeof getServices>> = [];
+try {
+  [settings, services] = await Promise.all([getSiteSettings(), getServices()]);
+} catch (err) {
+  console.warn('[Sanity] falling back to seed content:', err);
+}
+const items = services.length > 0 ? services : DEFAULT_SERVICES;
+
+const graph = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://latammedgas.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Servicios', item: 'https://latammedgas.com/servicios' },
+    ],
+  },
+];
+---
+
+<Layout
+  title="Servicios en sistemas de gases medicinales"
+  description="Verificación, inspección, diseño, asesoría, capacitación ASSE 6000 y comercialización de productos para sistemas de gases medicinales en hospitales y clínicas."
+  settings={settings}
+  graph={graph}
+>
+  <Header settings={settings} />
+  <main id="contenido">
+    <PageHero
+      eyebrow="Servicios"
+      title="Todo lo que su institución necesita en gases medicinales"
+      subtitle="Desde el diseño hasta la verificación final, cubrimos cada etapa bajo la norma ASSE serie 6000 y el código NFPA 99."
+    />
+
+    <section class="bg-white">
+      <div class="mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
+        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {
+            items.map((s, i) => {
+              const Icon = resolveServiceIcon(s.icon);
+              const accent = accentFor(i);
+              return (
+                <div
+                  data-reveal
+                  data-reveal-delay={(i % 3) * 70}
+                  class="group hover:ring-accent-200 rounded-2xl bg-white p-7 ring-1 ring-slate-200 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-slate-200/60 motion-safe:hover:-translate-y-0.5"
+                >
+                  <div
+                    class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl transition-transform motion-safe:group-hover:scale-105"
+                    style={{ backgroundColor: `${accent}1a` }}
+                    aria-hidden="true"
+                  >
+                    <Icon size={22} color={accent} strokeWidth={2} aria-hidden="true" />
+                  </div>
+                  <h2 class="font-display text-ink mb-2 text-lg font-bold text-balance">{s.title}</h2>
+                  <p class="text-sm leading-relaxed text-slate-600">{s.description}</p>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="border-t border-slate-200 bg-slate-50">
+      <div class="mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
+        <div class="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+          <div data-reveal>
+            <div class="text-accent mb-3 text-xs font-semibold tracking-[0.08em] uppercase">
+              Portafolio de Soluciones
+            </div>
+            <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
+              Productos y repuestos para gases medicinales
+            </h2>
+            <p class="mt-4 text-base leading-relaxed text-slate-600">
+              Nuestros años en el mercado nos han permitido construir lazos con fabricantes de productos y repuestos.
+              Elaboramos cotizaciones según el proyecto o los requerimientos específicos de cada cliente.
+            </p>
+          </div>
+          <ul class="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2" data-reveal>
+            {
+              DEFAULT_PRODUCTS.map((p) => (
+                <li class="flex items-start gap-3">
+                  <span
+                    class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md"
+                    style={{ backgroundColor: '#15803d1a' }}
+                    aria-hidden="true"
+                  >
+                    <Check size={14} color="#15803d" strokeWidth={2.5} aria-hidden="true" />
+                  </span>
+                  <span class="text-sm leading-relaxed text-slate-700">{p}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <ContactCta />
+    <Footer settings={settings} />
+  </main>
+</Layout>

@@ -1,0 +1,36 @@
+---
+// Misión / Visión pair. Light cards, sits inside the Nosotros section.
+import { DEFAULT_MISSION_VISION } from '../lib/content';
+import { Target, Eye } from 'lucide-react';
+
+interface Props {
+  mission?: string;
+  vision?: string;
+}
+const { mission = DEFAULT_MISSION_VISION.mission, vision = DEFAULT_MISSION_VISION.vision } = Astro.props;
+
+const CARDS = [
+  { label: 'Misión', body: mission, Icon: Target, accent: '#15803d' },
+  { label: 'Visión', body: vision, Icon: Eye, accent: '#2563eb' },
+];
+---
+
+<div class="grid gap-5 md:grid-cols-2">
+  {
+    CARDS.map(({ label, body, Icon, accent }) => (
+      <div data-reveal class="rounded-2xl bg-white p-7 ring-1 ring-slate-200">
+        <div class="mb-4 flex items-center gap-3">
+          <span
+            class="flex h-11 w-11 items-center justify-center rounded-xl"
+            style={{ backgroundColor: `${accent}1a` }}
+            aria-hidden="true"
+          >
+            <Icon size={20} color={accent} strokeWidth={2} aria-hidden="true" />
+          </span>
+          <h3 class="font-display text-ink text-xl font-bold">{label}</h3>
+        </div>
+        <p class="text-sm leading-relaxed text-slate-600">{body}</p>
+      </div>
+    ))
+  }
+</div>

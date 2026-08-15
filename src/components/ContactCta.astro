@@ -1,0 +1,31 @@
+---
+// Closing call-to-action band for interior pages. Navy, links back to the home contact form.
+import { ArrowRight } from 'lucide-react';
+
+interface Props {
+  title?: string;
+  text?: string;
+}
+const {
+  title = '¿Listo para asegurar su sistema de gases medicinales?',
+  text = 'Cuéntenos sobre su institución y le responderemos con la información técnica y comercial que necesite.',
+} = Astro.props;
+---
+
+<section class="bg-accent-700 relative overflow-hidden">
+  <div class="relative mx-auto w-full max-w-7xl px-5 py-16 text-center md:px-9 md:py-20" data-reveal>
+    <h2
+      class="font-display mx-auto max-w-2xl text-2xl font-extrabold tracking-tight text-balance text-white md:text-3xl"
+    >
+      {title}
+    </h2>
+    <p class="mx-auto mt-4 max-w-[52ch] text-base text-white/75">{text}</p>
+    <a
+      href="/#contacto"
+      class="press-feedback focus-visible:ring-accent-200 mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-[var(--color-accent-700)] shadow-lg shadow-black/20 transition-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-accent-700)] focus-visible:outline-none motion-safe:hover:-translate-y-0.5 [&_svg]:transition-transform [&_svg]:duration-200 hover:[&_svg]:translate-x-1 motion-reduce:[&_svg]:transform-none"
+    >
+      Contáctenos
+      <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
+    </a>
+  </div>
+</section>

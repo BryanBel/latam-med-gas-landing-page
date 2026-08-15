@@ -4,6 +4,7 @@ import type { AboutSection } from '../lib/sanityQueries';
 import { DEFAULT_ABOUT } from '../lib/content';
 import aboutCorridor from '../assets/photos/about-corridor.png';
 import SectionWedge from './SectionWedge.astro';
+import MissionVision from './MissionVision.astro';
 import { accentFor } from '../lib/icons';
 import { ShieldCheck, Globe2, Award, BadgeCheck } from 'lucide-react';
 
@@ -41,7 +42,7 @@ const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
 
   <div class="relative mx-auto w-full max-w-7xl px-5 pt-24 pb-20 md:px-9 md:pt-28 md:pb-24">
     <div class="grid items-center gap-12 lg:grid-cols-2">
-      <div class="relative order-2 lg:order-1">
+      <div class="relative order-2 lg:order-1" data-reveal>
         <div class="rotate-[2deg] rounded-2xl bg-white p-3 shadow-xl ring-1 shadow-slate-200/70 ring-slate-100">
           <SanityImage
             image={about?.image}
@@ -60,7 +61,7 @@ const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
         </div>
       </div>
 
-      <div class="order-1 lg:order-2">
+      <div class="order-1 lg:order-2" data-reveal>
         <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
           {heading}
         </h2>
@@ -93,6 +94,10 @@ const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
           }
         </ul>
       </div>
+    </div>
+
+    <div class="mt-16 md:mt-20">
+      <MissionVision />
     </div>
   </div>
 </section>
