@@ -1,0 +1,150 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PageHero from '../components/PageHero.astro';
+import ContactForm from '../components/ContactForm';
+import { getSiteSettings } from '../lib/sanityQueries';
+import { DEFAULT_SITE_SETTINGS } from '../lib/content';
+import { accentFor } from '../lib/icons';
+import { Phone, Mail, MapPin, ExternalLink } from 'lucide-react';
+
+let settings = null;
+try {
+  settings = await getSiteSettings();
+} catch (err) {
+  console.warn('[Sanity] falling back to seed content:', err);
+}
+
+const phone = settings?.phone ?? DEFAULT_SITE_SETTINGS.phone;
+const email = settings?.email ?? DEFAULT_SITE_SETTINGS.email;
+const address = settings?.address ?? DEFAULT_SITE_SETTINGS.address;
+
+// The client gave two numbers in one field; split so each is its own tappable tel: link.
+const phoneLinks = phone
+  .split('/')
+  .map((p) => p.trim())
+  .filter(Boolean)
+  .map((p) => ({ href: `tel:${p.replace(/[^+\d]/g, '')}`, text: p }));
+
+const CONTACT_ROWS = [
+  { label: 'Teléfono', Icon: Phone, links: phoneLinks, text: '' },
+  { label: 'Correo', Icon: Mail, links: [{ href: `mailto:${email}`, text: email }], text: '' },
+  { label: 'Dirección', Icon: MapPin, links: [], text: address },
+];
+const contactLinkClass =
+  'hover:text-accent focus-visible:ring-accent rounded-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
+
+// Static "map" — a link out to Google Maps rather than an embedded iframe, so no third-party
+// cookies load (keeps the cookieless / no-consent-banner stance).
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+
+const graph = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://latammedgas.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Contacto', item: 'https://latammedgas.com/contacto' },
+    ],
+  },
+  { '@type': 'ContactPage', name: 'Contacto — Latam Med Gas USA LLC', url: 'https://latammedgas.com/contacto' },
+];
+---
+
+<Layout
+  title="Contacto"
+  description="Contacte a Latam Med Gas USA LLC: solicite información técnica o una cotización para la verificación, inspección o diseño de su sistema de gases medicinales."
+  settings={settings}
+  graph={graph}
+>
+  <Header settings={settings} />
+  <main id="contenido">
+    <PageHero
+      eyebrow="Contacto"
+      title="Conversemos sobre su proyecto"
+      subtitle="Escríbanos y le responderemos con la información técnica y comercial que necesite."
+      glow="#2563eb33"
+    />
+
+    <section class="bg-white">
+      <div class="mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
+        <div class="grid gap-14 lg:grid-cols-[0.9fr_1.1fr]">
+          <div data-reveal>
+            <dl class="space-y-5">
+              {
+                CONTACT_ROWS.map(({ label, Icon, links, text }, i) => {
+                  const accent = accentFor(i);
+                  return (
+                    <div class="flex items-start gap-3.5">
+                      <span
+                        class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
+                        style={{ backgroundColor: `${accent}1a` }}
+                        aria-hidden="true"
+                      >
+                        <Icon size={18} color={accent} strokeWidth={2} aria-hidden="true" />
+                      </span>
+                      <div class="min-w-0">
+                        <dt class="text-2xs mb-0.5 font-semibold tracking-[0.08em] text-slate-500 uppercase">
+                          {label}
+                        </dt>
+                        <dd class="text-ink text-sm leading-relaxed font-medium break-words">
+                          {links.length > 0 ? (
+                            <span class="flex flex-col gap-0.5">
+                              {links.map((l) => (
+                                <a href={l.href} class={contactLinkClass}>
+                                  {l.text}
+                                </a>
+                              ))}
+                            </span>
+                          ) : (
+                            text
+                          )}
+                        </dd>
+                      </div>
+                    </div>
+                  );
+                })
+              }
+            </dl>
+
+            {/* Location — static card + link out (no embedded map, keeps it cookieless). */}
+            <div class="mt-8 overflow-hidden rounded-2xl ring-1 ring-slate-200" data-reveal>
+              <div
+                class="from-accent-700 via-accent to-accent-500 relative flex h-40 items-center justify-center bg-gradient-to-br"
+              >
+                <div
+                  class="pointer-events-none absolute inset-0 opacity-[0.15]"
+                  aria-hidden="true"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle, #ffffff 1.4px, transparent 1.4px)',
+                    backgroundSize: '22px 22px',
+                  }}
+                >
+                </div>
+                <MapPin size={40} color="#ffffff" strokeWidth={1.5} aria-hidden="true" />
+              </div>
+              <div class="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+                <p class="text-sm leading-relaxed text-slate-600">{address}</p>
+                <a
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="press-feedback bg-accent hover:bg-accent-600 focus-visible:ring-accent inline-flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                >
+                  Abrir en Google Maps
+                  <ExternalLink size={15} strokeWidth={2.5} aria-hidden="true" />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-2xl bg-white p-7 ring-1 ring-slate-200 md:p-9" data-reveal>
+            <ContactForm client:visible />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <Footer settings={settings} />
+  </main>
+</Layout>

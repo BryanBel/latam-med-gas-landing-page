@@ -1,0 +1,145 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PageHero from '../components/PageHero.astro';
+import MissionVision from '../components/MissionVision.astro';
+import ContactCta from '../components/ContactCta.astro';
+import SanityImage from '../components/SanityImage.astro';
+import aboutCorridor from '../assets/photos/about-corridor.png';
+import { getSiteSettings, getAboutSection, getCertifications } from '../lib/sanityQueries';
+import { DEFAULT_ABOUT, DEFAULT_CERTIFICATIONS } from '../lib/content';
+import { accentFor } from '../lib/icons';
+import { ShieldCheck, Globe2, Award, BadgeCheck } from 'lucide-react';
+
+let settings = null;
+let about = null;
+let certifications: Awaited<ReturnType<typeof getCertifications>> = [];
+try {
+  [settings, about, certifications] = await Promise.all([getSiteSettings(), getAboutSection(), getCertifications()]);
+} catch (err) {
+  console.warn('[Sanity] falling back to seed content:', err);
+}
+
+const heading = about?.heading ?? DEFAULT_ABOUT.heading;
+const body = about?.body ?? DEFAULT_ABOUT.body;
+const highlights = about?.highlights?.length ? about.highlights : DEFAULT_ABOUT.highlights;
+const certs = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATIONS;
+const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
+
+const graph = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://latammedgas.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Nosotros', item: 'https://latammedgas.com/nosotros' },
+    ],
+  },
+  { '@type': 'AboutPage', name: 'Nosotros — Latam Med Gas USA LLC', url: 'https://latammedgas.com/nosotros' },
+];
+---
+
+<Layout
+  title="Nosotros"
+  description="Latam Med Gas USA LLC: especialistas en inspección, mantenimiento, diseño, asesoría y verificación de sistemas de gases medicinales bajo ASSE serie 6000 y NFPA 99."
+  settings={settings}
+  graph={graph}
+>
+  <Header settings={settings} />
+  <main id="contenido">
+    <PageHero
+      eyebrow="Nosotros"
+      title={heading}
+      subtitle="Acompañamos a hospitales y centros de salud en Latinoamérica bajo la norma ASSE serie 6000 y el código NFPA 99."
+    />
+
+    <section class="bg-white">
+      <div class="mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
+        <div class="grid items-center gap-12 lg:grid-cols-2">
+          <div class="relative order-2 lg:order-1" data-reveal>
+            <div class="rotate-[2deg] rounded-2xl bg-white p-3 shadow-xl ring-1 shadow-slate-200/70 ring-slate-100">
+              <SanityImage
+                image={about?.image}
+                alt="Pasillo hospitalario con red de gases medicinales instalada"
+                caption="Latam Med Gas"
+                aspect="aspect-[4/3]"
+                class="rounded-xl"
+                fallbackSrc={aboutCorridor.src}
+              />
+            </div>
+            <div
+              class="bg-accent-700 absolute -bottom-5 -left-4 hidden -rotate-3 items-center gap-2 rounded-xl px-4 py-3 shadow-lg sm:flex"
+            >
+              <BadgeCheck size={18} color="#ffffff" strokeWidth={2} aria-hidden="true" />
+              <span class="font-display text-xs font-bold text-white" translate="no">ASSE · NFPA&nbsp;99</span>
+            </div>
+          </div>
+
+          <div class="order-1 lg:order-2" data-reveal>
+            <div class="text-accent mb-3 text-xs font-semibold tracking-[0.08em] uppercase">Quiénes somos</div>
+            <p class="text-lg leading-relaxed text-slate-700">{body}</p>
+            <ul class="mt-8 divide-y divide-slate-200 border-t border-slate-200">
+              {
+                highlights.map((h, i) => {
+                  const Icon = PILLAR_ICONS[i % PILLAR_ICONS.length];
+                  const accent = accentFor(i);
+                  return (
+                    <li class="flex items-start gap-3.5 py-4">
+                      <div
+                        class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                        style={{ backgroundColor: `${accent}1a` }}
+                        aria-hidden="true"
+                      >
+                        <Icon size={18} color={accent} strokeWidth={2} aria-hidden="true" />
+                      </div>
+                      <p class="min-w-0 text-sm leading-relaxed text-slate-600">{h}</p>
+                    </li>
+                  );
+                })
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-t border-slate-200 bg-slate-50">
+      <div class="mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
+        <h2
+          class="font-display text-ink mb-10 text-2xl font-extrabold tracking-tight text-balance md:text-3xl"
+          data-reveal
+        >
+          Misión y Visión
+        </h2>
+        <MissionVision />
+      </div>
+    </section>
+
+    <section class="border-t border-slate-200 bg-white">
+      <div class="mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
+        <h2
+          class="font-display text-ink mb-10 max-w-2xl text-2xl font-extrabold tracking-tight text-balance md:text-3xl"
+          data-reveal
+        >
+          Normativas y estándares
+        </h2>
+        <div class="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          {
+            certs.map((c, i) => (
+              <div data-reveal data-reveal-delay={(i % 4) * 70}>
+                <div class="mb-4 h-[3px] w-12" style={{ backgroundColor: accentFor(i) }} aria-hidden="true" />
+                <h3 class="font-display text-ink mb-2 text-base font-bold" translate="no">
+                  {c.name}
+                </h3>
+                <p class="text-xs leading-relaxed text-slate-600">{c.description}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <ContactCta />
+    <Footer settings={settings} />
+  </main>
+</Layout>

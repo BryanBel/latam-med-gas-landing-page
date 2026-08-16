@@ -9,10 +9,12 @@ import { ArrowRight } from 'lucide-react';
 interface Props {
   services: Service[];
   moreHref?: string;
+  limit?: number;
 }
 
-const { services, moreHref } = Astro.props;
-const items = services.length > 0 ? services : DEFAULT_SERVICES;
+const { services, moreHref, limit } = Astro.props;
+const source = services.length > 0 ? services : DEFAULT_SERVICES;
+const items = limit ? source.slice(0, limit) : source;
 ---
 
 {

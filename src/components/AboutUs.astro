@@ -1,12 +1,12 @@
 ---
+// Home "Nosotros" teaser — a taste of the company that links to the full /nosotros page.
+// The full copy, highlights, misión/visión and normativas live on /nosotros.
 import SanityImage from './SanityImage.astro';
 import type { AboutSection } from '../lib/sanityQueries';
 import { DEFAULT_ABOUT } from '../lib/content';
 import aboutCorridor from '../assets/photos/about-corridor.png';
 import SectionWedge from './SectionWedge.astro';
-import MissionVision from './MissionVision.astro';
-import { accentFor } from '../lib/icons';
-import { ShieldCheck, Globe2, Award, BadgeCheck } from 'lucide-react';
+import { BadgeCheck, ArrowRight } from 'lucide-react';
 
 interface Props {
   about: AboutSection | null;
@@ -15,16 +15,9 @@ interface Props {
 const { about } = Astro.props;
 const heading = about?.heading ?? DEFAULT_ABOUT.heading;
 const body = about?.body ?? DEFAULT_ABOUT.body;
-const highlights = about?.highlights?.length ? about.highlights : DEFAULT_ABOUT.highlights;
-
-const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
 ---
 
 <section id="nosotros" class="relative overflow-hidden">
-  {
-    /* Inicio's diagonal continuing below the seam, then the same cut again where Servicios
-      starts. Both navy halves are textured so the dot field carries through the wedge. */
-  }
   <SectionWedge edge="top" fill="bg-accent" textured />
   <SectionWedge edge="bottom" fill="bg-accent-600" textured />
   <div
@@ -62,42 +55,19 @@ const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
       </div>
 
       <div class="order-1 lg:order-2" data-reveal>
+        <div class="text-accent mb-3 text-xs font-semibold tracking-[0.08em] uppercase">Nosotros</div>
         <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
           {heading}
         </h2>
         <p class="mt-5 text-base leading-relaxed text-slate-600">{body}</p>
-
-        {
-          /* Was a band of three equal cards below the section, which is the textbook
-            "three identical feature cards" block. These are supporting facts about the
-            company, so they belong with the company copy: one column, hairline-separated,
-            no card chrome. */
-        }
-        <ul class="mt-8 divide-y divide-slate-200 border-t border-slate-200">
-          {
-            highlights.map((h, i) => {
-              const Icon = PILLAR_ICONS[i % PILLAR_ICONS.length];
-              const accent = accentFor(i);
-              return (
-                <li class="flex items-start gap-3.5 py-4">
-                  <div
-                    class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                    style={{ backgroundColor: `${accent}1a` }}
-                    aria-hidden="true"
-                  >
-                    <Icon size={18} color={accent} strokeWidth={2} aria-hidden="true" />
-                  </div>
-                  <p class="min-w-0 text-sm leading-relaxed text-slate-600">{h}</p>
-                </li>
-              );
-            })
-          }
-        </ul>
+        <a
+          href="/nosotros"
+          class="press-feedback bg-accent hover:bg-accent-600 focus-visible:ring-accent mt-8 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none [&_svg]:transition-transform [&_svg]:duration-200 hover:[&_svg]:translate-x-1 motion-reduce:[&_svg]:transform-none"
+        >
+          Conócenos
+          <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
+        </a>
       </div>
-    </div>
-
-    <div class="mt-16 md:mt-20">
-      <MissionVision />
     </div>
   </div>
 </section>

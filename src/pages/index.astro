@@ -6,7 +6,7 @@ import AboutUs from '../components/AboutUs.astro';
 import Services from '../components/Services.astro';
 import Certifications from '../components/Certifications.astro';
 import Projects from '../components/Projects.astro';
-import ContactSection from '../components/ContactSection.astro';
+import ContactCta from '../components/ContactCta.astro';
 import Footer from '../components/Footer.astro';
 import {
   getSiteSettings,
@@ -47,15 +47,17 @@ try {
   settings={settings}
 >
   <Header settings={settings} />
-  <main id="contenido" class="screens">
+  {
+    /* Lean summary: hero + teasers that route to their own pages. Not `.screens` (full-screen) —
+     the teasers are natural height so the home reads as a concise overview. */
+  }
+  <main id="contenido">
     <Hero hero={hero} />
     <AboutUs about={about} />
-    <Services services={services} moreHref="/servicios" />
+    <Services services={services} limit={6} moreHref="/servicios" />
     <Certifications certifications={certifications} />
     <Projects projects={projects} limit={4} moreHref="/trayectoria" />
-    <div class="contact-screen">
-      <ContactSection settings={settings} />
-      <Footer settings={settings} />
-    </div>
+    <ContactCta tone="light" />
+    <Footer settings={settings} />
   </main>
 </Layout>

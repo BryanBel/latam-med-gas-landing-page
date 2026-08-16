@@ -21,7 +21,7 @@ export const DEFAULT_HERO = {
   subheading:
     'Inspección, mantenimiento, diseño, asesoría y verificación de sistemas de gases medicinales para hospitales y centros de salud en Latinoamérica.',
   ctaLabel: 'Solicitar cotización',
-  ctaLink: '#contacto',
+  ctaLink: '/contacto',
 };
 
 export const DEFAULT_ABOUT = {
@@ -337,10 +337,12 @@ export const DEFAULT_PRODUCTS: string[] = [
 // Root-relative rather than bare fragments: Header and Footer also render on /404 and
 // /privacidad, where a plain "#servicios" points at an anchor that isn't on the page.
 // From the home page these still resolve as same-document fragment navigation.
-// "Inicio" and "Contacto" are intentionally omitted: the logo already links home and the
-// header's "Contáctenos" button covers contact, so listing them again is redundant.
+// Multi-page nav: each area is its own page. Inicio is an explicit link (not just the logo)
+// now that it's a true multi-page site; Contáctenos stays a button in the header pointing at
+// the /contacto page.
 export const NAV_LINKS = [
-  { label: 'Nosotros', href: '/#nosotros' },
+  { label: 'Inicio', href: '/' },
+  { label: 'Nosotros', href: '/nosotros' },
   { label: 'Servicios', href: '/servicios' },
   { label: 'Cursos ASSE 6000', href: '/cursos' },
   { label: 'Trayectoria', href: '/trayectoria' },
