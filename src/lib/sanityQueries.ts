@@ -14,6 +14,7 @@ export interface SiteSettings {
   phone?: string;
   email?: string;
   address?: string;
+  products?: string[];
   socialLinks?: { platform: string; url: string }[];
 }
 
@@ -32,6 +33,8 @@ export interface AboutSection {
   body?: string;
   highlights?: string[];
   image?: SanityImageRef;
+  mission?: string;
+  vision?: string;
 }
 
 export interface Service {
@@ -39,6 +42,13 @@ export interface Service {
   title: string;
   description?: string;
   icon?: string;
+  order?: number;
+}
+
+export interface Course {
+  code: string;
+  title: string;
+  description?: string;
   order?: number;
 }
 
@@ -86,6 +96,10 @@ export async function getAboutSection(): Promise<AboutSection | null> {
 
 export async function getServices(): Promise<Service[]> {
   return sanityClient.fetch('*[_type == "service"] | order(order asc)');
+}
+
+export async function getCourses(): Promise<Course[]> {
+  return sanityClient.fetch('*[_type == "course"] | order(order asc)');
 }
 
 export async function getCertifications(): Promise<Certification[]> {

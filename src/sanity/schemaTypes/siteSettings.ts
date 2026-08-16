@@ -21,6 +21,13 @@ export default defineType({
     defineField({ name: 'email', title: 'Correo', type: 'string' }),
     defineField({ name: 'address', title: 'Dirección', type: 'text', rows: 2 }),
     defineField({
+      name: 'products',
+      title: 'Portafolio de productos',
+      description: 'Lista de productos y repuestos que aparece en la página de Servicios.',
+      type: 'array',
+      of: [{ type: 'string' }],
+    }),
+    defineField({
       name: 'socialLinks',
       title: 'Redes sociales',
       type: 'array',

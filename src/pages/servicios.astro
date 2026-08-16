@@ -17,6 +17,7 @@ try {
   console.warn('[Sanity] falling back to seed content:', err);
 }
 const items = services.length > 0 ? services : DEFAULT_SERVICES;
+const products = settings?.products?.length ? settings.products : DEFAULT_PRODUCTS;
 
 const graph = [
   {
@@ -91,7 +92,7 @@ const graph = [
           </div>
           <ul class="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2" data-reveal>
             {
-              DEFAULT_PRODUCTS.map((p) => (
+              products.map((p) => (
                 <li class="flex items-start gap-3">
                   <span
                     class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md"

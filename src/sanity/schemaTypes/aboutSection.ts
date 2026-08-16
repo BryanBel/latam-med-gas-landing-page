@@ -15,6 +15,8 @@ export default defineType({
       of: [{ type: 'string' }],
     }),
     defineField({ name: 'image', title: 'Imagen', type: 'image', options: { hotspot: true } }),
+    defineField({ name: 'mission', title: 'Misión', type: 'text', rows: 4 }),
+    defineField({ name: 'vision', title: 'Visión', type: 'text', rows: 4 }),
   ],
   preview: {
     select: { title: 'heading' },
