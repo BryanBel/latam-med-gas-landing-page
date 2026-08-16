@@ -62,17 +62,24 @@ function initCounters(): void {
 }
 
 function initTilt(): void {
-  if (reduced() || matchMedia('(pointer: coarse)').matches) return;
+  // No media-query gate: hybrid/touchscreen Windows laptops misreport `pointer`/`hover`, which
+  // was disabling the effect even with a mouse. Bind always and just ignore touch per-event —
+  // a real mouse fires pointerType "mouse"/"pen", a finger fires "touch".
+  if (reduced()) return;
   document.querySelectorAll<HTMLElement>('[data-tilt]:not([data-tilt-bound])').forEach((el) => {
     el.dataset.tiltBound = '1';
-    const max = 5;
+    el.style.willChange = 'transform';
+    const max = 10;
     el.addEventListener('pointermove', (ev) => {
+      if (ev.pointerType === 'touch') return;
       const r = el.getBoundingClientRect();
       const rx = (((ev.clientY - r.top) / r.height - 0.5) * -2 * max).toFixed(2);
       const ry = (((ev.clientX - r.left) / r.width - 0.5) * 2 * max).toFixed(2);
-      el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      el.style.transition = 'transform 60ms ease-out';
+      el.style.transform = `perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.03)`;
     });
     el.addEventListener('pointerleave', () => {
+      el.style.transition = 'transform 350ms ease';
       el.style.transform = '';
     });
   });
@@ -121,7 +128,12 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-document.addEventListener('astro:page-load', () => {
+function boot(): void {
   initPage();
   updateProgress();
-});
+}
+
+// Run for the initial paint regardless of event timing, then again on every navigation.
+if (document.readyState !== 'loading') boot();
+else document.addEventListener('DOMContentLoaded', boot);
+document.addEventListener('astro:page-load', boot);
