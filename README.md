@@ -94,6 +94,6 @@ Each insert fires a Supabase Database Webhook into the [`notify-lead`](supabase/
 ## Deployment
 
 1. **Cloudflare Workers** — the repo is connected; build command `pnpm build`, output `dist`. Push to `master` to deploy. `wrangler.jsonc` sets `not_found_handling: "404-page"`, without which unknown paths return an empty 404 instead of the styled page.
-2. **Domain** — done. Nameservers point at Cloudflare and Custom Domains are attached for the apex and `www`. See [`CUTOVER.md`](CUTOVER.md) for the runbook and the traps it surfaced.
+2. **Domain** — done. Nameservers point at Cloudflare and Custom Domains are attached for the apex and `www`. See [`docs/guides/cutover.md`](docs/guides/cutover.md) for the runbook and the traps it surfaced.
 3. **Environment variables** — set the same keys from `.env` in the Cloudflare project settings, including `PUBLIC_CF_BEACON_TOKEN`. A missing beacon token builds without analytics and without an error.
 4. **Lead notifications** — the Supabase Edge Function must be deployed with `--no-verify-jwt`, or the Database Webhook is rejected before reaching it. See [`supabase/functions/notify-lead/README.md`](supabase/functions/notify-lead/README.md).

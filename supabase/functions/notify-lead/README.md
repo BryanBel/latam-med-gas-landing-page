@@ -2,7 +2,7 @@
 
 Sends an email to `bryanbelandriav@gmail.com` every time someone submits the contact
 form (a new row lands in `public.leads`). Interim recipient until the client has a real
-company inbox — see `BRANDING.md` for the address/email situation.
+company inbox — see `docs/guides/branding.md` for the address/email situation.
 
 ## One-time setup
 
@@ -11,7 +11,7 @@ company inbox — see `BRANDING.md` for the address/email situation.
    domain is verified — fine for now, no domain to verify yet). Grab an API key from
    Resend → API Keys.
 
-2. **Deploy the function** — this must happen *before* the webhook below, or the
+2. **Deploy the function** — this must happen _before_ the webhook below, or the
    dashboard's edge function dropdown shows "No edge functions created yet":
 
    ```
@@ -37,7 +37,7 @@ company inbox — see `BRANDING.md` for the address/email situation.
    npx supabase secrets set LEAD_WEBHOOK_SECRET=<any random string you make up>
    ```
 
-4. **Wire the trigger** — Dashboard → **Integrations → Database Webhooks** (it is *not*
+4. **Wire the trigger** — Dashboard → **Integrations → Database Webhooks** (it is _not_
    under Database → Triggers, which is raw Postgres triggers, and on this project it is not
    under Database → Webhooks either). Create a new hook:
    - Table: `public.leads`

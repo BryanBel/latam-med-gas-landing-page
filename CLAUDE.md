@@ -2,7 +2,7 @@
 
 Marketing site for Latam Med Gas USA LLC. **Live in production at https://latammedgas.com** since 2026-08-14. Nothing here is a prototype: real client, real traffic, and the domain carries the company's working email.
 
-Read `ROADMAP.md` for per-task status and `CUTOVER.md` for how the DNS migration was done. `BRANDING.md` covers the visual decisions.
+Read `docs/internal/roadmap.md` for per-task status and `docs/guides/cutover.md` for how the DNS migration was done. `docs/guides/branding.md` covers the visual decisions.
 
 ---
 
