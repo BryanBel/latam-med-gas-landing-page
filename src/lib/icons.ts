@@ -5,6 +5,7 @@ import {
   Headphones,
   ShieldCheck,
   GraduationCap,
+  HardHat,
   Award,
   Package,
   type LucideIcon,
@@ -18,6 +19,7 @@ const SERVICE_ICONS: Record<string, LucideIcon> = {
   headphones: Headphones,
   'shield-check': ShieldCheck,
   'graduation-cap': GraduationCap,
+  'hard-hat': HardHat,
   award: Award,
   package: Package,
 };

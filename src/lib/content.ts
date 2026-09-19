@@ -7,7 +7,7 @@ export const DEFAULT_SITE_SETTINGS = {
   siteName: 'Latam Med Gas USA LLC',
   // Prose rather than a dot-separated list: middle dots are rationed to one per line, and
   // four of them in a row reads as decoration rather than punctuation.
-  tagline: 'Inspección, mantenimiento, diseño, asesoría y verificación de sistemas de gases medicinales',
+  tagline: 'Diseño, instalación, inspección, mantenimiento, asesoría y verificación de sistemas de gases medicinales',
   // Contact info provided directly by the client (2026-08-11) — confirmed, not placeholder.
   phone: '+58 414-2349582 / +57 318 3588075',
   email: 'LatamMedGasUSA@gmail.com',
@@ -17,20 +17,20 @@ export const DEFAULT_SITE_SETTINGS = {
 export const DEFAULT_HERO = {
   // One middle dot, not two. "Gases Medicinales" was redundant with the headline below it.
   eyebrow: 'ASSE Serie 6000 · NFPA 99',
-  heading: 'Sistemas de gases medicinales seguros, certificados y verificados',
+  heading: 'Sistemas de gases medicinales seguros, verificados y conformes a la norma',
   subheading:
-    'Inspección, mantenimiento, diseño, asesoría y verificación de sistemas de gases medicinales para hospitales y centros de salud en Latinoamérica.',
+    'Diseño, instalación, inspección, mantenimiento, asesoría y verificación de sistemas de gases medicinales para hospitales y centros de salud en Latinoamérica.',
   ctaLabel: 'Solicitar cotización',
   ctaLink: '/contacto',
 };
 
 export const DEFAULT_ABOUT = {
   eyebrow: 'Sobre Nosotros',
-  heading: 'Especialistas en gases medicinales para instituciones de salud',
-  body: 'Latam Med Gas USA LLC es una empresa con sede en Miami, Florida, dedicada a la inspección, mantenimiento, diseño, asesoría y verificación de sistemas de gases medicinales. Acompañamos a hospitales y centros de salud en Latinoamérica en cada etapa de sus proyectos, bajo los estándares de la norma ASSE serie 6000 y el código NFPA 99, con un programa de certificación profesional en convenio con CONECOTEC y NITC.',
+  heading: 'Especialistas en sistemas de gases medicinales para instituciones de salud',
+  body: 'Latam Med Gas USA LLC es una empresa con sede en Miami, Florida, dedicada a la inspección, mantenimiento, diseño, asesoría y verificación de sistemas de gases medicinales. Acompañamos a hospitales y centros de salud en Latinoamérica en cada etapa de sus proyectos, bajo los estándares de la norma ASSE serie 6000 y el código NFPA 99, con un programa de capacitación profesional en convenio con CONECOTEC y NITC, entes acreditados para certificar.',
   highlights: [
     'Cobertura en instituciones de salud públicas y privadas en Latinoamérica',
-    'Capacitación y certificación bajo la norma ASSE serie 6000',
+    'Capacitación bajo la norma ASSE serie 6000, con certificación a través de entes acreditados',
     'Venta de equipos de prueba para instalación ASSE 6010 y verificación ASSE 6030',
   ],
 };
@@ -55,6 +55,13 @@ export const DEFAULT_SERVICES: Service[] = [
     icon: 'ruler',
   },
   {
+    _id: 'seed-instalacion',
+    title: 'Instalación',
+    description:
+      'Instalación de redes y centrales de gases medicinales bajo los perfiles de la norma ASSE 6010 y el código NFPA 99.',
+    icon: 'hard-hat',
+  },
+  {
     _id: 'seed-asesoria',
     title: 'Asesoría',
     description: 'Acompañamiento técnico y normativo en cada etapa del proyecto de gases medicinales.',
@@ -75,9 +82,10 @@ export const DEFAULT_SERVICES: Service[] = [
     icon: 'graduation-cap',
   },
   {
-    _id: 'seed-certificacion',
-    title: 'Certificación Profesional',
-    description: 'Programa de certificación profesional en convenio con CONECOTEC y NITC.',
+    _id: 'seed-capacitacion',
+    title: 'Capacitación Profesional',
+    description:
+      'Formación en convenio con CONECOTEC y NITC, entes acreditados para certificar, y gestión del trámite de certificación ante ellos.',
     icon: 'award',
   },
   {
@@ -104,6 +112,17 @@ export const DEFAULT_CERTIFICATIONS: Certification[] = [
     _id: 'seed-asse6030',
     name: 'ASSE 6030',
     description: 'Verificador de sistemas de tubería para gases medicinales no inflamables.',
+  },
+  {
+    _id: 'seed-iso',
+    name: 'ISO',
+    description:
+      'Publicaciones de la Organización Internacional para la Normalización, usadas como referencia técnica.',
+  },
+  {
+    _id: 'seed-asme',
+    name: 'ASME',
+    description: 'Publicaciones de la American Society of Mechanical Engineers, usadas como referencia técnica.',
   },
 ];
 
@@ -241,7 +260,7 @@ export const DEFAULT_MISSION_VISION = {
   mission:
     'Garantizar la seguridad, calidad y eficiencia de los sistemas de distribución de gases medicinales mediante inspecciones, pruebas y mantenimientos regulares, asegurando el cumplimiento de las normativas y estándares establecidos para proteger la salud de los pacientes y del personal médico.',
   vision:
-    'Ser una unidad líder en la promoción de la transparencia, la eficiencia y el cumplimiento normativo, garantizando que cada verificación se realice con el más alto nivel de integridad y contribuyendo a la confianza pública y la mejora continua del sector salud.',
+    'Ser una unidad líder en la promoción de la transparencia, la eficiencia y el cumplimiento normativo, actuando con el más alto nivel de integridad en cada proyecto en el que participamos —diseño, instalación, inspección, verificación y mantenimiento— y contribuyendo a la confianza pública y la mejora continua del sector salud.',
 };
 
 // Market-presence figures for the animated stat strip. Present in the market since 2020; the
@@ -255,7 +274,7 @@ export const DEFAULT_STATS: Stat[] = [
   { value: 5, suffix: '+', label: 'Años en el mercado' },
   { value: 12, suffix: '+', label: 'Proyectos de inspección y verificación' },
   { value: 6, label: 'Países en Latinoamérica' },
-  { value: 10, label: 'Perfiles ASSE serie 6000' },
+  { value: 10, label: 'Cursos ASSE serie 6000' },
 ];
 
 // ASSE Series 6000 course catalogue. Short, faithful one-line role summaries (core + selective —
