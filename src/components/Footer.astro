@@ -2,6 +2,7 @@
 import { NAV_LINKS, DEFAULT_SITE_SETTINGS } from '../lib/content';
 import { sanityImageUrl } from '../lib/sanityImage';
 import type { SiteSettings } from '../lib/sanityQueries';
+import { getImage } from 'astro:assets';
 import lmgMark from '../assets/brand/lmg-mark.png';
 
 interface Props {
@@ -13,7 +14,15 @@ const siteName = settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName;
 const tagline = settings?.tagline ?? DEFAULT_SITE_SETTINGS.tagline;
 const logoUrl = sanityImageUrl(settings?.logo, 140);
 // Same reasoning as Header: Sanity returns no intrinsic height, so reserve the rendered box.
-const logo = logoUrl ? { src: logoUrl, width: 140, height: 32 } : lmgMark;
+// The seed mark is a 730x265 PNG rendered ~36px tall; served raw it was the heaviest
+// asset on every page. astro:assets emits a webp at roughly 2x the rendered size instead.
+let logo: { src: string; width: number; height: number };
+if (logoUrl) {
+  logo = { src: logoUrl, width: 140, height: 32 };
+} else {
+  const mark = await getImage({ src: lmgMark, width: 200, format: 'webp' });
+  logo = { src: mark.src, width: 200, height: Math.round((200 * lmgMark.height) / lmgMark.width) };
+}
 const year = new Date().getFullYear();
 ---
 

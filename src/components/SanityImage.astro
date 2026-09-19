@@ -1,4 +1,6 @@
 ---
+import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
 import ImagePlaceholder from './ImagePlaceholder.astro';
 import { sanityImageUrl } from '../lib/sanityImage';
 import type { SanityImageRef } from '../lib/sanityQueries';
@@ -11,8 +13,13 @@ interface Props {
   class?: string;
   width?: number;
   // Local seed photo shown until the client uploads a real image in Sanity — takes
-  // priority over the gray placeholder, but Sanity always wins once populated.
-  fallbackSrc?: string;
+  // priority over the gray placeholder, but Sanity always wins once populated. Pass the
+  // imported asset itself, not its `.src`: a bare URL skips astro:assets, which is how the
+  // 1.1 MB hero PNG ended up being served untouched.
+  fallback?: ImageMetadata;
+  // How wide the image actually renders, for the srcset. Defaults to the common case here:
+  // full width on phones, half of the container from tablet up.
+  sizes?: string;
   // Above-the-fold images (the hero) must load eagerly — a lazy LCP image delays paint.
   priority?: boolean;
 }
@@ -24,22 +31,45 @@ const {
   aspect = 'aspect-[4/3]',
   class: className = '',
   width = 1200,
-  fallbackSrc,
+  fallback,
+  sizes = '(min-width: 768px) 50vw, 100vw',
   priority = false,
 } = Astro.props;
 
-const src = sanityImageUrl(image, width) ?? fallbackSrc ?? null;
+// Sanity serves its own derivatives; only the local seed photos need astro:assets. Widths are
+// capped at the source width so sharp never upscales.
+const sanitySrc = sanityImageUrl(image, width);
 
 // Reserve layout space from the same ratio the `aspect` class enforces, so the width/height
 // attributes and the CSS box can never disagree.
 const parsed = aspect.match(/(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)/);
 const height = Math.round((width * Number(parsed?.[2] ?? 3)) / Number(parsed?.[1] ?? 4));
+
+// Crop to the same ratio the CSS box shows. Without this the seed photos ship at their native
+// portrait height and object-cover throws roughly half those pixels away on every load.
+const ratio = height / width;
+const optimized =
+  !sanitySrc && fallback
+    ? await getImage({
+        src: fallback,
+        widths: [480, 800, width].filter((w) => w <= fallback.width),
+        format: 'webp',
+        fit: 'cover',
+        position: 'center',
+        height: Math.round(Math.min(width, fallback.width) * ratio),
+      })
+    : null;
+
+const src = sanitySrc ?? optimized?.src ?? null;
+const srcset = optimized?.srcSet?.attribute || undefined;
 ---
 
 {
   src ? (
     <img
       src={src}
+      srcset={srcset}
+      sizes={srcset ? sizes : undefined}
       alt={alt}
       width={width}
       height={height}

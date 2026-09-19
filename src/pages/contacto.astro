@@ -75,32 +75,31 @@ const graph = [
                 CONTACT_ROWS.map(({ label, Icon, links, text }, i) => {
                   const accent = accentFor(i);
                   return (
-                    <div class="flex items-start gap-3.5">
+                    /* Grid rather than nested flex: dt and dd have to be direct children of a
+                       div that is itself a direct child of the dl, or screen readers lose the
+                       pairing. The icon spans both rows to keep the same layout. */
+                    <div class="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3.5">
                       <span
-                        class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
+                        class="row-span-2 mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
                         style={{ backgroundColor: `${accent}1a` }}
                         aria-hidden="true"
                       >
                         <Icon size={18} color={accent} strokeWidth={2} aria-hidden="true" />
                       </span>
-                      <div class="min-w-0">
-                        <dt class="text-2xs mb-0.5 font-semibold tracking-[0.08em] text-slate-500 uppercase">
-                          {label}
-                        </dt>
-                        <dd class="text-ink text-sm leading-relaxed font-medium break-words">
-                          {links.length > 0 ? (
-                            <span class="flex flex-col gap-0.5">
-                              {links.map((l) => (
-                                <a href={l.href} class={contactLinkClass}>
-                                  {l.text}
-                                </a>
-                              ))}
-                            </span>
-                          ) : (
-                            text
-                          )}
-                        </dd>
-                      </div>
+                      <dt class="text-2xs mb-0.5 font-semibold tracking-[0.08em] text-slate-500 uppercase">{label}</dt>
+                      <dd class="text-ink text-sm leading-relaxed font-medium break-words">
+                        {links.length > 0 ? (
+                          <span class="flex flex-col gap-0.5">
+                            {links.map((l) => (
+                              <a href={l.href} class={contactLinkClass}>
+                                {l.text}
+                              </a>
+                            ))}
+                          </span>
+                        ) : (
+                          text
+                        )}
+                      </dd>
                     </div>
                   );
                 })

@@ -2,6 +2,7 @@
 import { NAV_LINKS, DEFAULT_SITE_SETTINGS } from '../lib/content';
 import { sanityImageUrl } from '../lib/sanityImage';
 import type { SiteSettings } from '../lib/sanityQueries';
+import { getImage } from 'astro:assets';
 import lmgMark from '../assets/brand/lmg-mark.png';
 
 interface Props {
@@ -13,7 +14,15 @@ const siteName = settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName;
 const logoUrl = sanityImageUrl(settings?.logo, 160);
 // Sanity gives no intrinsic height back from the URL builder, so reserve the rendered
 // box (36px tall, the h-9 below) for that branch and the real dimensions for the local mark.
-const logo = logoUrl ? { src: logoUrl, width: 160, height: 36 } : lmgMark;
+// The seed mark is a 730x265 PNG rendered ~36px tall; served raw it was the heaviest
+// asset on every page. astro:assets emits a webp at roughly 2x the rendered size instead.
+let logo: { src: string; width: number; height: number };
+if (logoUrl) {
+  logo = { src: logoUrl, width: 160, height: 36 };
+} else {
+  const mark = await getImage({ src: lmgMark, width: 220, format: 'webp' });
+  logo = { src: mark.src, width: 220, height: Math.round((220 * lmgMark.height) / lmgMark.width) };
+}
 
 const linkClass =
   "hover:text-accent focus-visible:ring-accent relative rounded-sm text-sm font-medium text-slate-600 transition-colors after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 after:content-[''] hover:after:scale-x-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:after:transition-none";
