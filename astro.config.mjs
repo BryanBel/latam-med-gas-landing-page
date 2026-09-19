@@ -18,6 +18,10 @@ const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(
 // https://astro.build/config
 export default defineConfig({
   site: 'https://latammedgas.com',
+  // Canonicals and the sitemap have always emitted the trailing-slash form, but internal
+  // links did not, so every in-site navigation paid a 307 — 1.4s on mobile. Setting this
+  // makes the dev server 404 on the slashless form, so the mismatch shows up locally.
+  trailingSlash: 'always',
   integrations: [
     react(),
     // The Studio is an admin surface behind auth and is disallowed in robots.txt — listing

@@ -21,7 +21,7 @@ export const DEFAULT_HERO = {
   subheading:
     'Diseño, instalación, inspección, mantenimiento, asesoría y verificación de sistemas de gases medicinales para hospitales y centros de salud en Latinoamérica.',
   ctaLabel: 'Solicitar cotización',
-  ctaLink: '/contacto',
+  ctaLink: '/contacto/',
 };
 
 export const DEFAULT_ABOUT = {
@@ -361,8 +361,8 @@ export const DEFAULT_PRODUCTS: string[] = [
 // the /contacto page.
 export const NAV_LINKS = [
   { label: 'Inicio', href: '/' },
-  { label: 'Nosotros', href: '/nosotros' },
-  { label: 'Servicios', href: '/servicios' },
-  { label: 'Cursos ASSE 6000', href: '/cursos' },
-  { label: 'Trayectoria', href: '/trayectoria' },
+  { label: 'Nosotros', href: '/nosotros/' },
+  { label: 'Servicios', href: '/servicios/' },
+  { label: 'Cursos ASSE 6000', href: '/cursos/' },
+  { label: 'Trayectoria', href: '/trayectoria/' },
 ];
