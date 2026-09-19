@@ -20,7 +20,10 @@ const {
 const light = tone === 'light';
 ---
 
-<section class:list={['relative overflow-hidden', light ? 'border-t border-slate-200 bg-slate-50' : 'bg-accent-700']}>
+<!-- No border-top on the light tone: every other section change on the page is a diagonal,
+     so a full-width 1px rule here read as a stray horizontal line right under one. The
+     slate-50 ground is 7 points off white, which separates the band without drawing a line. -->
+<section class:list={['relative overflow-hidden', light ? 'bg-slate-50' : 'bg-accent-700']}>
   <div class="relative mx-auto w-full max-w-7xl px-5 py-16 text-center md:px-9 md:py-20" data-reveal>
     {
       slogan && (

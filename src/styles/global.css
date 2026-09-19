@@ -113,7 +113,11 @@ html {
 .seam-cut-bottom,
 .seam-cut-top,
 .seam-cut-both {
-  --seam-h: 34px;
+  /* Viewport-relative so the angle of the line stays the same on a phone and on a desktop.
+     A fixed px height does not: 34px across 390px is ~5deg, across 1920px it is ~1deg, which
+     is why the same seam read as a clear diagonal on mobile and as almost flat on desktop.
+     The bounds stop it vanishing on a narrow screen and stop it eating a section on a wide one. */
+  --seam-h: clamp(40px, 4.5vw, 110px);
 }
 .seam-cut-bottom {
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--seam-h)), 0 100%);
