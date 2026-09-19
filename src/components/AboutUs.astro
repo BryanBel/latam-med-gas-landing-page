@@ -16,15 +16,18 @@ const heading = about?.heading ?? DEFAULT_ABOUT.heading;
 const body = about?.body ?? DEFAULT_ABOUT.body;
 ---
 
+<!-- The two haloes are corner accents. At their desktop size a 380px circle covers three
+     quarters of a 390px phone, so instead of tinting a corner it washed the whole section
+     blue-grey right under the seam. They scale with the breakpoint now. -->
 <section id="nosotros" class="relative overflow-hidden">
   <div
-    class="pointer-events-none absolute -top-16 -left-24 h-[380px] w-[380px] rounded-full blur-3xl"
+    class="pointer-events-none absolute -top-16 -left-24 h-[190px] w-[190px] rounded-full blur-2xl sm:h-[380px] sm:w-[380px] sm:blur-3xl"
     aria-hidden="true"
     style={{ backgroundColor: '#0a0a8914' }}
   >
   </div>
   <div
-    class="pointer-events-none absolute -right-20 bottom-0 h-[300px] w-[300px] rounded-full blur-3xl"
+    class="pointer-events-none absolute -right-20 bottom-0 h-[160px] w-[160px] rounded-full blur-2xl sm:h-[300px] sm:w-[300px] sm:blur-3xl"
     aria-hidden="true"
     style={{ backgroundColor: '#15803d0f' }}
   >
