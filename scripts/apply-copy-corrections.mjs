@@ -9,9 +9,9 @@
 // siteSettings, service and certification are all populated, so editing the seed alone
 // changes nothing on the live site. This brings the dataset in line with the corrected seed.
 //
-// The source of the corrections is docs/internal/observaciones-2026-09.md. The headline
-// one: Latam Med Gas does not certify — CONECOTEC and NITC do. Every "certification"
-// claim about LMG itself has to become capacitación (training) plus handling the paperwork.
+// The wording below keeps training and certification distinct: the accredited bodies
+// (CONECOTEC, NITC) issue certifications, and Latam Med Gas provides the training and
+// handles the process with them. Preserve that distinction if you edit these strings.
 //
 // Safe to re-run: every write is a patch or a createOrReplace with a deterministic id.
 import { getCliClient } from 'sanity/cli';
@@ -31,7 +31,7 @@ const SERVICE = {
   cursos: '24c931a1-9e6d-49c8-9597-6f24bded26d3',
   capacitacion: '605a9479-1432-4e9a-877d-94485d1ff631', // was "Certificación Profesional"
   equipos: '813ebaa4-5923-485d-b083-1527b01a3e45',
-  instalacion: 'service-instalacion', // new — §C, the service that was missing
+  instalacion: 'service-instalacion', // new
 };
 
 const CERT = {
@@ -39,8 +39,8 @@ const CERT = {
   asse6000: '06e6c346-c27a-446a-b614-0c6d06c36b8b',
   asse6010: 'bf5be7c4-869b-451f-a0e6-63aded233552',
   asse6030: '9be1ba0f-fff0-421c-8cc3-eb7a7ac99695',
-  iso: 'certification-iso', // new — §B5
-  asme: 'certification-asme', // new — §B5
+  iso: 'certification-iso', // new
+  asme: 'certification-asme', // new
 };
 
 // Project lifecycle order, matching DEFAULT_SERVICES in src/lib/content.ts.
@@ -74,10 +74,10 @@ async function run() {
 
   const tx = client.transaction();
 
-  // §C — instalación joins the service list everywhere it is enumerated.
+  // Instalación joins the service list everywhere it is enumerated.
   tx.patch(client.patch(settingsId).set({ tagline: TAGLINE }));
 
-  // §A — the hero cannot say "certificados"; LMG verifies, it does not certify.
+  // The hero describes what the company does: verification and conformity, not certification.
   tx.patch(
     client.patch(heroId).set({
       heading: 'Sistemas de gases medicinales seguros, verificados y conformes a la norma',
@@ -86,8 +86,8 @@ async function run() {
     }),
   );
 
-  // §B1 — "gases medicinales" alone reads as supply; it has to say "sistemas de".
-  // §A — the closing clause attributed a certification programme to LMG.
+  // "gases medicinales" alone reads as gas supply, so the heading says "sistemas de".
+  // The closing clause attributes certification to the accredited bodies.
   tx.patch(
     client.patch(aboutId).set({
       heading: 'Especialistas en sistemas de gases medicinales para instituciones de salud',
@@ -100,7 +100,7 @@ async function run() {
     }),
   );
 
-  // §A — the card that clashed hardest with "Latam Med Gas no Certifica".
+  // Training, and handling the certification process with the accredited bodies.
   tx.patch(
     client.patch(SERVICE.capacitacion).set({
       title: 'Capacitación Profesional',
@@ -113,7 +113,7 @@ async function run() {
   // Stray leading space in the title, visible in the card heading.
   tx.patch(client.patch(SERVICE.cursos).set({ title: 'Cursos de Capacitación ASSE 6000' }));
 
-  // §C — the missing service. Copy is provisional until the client sends their own.
+  // Copy is provisional until the client supplies their own.
   tx.createOrReplace({
     _id: SERVICE.instalacion,
     _type: 'service',
@@ -123,7 +123,7 @@ async function run() {
     icon: 'hard-hat',
   });
 
-  // §B5 — ISO and ASME as referential standards alongside ASSE 6000.
+  // ISO and ASME as referential standards alongside ASSE 6000.
   tx.createOrReplace({
     _id: CERT.iso,
     _type: 'certification',

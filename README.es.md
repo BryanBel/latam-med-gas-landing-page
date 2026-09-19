@@ -16,7 +16,7 @@ Sitio web de **Latam Med Gas USA LLC**, empresa con sede en Miami dedicada a la 
 | CMS            | [Sanity](https://sanity.io), Studio embebido en `/studio` | El cliente edita el contenido directamente en el sitio publicado — sin necesidad de alojar un CMS aparte                                     |
 | Backend        | [Supabase](https://supabase.com)                          | Solo para los leads del formulario de contacto, política RLS de solo inserción — sin acceso de lectura desde el cliente                      |
 | Hosting        | [Cloudflare Workers](https://workers.cloudflare.com)      | Plan gratuito, despliegue automático con git push, CDN global                                                                                |
-| DNS            | Cloudflare                                                | El registrador no cambia; además aloja los buzones de la empresa                                                    |
+| DNS            | Cloudflare                                                | El registrador no cambia; además aloja los buzones de la empresa                                                                             |
 | Lenguaje       | TypeScript (estricto)                                     | `astro check` corre sin errores en todo el proyecto                                                                                          |
 
 ## Características
@@ -92,6 +92,6 @@ Los envíos se insertan directamente en una tabla `leads` de Supabase ([migraci�
 ## Despliegue
 
 1. **Cloudflare Workers** — el repositorio ya está conectado; comando de build `pnpm build`, salida `dist`. Cada push a `master` despliega. `wrangler.jsonc` define `not_found_handling: "404-page"`; sin eso las rutas desconocidas devuelven un 404 vacío en vez de la página con diseño.
-2. **Dominio** — hecho. Los nameservers apuntan a Cloudflare y hay Custom Domains para la raíz y `www`. El procedimiento y sus trampas están en [`docs/guides/cutover.md`](docs/guides/cutover.md).
+2. **Dominio** — hecho. Los nameservers apuntan a Cloudflare y hay Custom Domains para la raíz y `www`. El procedimiento y sus trampas están documentados fuera de este repositorio.
 3. **Variables de entorno** — configurar las mismas claves del `.env` en Cloudflare, incluida `PUBLIC_CF_BEACON_TOKEN`. Si falta, el sitio compila sin analítica y sin error.
 4. **Notificaciones de leads** — la función de Supabase debe desplegarse con `--no-verify-jwt`, o el webhook se rechaza antes de llegar a ella. Ver [`supabase/functions/notify-lead/README.md`](supabase/functions/notify-lead/README.md).
