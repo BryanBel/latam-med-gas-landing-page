@@ -1,7 +1,6 @@
 ---
 import SanityImage from './SanityImage.astro';
 import NavyTexture from './NavyTexture.astro';
-import SectionWedge from './SectionWedge.astro';
 import StatStrip from './StatStrip.astro';
 import type { Project } from '../lib/sanityQueries';
 import { DEFAULT_PROJECTS } from '../lib/content';
@@ -23,10 +22,11 @@ const items = limit ? source.slice(0, limit) : source;
 const fallbackPhotos = [projectVerification, projectPediatric];
 ---
 
-<section id="proyectos" class="from-accent-700 via-accent to-accent-400 relative overflow-hidden bg-gradient-to-br">
+<section
+  id="proyectos"
+  class="from-accent-700 via-accent to-accent-400 seam-cut-both relative overflow-hidden bg-gradient-to-br"
+>
   <NavyTexture glow="#0d948833" glowClass="-top-20 -right-20 h-[380px] w-[380px]" />
-  <SectionWedge edge="top" fill="bg-white" />
-  <SectionWedge edge="bottom" fill="bg-white" />
 
   <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl" data-reveal>

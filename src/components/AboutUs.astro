@@ -5,7 +5,6 @@ import SanityImage from './SanityImage.astro';
 import type { AboutSection } from '../lib/sanityQueries';
 import { DEFAULT_ABOUT } from '../lib/content';
 import aboutCorridor from '../assets/photos/about-corridor.png';
-import SectionWedge from './SectionWedge.astro';
 import { BadgeCheck, ArrowRight } from 'lucide-react';
 
 interface Props {
@@ -18,8 +17,6 @@ const body = about?.body ?? DEFAULT_ABOUT.body;
 ---
 
 <section id="nosotros" class="relative overflow-hidden">
-  <SectionWedge edge="top" fill="bg-accent" textured />
-  <SectionWedge edge="bottom" fill="bg-accent-600" textured />
   <div
     class="pointer-events-none absolute -top-16 -left-24 h-[380px] w-[380px] rounded-full blur-3xl"
     aria-hidden="true"

@@ -1,6 +1,5 @@
 ---
 import NavyTexture from './NavyTexture.astro';
-import SectionWedge from './SectionWedge.astro';
 import type { Service } from '../lib/sanityQueries';
 import { DEFAULT_SERVICES } from '../lib/content';
 import { resolveServiceIcon, accentFor } from '../lib/icons';
@@ -21,10 +20,11 @@ const items = limit ? source.slice(0, limit) : source;
   /* Gradient runs the opposite way to Inicio's: light at the top left into navy at the
     bottom right, so the scroll reads navy→light, light→navy, navy→light. */
 }
-<section id="servicios" class="from-accent-400 via-accent to-accent-700 relative overflow-hidden bg-gradient-to-br">
+<section
+  id="servicios"
+  class="from-accent-400 via-accent to-accent-700 seam-cut-both relative overflow-hidden bg-gradient-to-br"
+>
   <NavyTexture glow="#b4530933" glowClass="-bottom-24 -left-24 h-[420px] w-[420px]" />
-  <SectionWedge edge="top" fill="bg-white" />
-  <SectionWedge edge="bottom" fill="bg-white" />
 
   <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl" data-reveal>

@@ -3,7 +3,6 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import NavyTexture from '../components/NavyTexture.astro';
-import SectionWedge from '../components/SectionWedge.astro';
 
 // No Sanity query here on purpose: an error page should render even when the CMS is
 // unreachable, and Header/Footer fall back to the seed settings and the local mark.
@@ -17,9 +16,10 @@ import SectionWedge from '../components/SectionWedge.astro';
         instead of the footer sitting below the fold on an otherwise empty page. */
     }
     <div class="contact-screen">
-      <section class="from-accent-700 via-accent to-accent-400 relative overflow-hidden bg-gradient-to-br">
+      <section
+        class="from-accent-700 via-accent to-accent-400 seam-cut-bottom relative overflow-hidden bg-gradient-to-br"
+      >
         <NavyTexture glow="#2563eb33" glowClass="-top-24 -right-24 h-[420px] w-[420px]" />
-        <SectionWedge edge="bottom" fill="bg-slate-50" />
 
         <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
           <div class="max-w-2xl">

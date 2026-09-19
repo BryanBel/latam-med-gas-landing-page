@@ -97,16 +97,32 @@
 }
 
 html {
-  scroll-behavior: smooth;
-  /* Kills the 300ms double-tap delay on touch; keeps pinch-zoom intact. */
+  /* No smooth scrolling. The router restores scroll position with scrollTo on a back
+     navigation, and smooth turns that restore into a visible animation: the page lands at
+     the top and then slides down to where you were. The only in-page anchor left is the
+     skip link, where instant is what a keyboard user wants anyway. */
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(10, 10, 137, 0.12);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+/* One continuous diagonal at a section seam. The lower section is pulled up over the upper
+   one and its own top edge is cut, so whatever shows above the line IS the upper section's
+   background — its gradient included. The previous approach painted a flat triangle meant to
+   imitate that background, which could not track a gradient and left a hard horizontal step
+   where the two met, plus a notch where the two halves of the line joined. */
+.seam-cut-bottom,
+.seam-cut-top,
+.seam-cut-both {
+  --seam-h: 34px;
+}
+.seam-cut-bottom {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--seam-h)), 0 100%);
+}
+.seam-cut-top {
+  clip-path: polygon(0 var(--seam-h), 100% 0, 100% 100%, 0 100%);
+}
+.seam-cut-both {
+  clip-path: polygon(0 var(--seam-h), 100% 0, 100% calc(100% - var(--seam-h)), 0 100%);
 }
 
 .press-feedback {

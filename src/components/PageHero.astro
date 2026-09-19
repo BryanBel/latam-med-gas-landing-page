@@ -2,7 +2,6 @@
 // Compact navy hero for interior pages (/servicios, /cursos, /trayectoria). Shares the home
 // hero's gradient + dot field so the pages read as one site, but at a fraction of the height.
 import NavyTexture from './NavyTexture.astro';
-import SectionWedge from './SectionWedge.astro';
 
 interface Props {
   eyebrow?: string;
@@ -13,7 +12,7 @@ interface Props {
 const { eyebrow, title, subtitle, glow = '#15803d33' } = Astro.props;
 ---
 
-<section class="from-accent-700 via-accent to-accent-400 relative overflow-hidden bg-gradient-to-br">
+<section class="from-accent-700 via-accent to-accent-400 seam-cut-bottom relative overflow-hidden bg-gradient-to-br">
   <NavyTexture glow={glow} />
   <div class="relative mx-auto w-full max-w-7xl px-5 pt-14 pb-24 md:px-9 md:pt-20 md:pb-28">
     {
@@ -30,5 +29,4 @@ const { eyebrow, title, subtitle, glow = '#15803d33' } = Astro.props;
     </h1>
     {subtitle && <p class="mt-5 max-w-[60ch] text-base leading-relaxed text-white/75 md:text-lg">{subtitle}</p>}
   </div>
-  <SectionWedge edge="bottom" fill="bg-white" />
 </section>
