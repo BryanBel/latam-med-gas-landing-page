@@ -148,6 +148,7 @@ pnpm dev               # http://localhost:4321
 | `pnpm astro check` | Type-check                                         |
 | `pnpm lint`        | ESLint (JS + TypeScript + Astro)                   |
 | `pnpm format`      | Prettier, Tailwind class sorting, `.astro` support |
+| `pnpm backup`      | Snapshot the Sanity dataset into `../sanity-backups` |
 
 ## Editing content
 
@@ -177,3 +178,7 @@ for a month that way, and the seed fallback rendered the same thirteen, so nothi
    [`supabase/functions/notify-lead/README.md`](supabase/functions/notify-lead/README.md).
 4. **Before every push** — `git fetch` and rebase. The Sanity rebuild workflow pushes empty
    commits, so `origin/master` moves without warning.
+5. **Content backups** — `pnpm backup` snapshots the dataset into `../sanity-backups`, a private
+   git repository outside this one. Document history on the current Sanity plan is short: on
+   2026-09-20 the oldest transaction still held for `siteSettings` was from the previous day,
+   though the document was created on 2026-08-09. Run it before any migration script.
