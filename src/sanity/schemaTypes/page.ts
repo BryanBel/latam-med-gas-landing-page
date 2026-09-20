@@ -1,4 +1,5 @@
-import { defineField, defineType } from 'sanity';
+import { defineArrayMember, defineField, defineType } from 'sanity';
+import { blockTypeNames } from './blocks';
 
 // One document per route. Holds everything the page shows that is not a collection: its SEO,
 // its hero, the headings of its sections, and — for /privacidad — the body text itself.
@@ -32,7 +33,7 @@ export const SECTION_KEYS = [
 // A field that does nothing on the page being edited is worse than a missing one: the editor
 // fills it in and waits for a change that never comes. Inicio's hero lives in its own
 // "Portada — Hero" document, only Privacidad renders a body, and Contacto has no sections.
-const PAGES_WITH_HERO = ['nosotros', 'servicios', 'cursos', 'trayectoria', 'contacto', 'privacidad'];
+const PAGES_WITH_HERO = ['nosotros', 'servicios', 'cursos', 'trayectoria', 'contacto', 'privacidad', '404'];
 const PAGES_WITH_SECTIONS = ['inicio', 'nosotros', 'servicios', 'cursos', 'trayectoria'];
 
 export default defineType({
@@ -134,6 +135,16 @@ export default defineType({
           },
         }),
       ],
+    }),
+    defineField({
+      name: 'blocks',
+      title: 'Secciones propias',
+      description:
+        'Secciones que se agregan al final de la página. Se eligen de un catálogo, se ordenan ' +
+        'arrastrando, y cada una se dibuja con el diseño del sitio.',
+      type: 'array',
+      group: 'sections',
+      of: blockTypeNames.map((name) => defineArrayMember({ type: name })),
     }),
     defineField({
       name: 'contentSections',

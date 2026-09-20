@@ -12,8 +12,14 @@ export interface Stat {
   label: string;
 }
 
+export interface NavLink {
+  label: string;
+  href: string;
+}
+
 export interface SiteSettings {
   siteName: string;
+  navLinks?: NavLink[];
   tagline?: string;
   slogan?: string;
   ctaTitle?: string;
@@ -56,8 +62,40 @@ export interface SectionHeader {
   ctaLabel?: string;
 }
 
+/**
+ * One entry from the section catalogue in `src/sanity/schemaTypes/blocks.ts`. The fields are a
+ * union across all seven block types rather than a discriminated union per type: the renderer
+ * switches on `_type` and reads only what that branch needs, and modelling it strictly would
+ * mean seven interfaces and a cast at every use for no extra safety at the point that matters.
+ */
+export interface PageBlock {
+  _key: string;
+  _type: string;
+  tone?: 'light' | 'soft' | 'navy';
+  eyebrow?: string;
+  heading?: string;
+  intro?: string;
+  text?: string;
+  // `blockText` holds Portable Text; `blockTextImage` holds a plain string.
+  body?: PortableTextBlock[] | string;
+  image?: SanityImageRef;
+  imageSide?: 'left' | 'right';
+  images?: (SanityImageRef & { alt?: string })[];
+  cards?: { _key: string; title: string; text?: string; icon?: string; link?: string }[];
+  items?: { _key: string; question: string; answer: string }[];
+  quote?: string;
+  author?: string;
+  role?: string;
+  buttonLabel?: string;
+  buttonHref?: string;
+}
+
+/** Portable Text, as `src/lib/portableText.ts` consumes it. Loose here; the renderer narrows. */
+export type PortableTextBlock = Record<string, unknown>;
+
 export interface Page {
   slug: string;
+  blocks?: PageBlock[];
   seoTitle?: string;
   metaDescription?: string;
   heroEyebrow?: string;

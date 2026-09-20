@@ -2,6 +2,7 @@
 // Mobile-nav toggle + Escape handling live in src/scripts/site.ts, which re-binds on every
 // View Transitions navigation. The button is a real <button> so it stays keyboard-reachable.
 import { NAV_LINKS, DEFAULT_SITE_SETTINGS } from '../lib/content';
+
 import { sanityImageUrl } from '../lib/sanityImage';
 import type { SiteSettings } from '../lib/sanityQueries';
 import { getImage } from 'astro:assets';
@@ -13,6 +14,7 @@ interface Props {
 
 const { settings } = Astro.props;
 const siteName = settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName;
+const navLinks = settings?.navLinks?.length ? settings.navLinks : NAV_LINKS;
 const logoUrl = sanityImageUrl(settings?.logo, 160);
 // Sanity gives no intrinsic height back from the URL builder, so reserve the rendered
 // box (36px tall, the h-9 below) for that branch and the real dimensions for the local mark.
@@ -44,7 +46,7 @@ const ctaClass =
 
     <nav class="hidden items-center gap-7 lg:flex" aria-label="Navegación principal">
       {
-        NAV_LINKS.map((l) => (
+        navLinks.map((l) => (
           <a href={l.href} class={linkClass}>
             {l.label}
           </a>
@@ -72,7 +74,7 @@ const ctaClass =
       aria-label="Navegación móvil"
     >
       {
-        NAV_LINKS.map((l) => (
+        navLinks.map((l) => (
           <a
             href={l.href}
             class="hover:text-accent focus-visible:ring-accent rounded-lg px-2 py-2.5 text-base font-medium text-slate-600 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"

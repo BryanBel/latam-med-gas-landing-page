@@ -1,6 +1,7 @@
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
+import { media } from 'sanity-plugin-media';
 import { schemaTypes } from './src/sanity/schemaTypes';
 import { structure, SINGLETON_TYPES } from './src/sanity/structure';
 
@@ -13,7 +14,11 @@ export default defineConfig({
   projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
   dataset: import.meta.env.PUBLIC_SANITY_DATASET || 'production',
 
-  plugins: [structureTool({ structure }), visionTool()],
+  // Sanity's built-in picker can already upload and reuse an image across documents, but it
+  // offers no way to find one again: no tags, no search, no bulk view. `media` adds those, and
+  // adds a Media tool to the top bar so the client can curate the library on its own instead of
+  // only meeting it inside a field.
+  plugins: [structureTool({ structure }), media(), visionTool()],
 
   schema: {
     types: schemaTypes,

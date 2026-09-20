@@ -11,6 +11,7 @@ interface Props {
 
 const { settings } = Astro.props;
 const siteName = settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName;
+const navLinks = settings?.navLinks?.length ? settings.navLinks : NAV_LINKS;
 const tagline = settings?.tagline ?? DEFAULT_SITE_SETTINGS.tagline;
 const footerNote = settings?.footerNote ?? DEFAULT_SITE_SETTINGS.footerNote;
 const logoUrl = sanityImageUrl(settings?.logo, 140);
@@ -44,7 +45,7 @@ const year = new Date().getFullYear();
 
     <nav class="flex flex-wrap gap-x-6 gap-y-2" aria-label="Enlaces del pie de página">
       {
-        NAV_LINKS.map((l) => (
+        navLinks.map((l) => (
           <a
             href={l.href}
             class="hover:text-accent focus-visible:ring-accent rounded-sm text-xs font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"

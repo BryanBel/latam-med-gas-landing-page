@@ -484,6 +484,14 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
     heroSubtitle:
       'Cuéntenos sobre su institución y le responderemos con la información técnica y comercial que amerite su proyecto.',
   },
+  '404': {
+    seoTitle: 'Página no encontrada',
+    metaDescription: 'La página que busca no existe o fue movida.',
+    heroEyebrow: 'Error 404',
+    heroTitle: 'Esta página no existe',
+    heroSubtitle:
+      'Puede que el enlace esté roto o que la página se haya movido. Vuelva al inicio para seguir navegando.',
+  },
   privacidad: {
     seoTitle: 'Política de Privacidad',
     metaDescription: 'Cómo Latam Med Gas USA LLC recoge, usa y protege la información enviada a través de este sitio.',

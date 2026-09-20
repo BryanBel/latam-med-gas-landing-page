@@ -28,6 +28,41 @@ export default defineType({
       of: [{ type: 'string' }],
     }),
     defineField({
+      name: 'navLinks',
+      title: 'Menú de navegación',
+      description:
+        'El orden y el nombre de cada entrada del menú. El destino se elige de una lista: un ' +
+        'texto libre ahí apuntaría a una página que no existe.',
+      type: 'array',
+      of: [
+        defineField({
+          name: 'navLink',
+          title: 'Entrada',
+          type: 'object',
+          fields: [
+            defineField({ name: 'label', title: 'Nombre', type: 'string', validation: (r) => r.required() }),
+            defineField({
+              name: 'href',
+              title: 'Destino',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'Inicio', value: '/' },
+                  { title: 'Nosotros', value: '/nosotros/' },
+                  { title: 'Servicios', value: '/servicios/' },
+                  { title: 'Cursos ASSE 6000', value: '/cursos/' },
+                  { title: 'Trayectoria', value: '/trayectoria/' },
+                  { title: 'Contacto', value: '/contacto/' },
+                ],
+              },
+              validation: (r) => r.required(),
+            }),
+          ],
+          preview: { select: { title: 'label', subtitle: 'href' } },
+        }),
+      ],
+    }),
+    defineField({
       name: 'slogan',
       title: 'Eslogan de la banda de contacto',
       description: 'La frase corta sobre el botón de contacto, al pie de cada página.',

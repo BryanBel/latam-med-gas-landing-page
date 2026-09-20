@@ -3,13 +3,26 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import NavyTexture from '../components/NavyTexture.astro';
+import { getSiteSettings, getPage } from '../lib/sanityQueries';
+import { DEFAULT_PAGES, pageSeo } from '../lib/content';
 
-// No Sanity query here on purpose: an error page should render even when the CMS is
-// unreachable, and Header/Footer fall back to the seed settings and the local mark.
+// This page is prerendered like every other, so a CMS outage at visit time cannot affect it —
+// and an outage at build time lands in the same try/catch the other pages use. It reads Sanity
+// so the menu, the footer and its own copy match the rest of the site rather than drifting to
+// whatever the seed happened to say.
+let settings = null;
+let page: Awaited<ReturnType<typeof getPage>> = null;
+try {
+  [settings, page] = await Promise.all([getSiteSettings(), getPage('404')]);
+} catch (err) {
+  console.warn('[Sanity] falling back to seed content:', err);
+}
+const seed = DEFAULT_PAGES['404'];
+const seo = pageSeo('404', page);
 ---
 
-<Layout title="Página no encontrada" description="La página que busca no existe o fue movida.">
-  <Header settings={null} />
+<Layout title={seo.title} description={seo.description} settings={settings}>
+  <Header settings={settings} />
   <main id="contenido">
     {
       /* Reuses the Contacto screen wrapper so the message and the footer share one viewport
@@ -24,15 +37,15 @@ import NavyTexture from '../components/NavyTexture.astro';
         <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
           <div class="max-w-2xl">
             <div class="text-accent-100 mb-3 font-mono text-xs font-semibold tracking-[0.08em] uppercase">
-              Error 404
+              {page?.heroEyebrow ?? seed.heroEyebrow}
             </div>
             <h1
               class="font-display text-3xl leading-[1.1] font-extrabold tracking-tight text-balance text-white md:text-4xl"
             >
-              Esta página no existe
+              {page?.heroTitle ?? seed.heroTitle}
             </h1>
             <p class="mt-6 max-w-[52ch] text-base leading-relaxed text-white/75 md:text-lg">
-              Puede que el enlace esté roto o que la página se haya movido. Vuelva al inicio para seguir navegando.
+              {page?.heroSubtitle ?? seed.heroSubtitle}
             </p>
             <div class="mt-9 flex flex-wrap gap-3">
               <a
@@ -52,7 +65,7 @@ import NavyTexture from '../components/NavyTexture.astro';
         </div>
       </section>
 
-      <Footer settings={null} />
+      <Footer settings={settings} />
     </div>
   </main>
 </Layout>

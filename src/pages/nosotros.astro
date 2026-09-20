@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import PageHero from '../components/PageHero.astro';
 import MissionVision from '../components/MissionVision.astro';
 import ContactCta from '../components/ContactCta.astro';
+import PageBlocks from '../components/PageBlocks.astro';
 import SanityImage from '../components/SanityImage.astro';
 import aboutCorridor from '../assets/photos/about-corridor.png';
 import { getSiteSettings, getAboutSection, getCertifications, getPage, sectionOf } from '../lib/sanityQueries';
@@ -144,6 +145,7 @@ const graph = [
       </div>
     </section>
 
+    <PageBlocks blocks={page?.blocks} />
     <ContactCta settings={settings} />
     <Footer settings={settings} />
   </main>

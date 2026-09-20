@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PageHero from '../components/PageHero.astro';
 import ContactCta from '../components/ContactCta.astro';
+import PageBlocks from '../components/PageBlocks.astro';
 import { getSiteSettings, getServices, getPage, sectionOf } from '../lib/sanityQueries';
 import { DEFAULT_SERVICES, DEFAULT_PRODUCTS, DEFAULT_PAGES, pageSeo } from '../lib/content';
 import { resolveServiceIcon, accentFor } from '../lib/icons';
@@ -124,6 +125,7 @@ const graph = [
       </div>
     </section>
 
+    <PageBlocks blocks={page?.blocks} />
     <ContactCta settings={settings} />
     <Footer settings={settings} />
   </main>

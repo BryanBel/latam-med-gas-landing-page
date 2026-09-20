@@ -1,4 +1,5 @@
 import siteSettings from './siteSettings';
+import { blockTypes } from './blocks';
 import page from './page';
 import heroSection from './heroSection';
 import aboutSection from './aboutSection';
@@ -18,4 +19,5 @@ export const schemaTypes = [
   certification,
   project,
   testimonial,
+  ...blockTypes,
 ];
