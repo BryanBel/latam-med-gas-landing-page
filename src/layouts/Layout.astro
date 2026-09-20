@@ -8,6 +8,8 @@ import '@fontsource/noto-sans/600.css';
 import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
 import StructuredData from '../components/StructuredData.astro';
+import { VisualEditingComponent } from '@sanity/astro/visual-editing/component';
+import { IS_PREVIEW } from '../lib/preview';
 import type { SiteSettings } from '../lib/sanityQueries';
 // Preloaded rather than left to the CSS-triggered fetch: these two cut the flash of
 // fallback text on the hero, which is the first thing rendered.
@@ -105,6 +107,12 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
       Saltar al contenido
     </a>
     <slot />
+    {
+      /* Only in the preview deployment: the overlay that turns a rendered page into a set of
+        click targets back into the Studio. `client:only` because it has no server rendering to
+        do, and the flag is false in production so nothing ships there. */
+      IS_PREVIEW && <VisualEditingComponent client:only="react" />
+    }
     <script>
       import '../scripts/site';
     </script>

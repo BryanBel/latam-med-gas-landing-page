@@ -190,3 +190,29 @@ parecía roto.
    corto: el 20 de septiembre de 2026 la transacción más antigua que quedaba de `siteSettings` era
    del día anterior, aunque el documento se creó el 9 de agosto. Conviene correrlo antes de
    cualquier script de migración.
+
+### El despliegue de vista previa
+
+La edición visual —hacer clic en un título de la página y caer en ese campo del Studio— necesita
+que el HTML lleve stega: marcadores invisibles dentro de cada texto que dicen qué campo lo
+produjo. Esos marcadores no pueden acercarse a producción, porque terminan dentro de la meta
+descripción, el JSON-LD y los enlaces `tel:`. Por eso la vista previa es un **segundo Worker de
+Cloudflare** construido desde este mismo repositorio, y toda la diferencia son tres variables:
+
+| Variable                       | Valor                                                                        |
+| ------------------------------ | ---------------------------------------------------------------------------- |
+| `PUBLIC_SANITY_PREVIEW`        | `true`                                                                       |
+| `SANITY_VIEWER_TOKEN`          | un token de Sanity con rol **viewer**, desde sanity.io/manage                |
+| `PUBLIC_SANITY_PREVIEW_ORIGIN` | se define en el proyecto de **producción**, con la URL del Worker de preview |
+
+Con la bandera puesta, `astro build` pasa a `output: 'server'` y carga el adaptador de
+Cloudflare; sin ella el build es idéntico byte a byte al de antes de que todo esto existiera.
+
+Dos cosas que conviene saber antes de tocarlo:
+
+- El adaptador está fijado en **14.2.6**. Desde la 14.3.0 importa `renderForPrerender` de
+  `astro/app`, que `astro@7.2.0` no exporta. Subir el adaptador obliga a subir Astro, que es el
+  framework que construye el sitio vivo — mal negocio a cambio de una vista previa.
+- `SANITY_VIEWER_TOKEN` se lee al construir y queda dentro del bundle de **servidor** del
+  preview. Nunca está en el del cliente, pero sí en un artefacto de build: por eso debe ser un
+  token de solo lectura y nunca el que tiene permisos de escritura.

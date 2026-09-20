@@ -9,15 +9,37 @@ import sanity from '@sanity/astro';
 
 // astro.config.mjs runs in plain Node, so .env values must be loaded explicitly
 // (import.meta.env inside components is populated by Vite separately).
-const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(
+const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET, PUBLIC_SANITY_PREVIEW, SANITY_VIEWER_TOKEN } = loadEnv(
   process.env.NODE_ENV ?? 'development',
   process.cwd(),
   '',
 );
 
+// The preview deployment is this same repository built with PUBLIC_SANITY_PREVIEW=true, as a
+// second Cloudflare Worker. It renders on the server so a saved draft shows immediately, and it
+// emits stega — invisible markers inside every string that tell the Presentation tool which
+// field produced which text. Those markers cannot go anywhere near production: they would land
+// inside the meta description, the JSON-LD and the tel: links.
+//
+// Everything below is a no-op when the flag is unset, so the production build is unchanged.
+const isPreview = PUBLIC_SANITY_PREVIEW === 'true';
+
+// Imported dynamically rather than at the top: a static import would make the adapter a hard
+// requirement of every build, including the static one that has no use for it.
+const adapter = isPreview ? (await import('@astrojs/cloudflare')).default() : undefined;
+
+if (isPreview && !SANITY_VIEWER_TOKEN) {
+  throw new Error(
+    'PUBLIC_SANITY_PREVIEW=true necesita SANITY_VIEWER_TOKEN. Sin token la vista previa lee ' +
+      'solo contenido publicado, que es justo lo que no sirve para previsualizar.',
+  );
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://latammedgas.com',
+  output: isPreview ? 'server' : 'static',
+  ...(adapter ? { adapter } : {}),
   // Canonicals and the sitemap have always emitted the trailing-slash form, but internal
   // links did not, so every in-site navigation paid a 307 — 1.4s on mobile. Setting this
   // makes the dev server 404 on the slashless form, so the mismatch shows up locally.
@@ -36,6 +58,17 @@ export default defineConfig({
       // fixed query strings (getProjects etc.) until its TTL expires, so a rebuild after a
       // Sanity change could still ship the old content.
       useCdn: false,
+      ...(isPreview
+        ? {
+            token: SANITY_VIEWER_TOKEN,
+            // Drafts win over their published version, which is the whole point of a preview.
+            perspective: 'drafts',
+            // `enabled` is what actually turns the markers on; `studioUrl` only says where a
+            // click should land. Setting the second without the first produces a preview that
+            // looks right and cannot be clicked into.
+            stega: { enabled: true, studioUrl: '/studio' },
+          }
+        : {}),
     }),
   ],
 

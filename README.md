@@ -182,3 +182,29 @@ for a month that way, and the seed fallback rendered the same thirteen, so nothi
    git repository outside this one. Document history on the current Sanity plan is short: on
    2026-09-20 the oldest transaction still held for `siteSettings` was from the previous day,
    though the document was created on 2026-08-09. Run it before any migration script.
+
+### The preview deployment
+
+Visual editing — click a heading on the page, land on that field in the Studio — needs the
+rendered HTML to carry stega: invisible markers inside every string saying which field produced
+it. Those markers cannot go near production, because they end up inside the meta description,
+the JSON-LD and the `tel:` links. So preview is a **second Cloudflare Worker** built from this
+same repository, and the whole difference is three environment variables:
+
+| Variable                       | Value                                                          |
+| ------------------------------ | -------------------------------------------------------------- |
+| `PUBLIC_SANITY_PREVIEW`        | `true`                                                         |
+| `SANITY_VIEWER_TOKEN`          | a Sanity token with the **viewer** role, from sanity.io/manage |
+| `PUBLIC_SANITY_PREVIEW_ORIGIN` | set on the **production** project, to the preview Worker's URL |
+
+With the flag set, `astro build` switches to `output: 'server'` and pulls in the Cloudflare
+adapter; without it the build is byte-identical to what it was before any of this existed.
+
+Two things worth knowing before touching it:
+
+- The adapter is pinned to **14.2.6**. From 14.3.0 it imports `renderForPrerender` from
+  `astro/app`, which `astro@7.2.0` does not export. Upgrading the adapter means upgrading Astro,
+  which is the framework that builds the live site — not a trade worth making for a preview.
+- `SANITY_VIEWER_TOKEN` is read at build time and lands in the preview's **server** bundle. It
+  is never in the client bundle, but it is in a build artefact, which is why it should be a
+  read-only token and never the one with write access.
