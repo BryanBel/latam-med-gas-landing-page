@@ -2,11 +2,20 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { getSiteSettings } from '../lib/sanityQueries';
 import { DEFAULT_SITE_SETTINGS } from '../lib/content';
 
 // Plain <div> rather than <section>: the `main > section` rule in global.css forces a
 // full-screen minimum, which is wrong for a long text page.
-const { siteName, email, address } = DEFAULT_SITE_SETTINGS;
+let settings = null;
+try {
+  settings = await getSiteSettings();
+} catch (err) {
+  console.warn('[Sanity] falling back to seed content:', err);
+}
+const siteName = settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName;
+const email = settings?.email ?? DEFAULT_SITE_SETTINGS.email;
+const address = settings?.address ?? DEFAULT_SITE_SETTINGS.address;
 
 const SECTIONS = [
   {

@@ -155,6 +155,11 @@ Editors log into `/studio` on the deployed site — no code, no git, no local se
 in [`src/sanity/schemaTypes/`](src/sanity/schemaTypes/): site settings, hero, services,
 certifications, courses, projects, testimonials.
 
+A second one, which is easy to walk into from the Studio: collection fallbacks fire only when a
+type is **entirely empty** (`courses.length > 0 ? courses : DEFAULT_COURSES`). Creating one
+course in a type that had none would have replaced ten rendered courses with one. Every
+collection is populated now, so the seed is a genuine last resort rather than a live dependency.
+
 One rule for anyone scripting against the dataset: **never give a Sanity document an `_id`
 containing a dot.** Sanity treats those as private and serves them only to authenticated requests,
 so the public API — which the build uses — sees nothing. Thirteen imported projects were invisible

@@ -40,6 +40,9 @@ const organization = {
   email,
   telephone: phones,
   sameAs,
+  // Kept as components rather than read from settings.address: schema.org wants the parts
+  // separately and that field is one free-text line. Editing the address in the Studio changes
+  // the contact page; this block has to be updated with it.
   address: {
     '@type': 'PostalAddress',
     streetAddress: '2 S Biscayne Boulevard, Suite 3200 #2088',
@@ -49,7 +52,7 @@ const organization = {
     addressCountry: 'US',
   },
   areaServed: 'Latinoamérica',
-  description: DEFAULT_SITE_SETTINGS.tagline,
+  description: settings?.metaDescription ?? settings?.tagline ?? DEFAULT_SITE_SETTINGS.tagline,
 };
 
 const website = {

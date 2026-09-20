@@ -160,6 +160,12 @@ Los editores entran a `/studio` en el sitio desplegado — sin código, sin git,
 El modelo vive en [`src/sanity/schemaTypes/`](src/sanity/schemaTypes/): ajustes del sitio, hero,
 servicios, certificaciones, cursos, proyectos, testimonios.
 
+Una segunda, fácil de pisar desde el propio Studio: el respaldo de las colecciones salta solo
+cuando el tipo está **completamente vacío** (`courses.length > 0 ? courses : DEFAULT_COURSES`).
+Crear un curso en un tipo que no tenía ninguno habría reemplazado diez cursos renderizados por
+uno. Hoy todas las colecciones están pobladas, así que la semilla es un último recurso real y no
+una dependencia viva.
+
 Una regla para quien escriba scripts contra el dataset: **nunca le pongas un punto al `_id` de un
 documento de Sanity.** Sanity los trata como privados y los sirve solo a peticiones autenticadas,
 así que la API pública — la que usa el build — no ve nada. Trece proyectos importados quedaron
