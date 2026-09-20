@@ -80,6 +80,7 @@ export const DEFAULT_SERVICES: Service[] = [
     description:
       'Formación profesional bajo la norma ASSE serie 6000, código NFPA 99, dictada por instructores certificados ASSE 6050.',
     icon: 'graduation-cap',
+    link: '/cursos/',
   },
   {
     _id: 'seed-capacitacion',

@@ -7,7 +7,7 @@ import ContactCta from '../components/ContactCta.astro';
 import { getSiteSettings, getServices } from '../lib/sanityQueries';
 import { DEFAULT_SERVICES, DEFAULT_PRODUCTS } from '../lib/content';
 import { resolveServiceIcon, accentFor } from '../lib/icons';
-import { Check } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 
 let settings = null;
 let services: Awaited<ReturnType<typeof getServices>> = [];
@@ -51,12 +51,20 @@ const graph = [
             items.map((s, i) => {
               const Icon = resolveServiceIcon(s.icon);
               const accent = accentFor(i);
+              // A service with a page of its own becomes a link; the affordance at the foot of
+              // the card is what distinguishes it from the ones that are not clickable.
+              const Tag = s.link ? 'a' : 'div';
               return (
-                <div
+                <Tag
+                  href={s.link}
                   data-reveal
                   data-tilt
                   data-reveal-delay={(i % 3) * 70}
-                  class="group hover:ring-accent-200 rounded-2xl bg-white p-7 ring-1 ring-slate-200 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-slate-200/60 motion-safe:hover:-translate-y-0.5"
+                  class:list={[
+                    'group hover:ring-accent-200 rounded-2xl bg-white p-7 ring-1 ring-slate-200 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-slate-200/60 motion-safe:hover:-translate-y-0.5',
+                    s.link &&
+                      'focus-visible:ring-accent block focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+                  ]}
                 >
                   <div
                     class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl transition-transform motion-safe:group-hover:scale-105"
@@ -67,7 +75,13 @@ const graph = [
                   </div>
                   <h2 class="font-display text-ink mb-2 text-lg font-bold text-balance">{s.title}</h2>
                   <p class="text-sm leading-relaxed text-slate-600">{s.description}</p>
-                </div>
+                  {s.link && (
+                    <span class="text-accent mt-4 inline-flex items-center gap-1.5 text-sm font-semibold [&_svg]:transition-transform [&_svg]:duration-200 group-hover:[&_svg]:translate-x-0.5 motion-reduce:[&_svg]:transform-none">
+                      Ver los cursos
+                      <ArrowRight size={15} strokeWidth={2.5} aria-hidden="true" />
+                    </span>
+                  )}
+                </Tag>
               );
             })
           }

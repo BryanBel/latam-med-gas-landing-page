@@ -42,6 +42,9 @@ export interface Service {
   title: string;
   description?: string;
   icon?: string;
+  // Internal path when the service has a page of its own. The card becomes a link and grows
+  // a visible affordance, so it does not turn into an invisible one.
+  link?: string;
   order?: number;
 }
 

@@ -46,12 +46,20 @@ const items = limit ? source.slice(0, limit) : source;
         items.map((s, i) => {
           const Icon = resolveServiceIcon(s.icon);
           const accent = accentFor(i);
+          // A service with a page of its own becomes a link. Everything else stays a plain card,
+          // so the affordance below is what tells the two apart.
+          const Tag = s.link ? 'a' : 'div';
           return (
-            <div
+            <Tag
+              href={s.link}
               data-reveal
               data-tilt
               data-reveal-delay={(i % 4) * 70}
-              class="group hover:ring-accent-200 rounded-2xl bg-white p-6 ring-1 ring-slate-200 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-slate-200/60 motion-safe:hover:-translate-y-0.5"
+              class:list={[
+                'group hover:ring-accent-200 rounded-2xl bg-white p-6 ring-1 ring-slate-200 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-slate-200/60 motion-safe:hover:-translate-y-0.5',
+                s.link &&
+                  'focus-visible:ring-accent flex flex-col focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+              ]}
             >
               <div class="mb-3 flex items-center gap-3">
                 <div
@@ -64,7 +72,13 @@ const items = limit ? source.slice(0, limit) : source;
                 <h3 class="font-display text-ink min-w-0 text-base font-bold text-balance">{s.title}</h3>
               </div>
               <p class="text-xs leading-relaxed text-slate-600">{s.description}</p>
-            </div>
+              {s.link && (
+                <span class="text-accent mt-3 inline-flex items-center gap-1.5 text-xs font-semibold [&_svg]:transition-transform [&_svg]:duration-200 group-hover:[&_svg]:translate-x-0.5 motion-reduce:[&_svg]:transform-none">
+                  Ver más
+                  <ArrowRight size={14} strokeWidth={2.5} aria-hidden="true" />
+                </span>
+              )}
+            </Tag>
           );
         })
       }
