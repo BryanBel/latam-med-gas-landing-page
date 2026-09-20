@@ -73,7 +73,7 @@ export const DEFAULT_SERVICES: Service[] = [
   },
   {
     _id: 'seed-verificacion',
-    title: 'Verificación ASSE 6030',
+    title: 'Verificación',
     description:
       'Verificación de sistemas de tubería de gases medicinales bajo la norma ASSE 6030, con informe final y anexos.',
     icon: 'shield-check',
@@ -87,9 +87,9 @@ export const DEFAULT_SERVICES: Service[] = [
   },
   {
     _id: 'seed-capacitacion',
-    title: 'Capacitación Profesional',
+    title: 'Convenio con entes certificadores',
     description:
-      'Formación en convenio con CONECOTEC y NITC, entes acreditados para certificar, y gestión del trámite de certificación ante ellos.',
+      'Convenio con CONECOTEC, acreditado por ema, y con NITC: los entes certificadores ante los que gestionamos el trámite.',
     icon: 'award',
   },
   {
@@ -106,16 +106,6 @@ export const DEFAULT_CERTIFICATIONS: Certification[] = [
     _id: 'seed-asse6000',
     name: 'ASSE 6000',
     description: 'Serie de normas de certificación profesional para personal de gases medicinales.',
-  },
-  {
-    _id: 'seed-asse6010',
-    name: 'ASSE 6010',
-    description: 'Instalador de sistemas de tubería para gases medicinales no inflamables.',
-  },
-  {
-    _id: 'seed-asse6030',
-    name: 'ASSE 6030',
-    description: 'Verificador de sistemas de tubería para gases medicinales no inflamables.',
   },
   {
     _id: 'seed-iso',
@@ -400,7 +390,8 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
       servicios: {
         eyebrow: 'Servicios',
         heading: 'Todo lo que su institución necesita en gases medicinales',
-        subheading: 'Desde el diseño hasta la verificación final, cubrimos cada etapa bajo normativa ASSE y NFPA.',
+        subheading:
+          'Desde el diseño hasta la verificación final, cubrimos cada etapa bajo la normativa ASSE 6000 y el código NFPA 99.',
         ctaLabel: 'Ver todos los servicios',
       },
       proyectos: {
