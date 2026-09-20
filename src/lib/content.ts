@@ -327,7 +327,7 @@ export const DEFAULT_COURSES: Course[] = [
   {
     code: '6060',
     title: 'Diseñador',
-    description: 'Diseño de sistemas de suministro de gas médico conforme a la norma NFPA 99.',
+    description: 'Diseño de sistemas de suministro de gas médico conforme al código NFPA 99.',
   },
 ];
 
@@ -391,7 +391,7 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
         eyebrow: 'Servicios',
         heading: 'Todo lo que su institución necesita en gases medicinales',
         subheading:
-          'Desde el diseño hasta la verificación final, cubrimos cada etapa bajo la normativa ASSE 6000 y el código NFPA 99.',
+          'Desde el diseño hasta la verificación final, cubrimos cada etapa bajo la norma ASSE serie 6000 y el código NFPA 99.',
         ctaLabel: 'Ver todos los servicios',
       },
       proyectos: {
@@ -440,11 +440,11 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
     heroEyebrow: 'Capacitación',
     heroTitle: 'Cursos de Capacitación ASSE serie 6000',
     heroSubtitle:
-      'Formación para todos los perfiles del código ASSE 6000, orientada a aplicar con propiedad lo establecido en la norma NFPA 99.',
+      'Formación para todos los perfiles de la norma ASSE serie 6000, orientada a aplicar con propiedad lo establecido en el código NFPA 99.',
     sections: {
       cursosNota: {
         heading:
-          'Los cursos se dictan conforme al código ASSE serie 6000. Escríbanos para conocer fechas, modalidades y el temario detallado de cada perfil.',
+          'Los cursos se dictan conforme a la norma ASSE serie 6000. Escríbanos para conocer fechas, modalidades y el temario detallado de cada perfil.',
       },
       bandaContacto: {
         heading: 'Capacite a su equipo bajo la norma ASSE 6000',
