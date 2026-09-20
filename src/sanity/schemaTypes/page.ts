@@ -29,6 +29,12 @@ export const SECTION_KEYS = [
   { title: 'Banda de contacto — sólo en esta página', value: 'bandaContacto' },
 ];
 
+// A field that does nothing on the page being edited is worse than a missing one: the editor
+// fills it in and waits for a change that never comes. Inicio's hero lives in its own
+// "Portada — Hero" document, only Privacidad renders a body, and Contacto has no sections.
+const PAGES_WITH_HERO = ['nosotros', 'servicios', 'cursos', 'trayectoria', 'contacto', 'privacidad'];
+const PAGES_WITH_SECTIONS = ['inicio', 'nosotros', 'servicios', 'cursos', 'trayectoria'];
+
 export default defineType({
   name: 'page',
   title: 'Página',
@@ -63,7 +69,7 @@ export default defineType({
       description: 'Lo que Google muestra como titular. Si se deja vacío se usa el título del encabezado.',
       type: 'string',
       group: 'seo',
-      validation: (r) => r.max(60).warning('Google corta alrededor de los 60 caracteres.'),
+      validation: (r) => r.max(65).warning('Google corta alrededor de los 60–65 caracteres.'),
     }),
     defineField({
       name: 'metaDescription',
@@ -76,18 +82,21 @@ export default defineType({
     }),
     defineField({
       name: 'heroEyebrow',
+      hidden: ({ document }) => !PAGES_WITH_HERO.includes(String(document?.slug)),
       title: 'Texto pequeño superior',
       type: 'string',
       group: 'hero',
     }),
     defineField({
       name: 'heroTitle',
+      hidden: ({ document }) => !PAGES_WITH_HERO.includes(String(document?.slug)),
       title: 'Título principal',
       type: 'string',
       group: 'hero',
     }),
     defineField({
       name: 'heroSubtitle',
+      hidden: ({ document }) => !PAGES_WITH_HERO.includes(String(document?.slug)),
       title: 'Subtítulo',
       type: 'text',
       rows: 3,
@@ -96,6 +105,7 @@ export default defineType({
     defineField({
       name: 'sections',
       title: 'Encabezados de sección',
+      hidden: ({ document }) => !PAGES_WITH_SECTIONS.includes(String(document?.slug)),
       description:
         'Los títulos que abren cada bloque de la página. El contenido de cada bloque (servicios, ' +
         'proyectos, cursos…) se edita en su propia lista.',
@@ -128,6 +138,7 @@ export default defineType({
     defineField({
       name: 'contentSections',
       title: 'Cuerpo de texto',
+      hidden: ({ document }) => document?.slug !== 'privacidad',
       description: 'Sólo lo usa la Política de Privacidad: cada entrada es un apartado con su título.',
       type: 'array',
       group: 'sections',

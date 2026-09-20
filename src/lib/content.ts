@@ -503,7 +503,7 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
       },
       {
         heading: 'Cuánto tiempo la conservamos',
-        body: 'Conservamos los mensajes durante *[por definir]*. Puede pedirnos que eliminemos el suyo en cualquier momento escribiendo a la dirección indicada abajo.',
+        body: 'Conservamos los mensajes mientras sean necesarios para atender su solicitud y darle seguimiento comercial o técnico. Puede pedirnos que eliminemos el suyo en cualquier momento escribiendo a la dirección indicada abajo.',
       },
       {
         heading: 'Cookies y analítica',
