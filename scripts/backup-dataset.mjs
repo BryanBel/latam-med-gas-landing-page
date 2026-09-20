@@ -34,7 +34,9 @@ const dryRun = process.argv.includes('--dry-run');
 const ROOT = path.resolve(process.cwd(), '..', 'sanity-backups');
 const ARCHIVE = path.join(ROOT, 'archive');
 const DOCS = path.join(ROOT, 'documents');
-const KEEP_ARCHIVES = 12;
+// Matches the scheduled job in the backup repository. If the two pruned to different numbers,
+// each run would delete the other's tarballs.
+const KEEP_ARCHIVES = 30;
 const DATASET = process.env.PUBLIC_SANITY_DATASET || 'production';
 
 // Fields that change on every write without the content changing. Keeping them would make each
@@ -118,14 +120,26 @@ async function main() {
     console.log(`\n${ROOT} no es un repositorio git — snapshot escrito, sin commit.`);
     return;
   }
+  const hasRemote = Boolean(git(['remote'], { check: false }));
+
   git(['add', '-A']);
-  if (!git(['status', '--porcelain'], { check: false })) {
+  const changed = Boolean(git(['status', '--porcelain'], { check: false }));
+  if (changed) {
+    const summary = [...byType].map(([t, l]) => `${t} ${l.length}`).join(', ');
+    git(['commit', '-q', '-m', `Respaldo ${DATASET} — ${docs.length} documentos (${summary})`]);
+    console.log(`\nCommit: ${git(['log', '--oneline', '-1'])}`);
+  } else {
     console.log('\nSin cambios desde el último respaldo.');
-    return;
   }
-  const summary = [...byType].map(([t, l]) => `${t} ${l.length}`).join(', ');
-  git(['commit', '-q', '-m', `Respaldo ${DATASET} — ${docs.length} documentos (${summary})`]);
-  console.log(`\nCommit: ${git(['log', '--oneline', '-1'])}`);
+
+  // The scheduled job pushes its own snapshots, so the remote moves on its own. Rebase onto it
+  // before pushing — and only after committing, because a rebase refuses to run with a dirty
+  // tree, which is exactly the state this script is in until the commit above.
+  if (hasRemote) {
+    git(['pull', '--rebase', '--quiet'], { check: false });
+    git(['push', '--quiet'], { check: false });
+    if (changed) console.log('Empujado al repositorio privado.');
+  }
 }
 
 main().catch((err) => {
