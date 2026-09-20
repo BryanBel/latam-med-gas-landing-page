@@ -140,14 +140,14 @@ pnpm dev               # http://localhost:4321
 | `PUBLIC_SUPABASE_ANON_KEY` | Same page — the anon key, never the service role key                                                                  |
 | `PUBLIC_CF_BEACON_TOKEN`   | Cloudflare → Web Analytics. Public identifier, not a secret. Leave blank locally so dev traffic stays out of the data |
 
-| Command            | Action                                             |
-| ------------------ | -------------------------------------------------- |
-| `pnpm dev`         | Local dev server                                   |
-| `pnpm build`       | Static build to `./dist/`                          |
-| `pnpm preview`     | Serve the production build                         |
-| `pnpm astro check` | Type-check                                         |
-| `pnpm lint`        | ESLint (JS + TypeScript + Astro)                   |
-| `pnpm format`      | Prettier, Tailwind class sorting, `.astro` support |
+| Command            | Action                                               |
+| ------------------ | ---------------------------------------------------- |
+| `pnpm dev`         | Local dev server                                     |
+| `pnpm build`       | Static build to `./dist/`                            |
+| `pnpm preview`     | Serve the production build                           |
+| `pnpm astro check` | Type-check                                           |
+| `pnpm lint`        | ESLint (JS + TypeScript + Astro)                     |
+| `pnpm format`      | Prettier, Tailwind class sorting, `.astro` support   |
 | `pnpm backup`      | Snapshot the Sanity dataset into `../sanity-backups` |
 
 ## Editing content
