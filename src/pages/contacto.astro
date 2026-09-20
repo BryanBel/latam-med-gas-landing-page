@@ -4,17 +4,20 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PageHero from '../components/PageHero.astro';
 import ContactForm from '../components/ContactForm';
-import { getSiteSettings } from '../lib/sanityQueries';
-import { DEFAULT_SITE_SETTINGS } from '../lib/content';
+import { getSiteSettings, getPage } from '../lib/sanityQueries';
+import { DEFAULT_SITE_SETTINGS, DEFAULT_PAGES, pageSeo } from '../lib/content';
 import { accentFor } from '../lib/icons';
 import { Phone, Mail, MapPin, ExternalLink } from 'lucide-react';
 
 let settings = null;
+let page: Awaited<ReturnType<typeof getPage>> = null;
 try {
-  settings = await getSiteSettings();
+  [settings, page] = await Promise.all([getSiteSettings(), getPage('contacto')]);
 } catch (err) {
   console.warn('[Sanity] falling back to seed content:', err);
 }
+const seed = DEFAULT_PAGES.contacto;
+const seo = pageSeo('contacto', page);
 
 const phone = settings?.phone ?? DEFAULT_SITE_SETTINGS.phone;
 const email = settings?.email ?? DEFAULT_SITE_SETTINGS.email;
@@ -51,18 +54,13 @@ const graph = [
 ];
 ---
 
-<Layout
-  title="Contacto"
-  description="Contacte a Latam Med Gas USA LLC: solicite información técnica o una cotización para la verificación, inspección o diseño de su sistema de gases medicinales."
-  settings={settings}
-  graph={graph}
->
+<Layout title={seo.title} description={seo.description} settings={settings} graph={graph}>
   <Header settings={settings} />
   <main id="contenido">
     <PageHero
-      eyebrow="Contacto"
-      title="Conversemos sobre su proyecto"
-      subtitle="Cuéntenos sobre su institución y le responderemos con la información técnica y comercial que amerite su proyecto."
+      eyebrow={page?.heroEyebrow ?? seed.heroEyebrow}
+      title={page?.heroTitle ?? seed.heroTitle ?? seo.title}
+      subtitle={page?.heroSubtitle ?? seed.heroSubtitle}
       glow="#2563eb33"
     />
 

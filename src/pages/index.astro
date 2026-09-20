@@ -15,34 +15,45 @@ import {
   getServices,
   getCertifications,
   getProjects,
+  getPage,
+  sectionOf,
 } from '../lib/sanityQueries';
-import { DEFAULT_SITE_SETTINGS } from '../lib/content';
+import { DEFAULT_PAGES, pageSeo } from '../lib/content';
 
 let settings = null;
 let hero = null;
 let about = null;
+let page: Awaited<ReturnType<typeof getPage>> = null;
 let services: Awaited<ReturnType<typeof getServices>> = [];
 let certifications: Awaited<ReturnType<typeof getCertifications>> = [];
 let projects: Awaited<ReturnType<typeof getProjects>> = [];
 
 try {
-  [settings, hero, about, services, certifications, projects] = await Promise.all([
+  [settings, hero, about, services, certifications, projects, page] = await Promise.all([
     getSiteSettings(),
     getHeroSection(),
     getAboutSection(),
     getServices(),
     getCertifications(),
     getProjects(),
+    getPage('inicio'),
   ]);
 } catch (err) {
   // Page still renders with seed content from lib/content.ts, but surface the failure in build logs.
   console.warn('[Sanity] falling back to seed content:', err);
 }
+
+const seed = DEFAULT_PAGES.inicio;
+const seedSection = (key: keyof NonNullable<typeof seed.sections>) => seed.sections?.[key] ?? {};
+const serviciosHeader = sectionOf(page, 'servicios');
+const proyectosHeader = sectionOf(page, 'proyectos');
+const certificacionesHeader = sectionOf(page, 'certificaciones');
+const seo = pageSeo('inicio', page);
 ---
 
 <Layout
-  title={`${settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName} - Gases Medicinales ASSE 6000 / NFPA 99`}
-  description={settings?.metaDescription ?? settings?.tagline ?? DEFAULT_SITE_SETTINGS.tagline}
+  title={seo.title}
+  description={page?.metaDescription ?? settings?.metaDescription ?? seo.description}
   titleTemplate={false}
   settings={settings}
 >
@@ -54,10 +65,27 @@ try {
   <main id="contenido">
     <Hero hero={hero} />
     <AboutUs about={about} />
-    <Services services={services} moreHref="/servicios/" />
-    <Certifications certifications={certifications} />
-    <Projects projects={projects} limit={4} moreHref="/trayectoria/" />
-    <ContactCta tone="light" />
+    <Services
+      services={services}
+      moreHref="/servicios/"
+      heading={serviciosHeader.heading ?? seedSection('servicios').heading}
+      subheading={serviciosHeader.subheading ?? seedSection('servicios').subheading}
+      ctaLabel={serviciosHeader.ctaLabel ?? seedSection('servicios').ctaLabel}
+    />
+    <Certifications
+      certifications={certifications}
+      heading={certificacionesHeader.heading ?? seedSection('certificaciones').heading}
+    />
+    <Projects
+      projects={projects}
+      limit={4}
+      moreHref="/trayectoria/"
+      stats={settings?.stats}
+      heading={proyectosHeader.heading ?? seedSection('proyectos').heading}
+      subheading={proyectosHeader.subheading ?? seedSection('proyectos').subheading}
+      ctaLabel={proyectosHeader.ctaLabel ?? seedSection('proyectos').ctaLabel}
+    />
+    <ContactCta tone="light" settings={settings} />
     <Footer settings={settings} />
   </main>
 </Layout>

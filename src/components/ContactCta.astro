@@ -2,20 +2,21 @@
 // Closing call-to-action band. Links to the /contacto page. `tone="navy"` (default) for the
 // interior pages; `tone="light"` for the home, where it follows a navy section.
 import { ArrowRight } from 'lucide-react';
+import type { SiteSettings } from '../lib/sanityQueries';
+import { DEFAULT_SITE_SETTINGS } from '../lib/content';
 
 interface Props {
+  settings?: SiteSettings | null;
   title?: string;
   text?: string;
   tone?: 'navy' | 'light';
   // Pass an empty string to drop the slogan on a page where it would repeat.
   slogan?: string;
 }
-const {
-  title = '¿Listo para normalizar su sistema de gases medicinales?',
-  text = 'Cuéntenos sobre su institución y le responderemos con la información técnica y comercial que necesite.',
-  tone = 'navy',
-  slogan = 'Confianza que fluye en cada línea de gas.',
-} = Astro.props;
+const { settings, tone = 'navy' } = Astro.props;
+const title = Astro.props.title ?? settings?.ctaTitle ?? DEFAULT_SITE_SETTINGS.ctaTitle;
+const text = Astro.props.text ?? settings?.ctaText ?? DEFAULT_SITE_SETTINGS.ctaText;
+const slogan = Astro.props.slogan ?? settings?.slogan ?? DEFAULT_SITE_SETTINGS.slogan;
 
 const light = tone === 'light';
 

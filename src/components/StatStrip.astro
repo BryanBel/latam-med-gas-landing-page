@@ -2,7 +2,7 @@
 // Animated market-presence figures. The final number is what ships in the HTML, so a crawler or
 // a visitor without JS reads the real figure; the script resets it to 0 and counts up only when
 // it is actually going to animate. Designed to sit on a navy background.
-import type { Stat } from '../lib/content';
+import type { Stat } from '../lib/sanityQueries';
 import { DEFAULT_STATS } from '../lib/content';
 import { accentFor } from '../lib/icons';
 
@@ -10,12 +10,13 @@ interface Props {
   stats?: Stat[];
   class?: string;
 }
-const { stats = DEFAULT_STATS, class: className = '' } = Astro.props;
+const { stats, class: className = '' } = Astro.props;
+const items = stats?.length ? stats : DEFAULT_STATS;
 ---
 
 <div class:list={['grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4', className]}>
   {
-    stats.map((s, i) => (
+    items.map((s, i) => (
       <div data-reveal data-reveal-delay={i * 80}>
         <div class="mb-3 h-[3px] w-10" style={{ backgroundColor: accentFor(i) }} aria-hidden="true" />
         <div class="font-display flex items-baseline text-3xl font-extrabold tracking-tight text-white md:text-4xl">

@@ -12,6 +12,7 @@ interface Props {
 const { settings } = Astro.props;
 const siteName = settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName;
 const tagline = settings?.tagline ?? DEFAULT_SITE_SETTINGS.tagline;
+const footerNote = settings?.footerNote ?? DEFAULT_SITE_SETTINGS.footerNote;
 const logoUrl = sanityImageUrl(settings?.logo, 140);
 // Same reasoning as Header: Sanity returns no intrinsic height, so reserve the rendered box.
 // The seed mark is a 730x265 PNG rendered ~36px tall; served raw it was the heaviest
@@ -66,7 +67,7 @@ const year = new Date().getFullYear();
     >
       <span>© {year} {siteName}. Todos los derechos reservados.</span>
       <span class="flex flex-wrap items-center gap-x-2">
-        Sus datos de contacto se utilizan únicamente para responder a su solicitud.
+        {footerNote}
         <a
           href="/privacidad/"
           class="hover:text-accent focus-visible:ring-accent rounded-sm font-medium underline underline-offset-2 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"

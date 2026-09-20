@@ -4,18 +4,25 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PageHero from '../components/PageHero.astro';
 import ContactCta from '../components/ContactCta.astro';
-import { getSiteSettings, getCourses } from '../lib/sanityQueries';
-import { DEFAULT_COURSES } from '../lib/content';
+import { getSiteSettings, getCourses, getPage, sectionOf } from '../lib/sanityQueries';
+import { DEFAULT_COURSES, DEFAULT_PAGES, pageSeo } from '../lib/content';
 import { accentFor } from '../lib/icons';
 
 let settings = null;
 let courses: Awaited<ReturnType<typeof getCourses>> = [];
+let page: Awaited<ReturnType<typeof getPage>> = null;
 try {
-  [settings, courses] = await Promise.all([getSiteSettings(), getCourses()]);
+  [settings, courses, page] = await Promise.all([getSiteSettings(), getCourses(), getPage('cursos')]);
 } catch (err) {
   console.warn('[Sanity] falling back to seed content:', err);
 }
 const items = courses.length > 0 ? courses : DEFAULT_COURSES;
+
+const seed = DEFAULT_PAGES.cursos;
+const seo = pageSeo('cursos', page);
+const nota = sectionOf(page, 'cursosNota').heading ?? seed.sections?.cursosNota?.heading;
+const banda = sectionOf(page, 'bandaContacto');
+const bandaSeed = seed.sections?.bandaContacto ?? {};
 
 const graph = [
   {
@@ -37,18 +44,13 @@ const graph = [
 ];
 ---
 
-<Layout
-  title="Cursos de Capacitación ASSE 6000 (6005–6060)"
-  description="Capacitación profesional bajo la norma ASSE serie 6000 y el código NFPA 99: generalista, instalador, inspector, verificador, instructor y diseñador."
-  settings={settings}
-  graph={graph}
->
+<Layout title={seo.title} description={seo.description} settings={settings} graph={graph}>
   <Header settings={settings} />
   <main id="contenido">
     <PageHero
-      eyebrow="Capacitación"
-      title="Cursos de Capacitación ASSE serie 6000"
-      subtitle="Formación para todos los perfiles del código ASSE 6000, orientada a aplicar con propiedad lo establecido en la norma NFPA 99."
+      eyebrow={page?.heroEyebrow ?? seed.heroEyebrow}
+      title={page?.heroTitle ?? seed.heroTitle ?? seo.title}
+      subtitle={page?.heroSubtitle ?? seed.heroSubtitle}
       glow="#2563eb33"
     />
 
@@ -80,15 +82,15 @@ const graph = [
         </div>
 
         <p class="mt-10 max-w-3xl text-sm leading-relaxed text-slate-500" data-reveal>
-          Los cursos se dictan conforme al código ASSE serie 6000. Escríbanos para conocer fechas, modalidades y el
-          temario detallado de cada perfil.
+          {nota}
         </p>
       </div>
     </section>
 
     <ContactCta
-      title="Capacite a su equipo bajo la norma ASSE 6000"
-      text="Solicite información sobre nuestros cursos de capacitación profesional y el trámite de certificación ante los entes acreditados."
+      settings={settings}
+      title={banda.heading ?? bandaSeed.heading}
+      text={banda.subheading ?? bandaSeed.subheading}
     />
     <Footer settings={settings} />
   </main>

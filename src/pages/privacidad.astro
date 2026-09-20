@@ -2,59 +2,33 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { getSiteSettings } from '../lib/sanityQueries';
-import { DEFAULT_SITE_SETTINGS } from '../lib/content';
+import { getSiteSettings, getPage } from '../lib/sanityQueries';
+import { DEFAULT_SITE_SETTINGS, DEFAULT_PAGES, pageSeo } from '../lib/content';
 
 // Plain <div> rather than <section>: the `main > section` rule in global.css forces a
 // full-screen minimum, which is wrong for a long text page.
 let settings = null;
+let page: Awaited<ReturnType<typeof getPage>> = null;
 try {
-  settings = await getSiteSettings();
+  [settings, page] = await Promise.all([getSiteSettings(), getPage('privacidad')]);
 } catch (err) {
   console.warn('[Sanity] falling back to seed content:', err);
 }
+const seed = DEFAULT_PAGES.privacidad;
+const seo = pageSeo('privacidad', page);
+const sections = page?.contentSections?.length ? page.contentSections : (seed.contentSections ?? []);
 const siteName = settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName;
 const email = settings?.email ?? DEFAULT_SITE_SETTINGS.email;
 const address = settings?.address ?? DEFAULT_SITE_SETTINGS.address;
-
-const SECTIONS = [
-  {
-    heading: 'Qué información recogemos',
-    body: 'Únicamente la que usted escribe en el formulario de contacto: nombre, correo electrónico, teléfono (opcional), empresa o institución (opcional) y el mensaje. No recogemos ningún otro dato personal, y el sitio no le pide crear una cuenta.',
-  },
-  {
-    heading: 'Para qué la usamos',
-    body: 'Solo para responder a su solicitud y darle seguimiento comercial o técnico. No vendemos, alquilamos ni cedemos su información a terceros, y no la usamos para enviarle publicidad no solicitada.',
-  },
-  {
-    heading: 'Dónde se guarda',
-    body: 'Los mensajes del formulario se almacenan en Supabase, nuestro proveedor de base de datos, y se envía una notificación por correo electrónico al equipo mediante Resend para poder responderle. Ambos proveedores actúan por cuenta nuestra y solo procesan los datos de este formulario.',
-  },
-  {
-    heading: 'Cuánto tiempo la conservamos',
-    body: 'Conservamos los mensajes durante *[por definir]*. Puede pedirnos que eliminemos el suyo en cualquier momento escribiendo a la dirección indicada abajo.',
-  },
-  {
-    heading: 'Cookies y analítica',
-    body: 'Este sitio no utiliza cookies de seguimiento ni de publicidad. Para medir el tráfico usamos Cloudflare Web Analytics, que no emplea cookies ni identifica a visitantes individuales: solo agrega páginas vistas, procedencia y rendimiento.',
-  },
-  {
-    heading: 'Sus derechos',
-    body: 'Puede solicitarnos acceder a la información que tenemos sobre usted, corregirla o eliminarla. Escríbanos y atenderemos la solicitud en un plazo razonable.',
-  },
-];
 ---
 
-<Layout
-  title="Política de Privacidad"
-  description="Cómo Latam Med Gas USA LLC recoge, usa y protege la información enviada a través de este sitio."
->
+<Layout title={seo.title} description={seo.description} settings={settings}>
   <Header settings={null} />
   <main id="contenido">
     <div class="mx-auto max-w-3xl px-5 py-16 md:px-9 md:py-20">
       <div class="text-accent mb-3 text-xs font-semibold tracking-[0.08em] uppercase">Legal</div>
       <h1 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
-        Política de Privacidad
+        {page?.heroTitle ?? seed.heroTitle}
       </h1>
 
       <p class="border-accent bg-accent-50 text-ink mt-8 rounded-lg border-l-[3px] px-5 py-4 text-sm leading-relaxed">
@@ -64,7 +38,7 @@ const SECTIONS = [
       </p>
 
       {
-        SECTIONS.map(({ heading, body }) => (
+        sections.map(({ heading, body }) => (
           <section class="mt-10">
             <h2 class="font-display text-ink mb-3 text-xl font-bold">{heading}</h2>
             <p class="text-base leading-relaxed text-slate-600">{body}</p>

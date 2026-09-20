@@ -6,19 +6,30 @@ import NavyTexture from '../components/NavyTexture.astro';
 import StatStrip from '../components/StatStrip.astro';
 import ContactCta from '../components/ContactCta.astro';
 import Testimonials from '../components/Testimonials.astro';
-import { getSiteSettings, getProjects, getTestimonials } from '../lib/sanityQueries';
-import { DEFAULT_PROJECTS } from '../lib/content';
+import { getSiteSettings, getProjects, getTestimonials, getPage, sectionOf } from '../lib/sanityQueries';
+import { DEFAULT_PROJECTS, DEFAULT_PAGES, pageSeo } from '../lib/content';
 import { accentFor } from '../lib/icons';
 
 let settings = null;
 let projects: Awaited<ReturnType<typeof getProjects>> = [];
 let testimonials: Awaited<ReturnType<typeof getTestimonials>> = [];
+let page: Awaited<ReturnType<typeof getPage>> = null;
 try {
-  [settings, projects, testimonials] = await Promise.all([getSiteSettings(), getProjects(), getTestimonials()]);
+  [settings, projects, testimonials, page] = await Promise.all([
+    getSiteSettings(),
+    getProjects(),
+    getTestimonials(),
+    getPage('trayectoria'),
+  ]);
 } catch (err) {
   console.warn('[Sanity] falling back to seed content:', err);
 }
 const items = projects.length > 0 ? projects : DEFAULT_PROJECTS;
+
+const seed = DEFAULT_PAGES.trayectoria;
+const seo = pageSeo('trayectoria', page);
+const listaHeading = sectionOf(page, 'proyectosLista').heading ?? seed.sections?.proyectosLista?.heading;
+const testimoniosHeading = sectionOf(page, 'testimonios').heading ?? seed.sections?.testimonios?.heading;
 
 const graph = [
   {
@@ -31,12 +42,7 @@ const graph = [
 ];
 ---
 
-<Layout
-  title="Trayectoria y presencia internacional"
-  description="Proyectos de inspección y verificación de sistemas de gases medicinales en México, Honduras, Panamá, Venezuela y Bolivia desde 2020."
-  settings={settings}
-  graph={graph}
->
+<Layout title={seo.title} description={seo.description} settings={settings} graph={graph}>
   <Header settings={settings} />
   <main id="contenido">
     <section
@@ -47,18 +53,17 @@ const graph = [
         <span
           class="text-2xs mb-5 inline-flex items-center rounded-full bg-white/10 px-3 py-1 font-mono font-semibold text-white ring-1 ring-white/25 ring-inset"
         >
-          Trayectoria
+          {page?.heroEyebrow ?? seed.heroEyebrow}
         </span>
         <h1
           class="font-display max-w-3xl text-3xl leading-[1.1] font-extrabold tracking-tight text-balance text-white md:text-4xl"
         >
-          Presencia en el mercado desde 2020
+          {page?.heroTitle ?? seed.heroTitle}
         </h1>
         <p class="mt-5 max-w-[60ch] text-base leading-relaxed text-white/75 md:text-lg">
-          Acompañamos a instituciones de salud de toda Latinoamérica en cada etapa de sus sistemas de gases medicinales
-          —diseño, instalación, inspección, verificación y mantenimiento—, con resultados comprobados año tras año.
+          {page?.heroSubtitle ?? seed.heroSubtitle}
         </p>
-        <StatStrip class="mt-12" />
+        <StatStrip class="mt-12" stats={settings?.stats} />
       </div>
     </section>
 
@@ -68,7 +73,7 @@ const graph = [
           class="font-display text-ink mb-12 text-2xl font-extrabold tracking-tight text-balance md:text-3xl"
           data-reveal
         >
-          Proyectos de inspección y verificación
+          {listaHeading}
         </h2>
 
         <ol class="relative ml-1.5 border-l border-slate-200">
@@ -102,8 +107,8 @@ const graph = [
       </div>
     </section>
 
-    <Testimonials testimonials={testimonials} />
-    <ContactCta />
+    <Testimonials testimonials={testimonials} heading={testimoniosHeading} />
+    <ContactCta settings={settings} />
     <Footer settings={settings} />
   </main>
 </Layout>

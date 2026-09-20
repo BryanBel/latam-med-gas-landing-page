@@ -7,21 +7,31 @@ import MissionVision from '../components/MissionVision.astro';
 import ContactCta from '../components/ContactCta.astro';
 import SanityImage from '../components/SanityImage.astro';
 import aboutCorridor from '../assets/photos/about-corridor.png';
-import { getSiteSettings, getAboutSection, getCertifications } from '../lib/sanityQueries';
-import { DEFAULT_ABOUT, DEFAULT_CERTIFICATIONS } from '../lib/content';
+import { getSiteSettings, getAboutSection, getCertifications, getPage, sectionOf } from '../lib/sanityQueries';
+import { DEFAULT_ABOUT, DEFAULT_CERTIFICATIONS, DEFAULT_PAGES, pageSeo } from '../lib/content';
 import { accentFor } from '../lib/icons';
 import { ShieldCheck, Globe2, Award, BadgeCheck } from 'lucide-react';
 
 let settings = null;
 let about = null;
 let certifications: Awaited<ReturnType<typeof getCertifications>> = [];
+let page: Awaited<ReturnType<typeof getPage>> = null;
 try {
-  [settings, about, certifications] = await Promise.all([getSiteSettings(), getAboutSection(), getCertifications()]);
+  [settings, about, certifications, page] = await Promise.all([
+    getSiteSettings(),
+    getAboutSection(),
+    getCertifications(),
+    getPage('nosotros'),
+  ]);
 } catch (err) {
   console.warn('[Sanity] falling back to seed content:', err);
 }
 
-const heading = about?.heading ?? DEFAULT_ABOUT.heading;
+const seed = DEFAULT_PAGES.nosotros;
+const seo = pageSeo('nosotros', page);
+const heading = page?.heroTitle ?? about?.heading ?? DEFAULT_ABOUT.heading;
+const misionVisionHeading = sectionOf(page, 'misionVision').heading ?? seed.sections?.misionVision?.heading;
+const certificacionesHeading = sectionOf(page, 'certificaciones').heading ?? seed.sections?.certificaciones?.heading;
 const body = about?.body ?? DEFAULT_ABOUT.body;
 const highlights = about?.highlights?.length ? about.highlights : DEFAULT_ABOUT.highlights;
 const certs = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATIONS;
@@ -39,18 +49,13 @@ const graph = [
 ];
 ---
 
-<Layout
-  title="Nosotros"
-  description="Especialistas en diseño, instalación, inspección, mantenimiento y verificación de sistemas de gases medicinales bajo ASSE serie 6000 y NFPA 99."
-  settings={settings}
-  graph={graph}
->
+<Layout title={seo.title} description={seo.description} settings={settings} graph={graph}>
   <Header settings={settings} />
   <main id="contenido">
     <PageHero
-      eyebrow="Nosotros"
+      eyebrow={page?.heroEyebrow ?? seed.heroEyebrow}
       title={heading}
-      subtitle="Acompañamos a hospitales y centros de salud en Latinoamérica bajo la norma ASSE serie 6000 y el código NFPA 99."
+      subtitle={page?.heroSubtitle ?? seed.heroSubtitle}
     />
 
     <section class="bg-white">
@@ -109,7 +114,7 @@ const graph = [
           class="font-display text-ink mb-10 text-2xl font-extrabold tracking-tight text-balance md:text-3xl"
           data-reveal
         >
-          Misión y Visión
+          {misionVisionHeading}
         </h2>
         <MissionVision mission={about?.mission} vision={about?.vision} />
       </div>
@@ -121,7 +126,7 @@ const graph = [
           class="font-display text-ink mb-10 max-w-2xl text-2xl font-extrabold tracking-tight text-balance md:text-3xl"
           data-reveal
         >
-          Normativas y estándares
+          {certificacionesHeading}
         </h2>
         <div class="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {
@@ -139,7 +144,7 @@ const graph = [
       </div>
     </section>
 
-    <ContactCta />
+    <ContactCta settings={settings} />
     <Footer settings={settings} />
   </main>
 </Layout>

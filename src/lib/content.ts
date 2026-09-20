@@ -12,6 +12,10 @@ export const DEFAULT_SITE_SETTINGS = {
   phone: '+58 414-2349582 / +57 318 3588075',
   email: 'LatamMedGasUSA@gmail.com',
   address: '2 S Biscayne Boulevard, Suite 3200 #2088, Miami, Florida 33132, Estados Unidos',
+  slogan: 'Confianza que fluye en cada línea de gas.',
+  ctaTitle: '¿Listo para normalizar su sistema de gases medicinales?',
+  ctaText: 'Cuéntenos sobre su institución y le responderemos con la información técnica y comercial que necesite.',
+  footerNote: 'Sus datos de contacto se utilizan únicamente para responder a su solicitud.',
 };
 
 export const DEFAULT_HERO = {
@@ -366,3 +370,165 @@ export const NAV_LINKS = [
   { label: 'Cursos ASSE 6000', href: '/cursos/' },
   { label: 'Trayectoria', href: '/trayectoria/' },
 ];
+
+// Per-page copy: SEO, the interior-page hero, and the heading that opens each section. These
+// were literals inside the templates, so "change the subtitle on Servicios" meant a code change.
+// The `page` document type in Sanity mirrors this shape; what is here is the fallback, and
+// scripts/seed-pages-to-sanity.mjs is what put the same values into the CMS.
+//
+// /404 is deliberately absent: it must render when Sanity is unreachable, so it queries nothing.
+export interface SectionSeed {
+  eyebrow?: string;
+  heading?: string;
+  subheading?: string;
+  ctaLabel?: string;
+}
+export interface PageSeed {
+  seoTitle?: string;
+  metaDescription?: string;
+  heroEyebrow?: string;
+  heroTitle?: string;
+  heroSubtitle?: string;
+  sections?: Record<string, SectionSeed>;
+  contentSections?: { heading: string; body: string }[];
+}
+
+export const DEFAULT_PAGES: Record<string, PageSeed> = {
+  inicio: {
+    seoTitle: 'Latam Med Gas USA LLC - Gases Medicinales ASSE 6000 / NFPA 99',
+    sections: {
+      servicios: {
+        eyebrow: 'Servicios',
+        heading: 'Todo lo que su institución necesita en gases medicinales',
+        subheading: 'Desde el diseño hasta la verificación final, cubrimos cada etapa bajo normativa ASSE y NFPA.',
+        ctaLabel: 'Ver todos los servicios',
+      },
+      proyectos: {
+        eyebrow: 'Trayectoria',
+        heading: 'Presencia comprobada en Latinoamérica',
+        subheading:
+          'Desde 2020 acompañamos a instituciones de salud en la inspección y verificación de sus sistemas de gases medicinales.',
+        ctaLabel: 'Ver toda la trayectoria',
+      },
+      certificaciones: { heading: 'Respaldados por los estándares internacionales de la industria' },
+    },
+  },
+  nosotros: {
+    seoTitle: 'Nosotros',
+    metaDescription:
+      'Especialistas en diseño, instalación, inspección, mantenimiento y verificación de sistemas de gases medicinales bajo ASSE serie 6000 y NFPA 99.',
+    heroEyebrow: 'Nosotros',
+    heroSubtitle:
+      'Acompañamos a hospitales y centros de salud en Latinoamérica bajo la norma ASSE serie 6000 y el código NFPA 99.',
+    sections: {
+      misionVision: { heading: 'Misión y Visión' },
+      certificaciones: { heading: 'Normativas y estándares' },
+    },
+  },
+  servicios: {
+    seoTitle: 'Servicios en sistemas de gases medicinales',
+    metaDescription:
+      'Verificación, inspección, diseño, asesoría, capacitación ASSE 6000 y comercialización de productos para sistemas de gases medicinales en hospitales y clínicas.',
+    heroEyebrow: 'Servicios',
+    heroTitle: 'Todo lo que su institución necesita en gases medicinales',
+    heroSubtitle:
+      'Desde el diseño hasta la verificación final, cubrimos cada etapa bajo la norma ASSE serie 6000 y el código NFPA 99.',
+    sections: {
+      productos: {
+        eyebrow: 'Portafolio de Soluciones',
+        heading: 'Productos y repuestos para gases medicinales',
+        subheading:
+          'Nuestros años en el mercado nos han permitido construir lazos con fabricantes de productos y repuestos. Elaboramos cotizaciones según el proyecto o los requerimientos específicos de cada cliente.',
+      },
+    },
+  },
+  cursos: {
+    seoTitle: 'Cursos de Capacitación ASSE 6000 (6005–6060)',
+    metaDescription:
+      'Capacitación profesional bajo la norma ASSE serie 6000 y el código NFPA 99: generalista, instalador, inspector, verificador, instructor y diseñador.',
+    heroEyebrow: 'Capacitación',
+    heroTitle: 'Cursos de Capacitación ASSE serie 6000',
+    heroSubtitle:
+      'Formación para todos los perfiles del código ASSE 6000, orientada a aplicar con propiedad lo establecido en la norma NFPA 99.',
+    sections: {
+      cursosNota: {
+        heading:
+          'Los cursos se dictan conforme al código ASSE serie 6000. Escríbanos para conocer fechas, modalidades y el temario detallado de cada perfil.',
+      },
+      bandaContacto: {
+        heading: 'Capacite a su equipo bajo la norma ASSE 6000',
+        subheading:
+          'Solicite información sobre nuestros cursos de capacitación profesional y el trámite de certificación ante los entes acreditados.',
+      },
+    },
+  },
+  trayectoria: {
+    seoTitle: 'Trayectoria y presencia internacional',
+    metaDescription:
+      'Proyectos de inspección y verificación de sistemas de gases medicinales en México, Honduras, Panamá, Venezuela y Bolivia desde 2020.',
+    heroEyebrow: 'Trayectoria',
+    heroTitle: 'Presencia en el mercado desde 2020',
+    heroSubtitle:
+      'Acompañamos a instituciones de salud de toda Latinoamérica en cada etapa de sus sistemas de gases medicinales —diseño, instalación, inspección, verificación y mantenimiento—, con resultados comprobados año tras año.',
+    sections: {
+      proyectosLista: { heading: 'Proyectos de inspección y verificación' },
+      testimonios: { heading: 'Lo que dicen las instituciones con las que trabajamos' },
+    },
+  },
+  contacto: {
+    seoTitle: 'Contacto',
+    metaDescription:
+      'Contacte a Latam Med Gas USA LLC: solicite información técnica o una cotización para la verificación, inspección o diseño de su sistema de gases medicinales.',
+    heroEyebrow: 'Contacto',
+    heroTitle: 'Conversemos sobre su proyecto',
+    heroSubtitle:
+      'Cuéntenos sobre su institución y le responderemos con la información técnica y comercial que amerite su proyecto.',
+  },
+  privacidad: {
+    seoTitle: 'Política de Privacidad',
+    metaDescription: 'Cómo Latam Med Gas USA LLC recoge, usa y protege la información enviada a través de este sitio.',
+    heroTitle: 'Política de Privacidad',
+    contentSections: [
+      {
+        heading: 'Qué información recogemos',
+        body: 'Únicamente la que usted escribe en el formulario de contacto: nombre, correo electrónico, teléfono (opcional), empresa o institución (opcional) y el mensaje. No recogemos ningún otro dato personal, y el sitio no le pide crear una cuenta.',
+      },
+      {
+        heading: 'Para qué la usamos',
+        body: 'Solo para responder a su solicitud y darle seguimiento comercial o técnico. No vendemos, alquilamos ni cedemos su información a terceros, y no la usamos para enviarle publicidad no solicitada.',
+      },
+      {
+        heading: 'Dónde se guarda',
+        body: 'Los mensajes del formulario se almacenan en Supabase, nuestro proveedor de base de datos, y se envía una notificación por correo electrónico al equipo mediante Resend para poder responderle. Ambos proveedores actúan por cuenta nuestra y solo procesan los datos de este formulario.',
+      },
+      {
+        heading: 'Cuánto tiempo la conservamos',
+        body: 'Conservamos los mensajes durante *[por definir]*. Puede pedirnos que eliminemos el suyo en cualquier momento escribiendo a la dirección indicada abajo.',
+      },
+      {
+        heading: 'Cookies y analítica',
+        body: 'Este sitio no utiliza cookies de seguimiento ni de publicidad. Para medir el tráfico usamos Cloudflare Web Analytics, que no emplea cookies ni identifica a visitantes individuales: solo agrega páginas vistas, procedencia y rendimiento.',
+      },
+      {
+        heading: 'Sus derechos',
+        body: 'Puede solicitarnos acceder a la información que tenemos sobre usted, corregirla o eliminarla. Escríbanos y atenderemos la solicitud en un plazo razonable.',
+      },
+    ],
+  },
+};
+
+/**
+ * Title and description for a page's <head>, resolving Sanity over the seed and guaranteeing a
+ * string for both — `Layout` requires them, and every page was otherwise repeating the same
+ * three-level `??` chain.
+ */
+export function pageSeo(
+  slug: keyof typeof DEFAULT_PAGES | string,
+  page?: { seoTitle?: string; metaDescription?: string } | null,
+): { title: string; description: string } {
+  const seed = DEFAULT_PAGES[slug] ?? {};
+  return {
+    title: page?.seoTitle ?? seed.seoTitle ?? DEFAULT_SITE_SETTINGS.siteName,
+    description: page?.metaDescription ?? seed.metaDescription ?? DEFAULT_SITE_SETTINGS.tagline,
+  };
+}

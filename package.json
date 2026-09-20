@@ -21,6 +21,7 @@
     "@sanity/astro": "^3.5.0",
     "@sanity/client": "^7.26.2",
     "@sanity/image-url": "^2.1.1",
+    "@sanity/orderable-document-list": "^2.0.24",
     "@sanity/vision": "^6.9.1",
     "@supabase/supabase-js": "^2.112.2",
     "@tailwindcss/vite": "^4.3.3",

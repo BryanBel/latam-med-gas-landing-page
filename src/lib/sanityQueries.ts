@@ -6,9 +6,20 @@ export interface SanityImageRef {
   hotspot?: { x: number; y: number; height: number; width: number };
 }
 
+export interface Stat {
+  value: number;
+  suffix?: string;
+  label: string;
+}
+
 export interface SiteSettings {
   siteName: string;
   tagline?: string;
+  slogan?: string;
+  ctaTitle?: string;
+  ctaText?: string;
+  footerNote?: string;
+  stats?: Stat[];
   metaDescription?: string;
   logo?: SanityImageRef;
   phone?: string;
@@ -35,6 +46,25 @@ export interface AboutSection {
   image?: SanityImageRef;
   mission?: string;
   vision?: string;
+}
+
+export interface SectionHeader {
+  key: string;
+  eyebrow?: string;
+  heading?: string;
+  subheading?: string;
+  ctaLabel?: string;
+}
+
+export interface Page {
+  slug: string;
+  seoTitle?: string;
+  metaDescription?: string;
+  heroEyebrow?: string;
+  heroTitle?: string;
+  heroSubtitle?: string;
+  sections?: SectionHeader[];
+  contentSections?: { heading: string; body: string }[];
 }
 
 export interface Service {
@@ -86,33 +116,54 @@ export interface Testimonial {
 }
 
 export async function getSiteSettings(): Promise<SiteSettings | null> {
-  return sanityClient.fetch('*[_type == "siteSettings"][0]');
+  return sanityClient.fetch('*[_type == "siteSettings" && !(_id in path("drafts.**"))][0]');
 }
 
 export async function getHeroSection(): Promise<HeroSection | null> {
-  return sanityClient.fetch('*[_type == "heroSection"][0]');
+  return sanityClient.fetch('*[_type == "heroSection" && !(_id in path("drafts.**"))][0]');
 }
 
 export async function getAboutSection(): Promise<AboutSection | null> {
-  return sanityClient.fetch('*[_type == "aboutSection"][0]');
+  return sanityClient.fetch('*[_type == "aboutSection" && !(_id in path("drafts.**"))][0]');
+}
+
+export async function getPage(slug: string): Promise<Page | null> {
+  return sanityClient.fetch('*[_type == "page" && slug == $slug && !(_id in path("drafts.**"))][0]', { slug });
 }
 
 export async function getServices(): Promise<Service[]> {
-  return sanityClient.fetch('*[_type == "service"] | order(order asc)');
+  return sanityClient.fetch(
+    '*[_type == "service" && !(_id in path("drafts.**"))] | order(coalesce(orderRank, "0|999999:") asc, coalesce(order, 9999) asc)',
+  );
 }
 
 export async function getCourses(): Promise<Course[]> {
-  return sanityClient.fetch('*[_type == "course"] | order(order asc)');
+  return sanityClient.fetch(
+    '*[_type == "course" && !(_id in path("drafts.**"))] | order(coalesce(orderRank, "0|999999:") asc, coalesce(order, 9999) asc)',
+  );
 }
 
 export async function getCertifications(): Promise<Certification[]> {
-  return sanityClient.fetch('*[_type == "certification"] | order(order asc)');
+  return sanityClient.fetch(
+    '*[_type == "certification" && !(_id in path("drafts.**"))] | order(coalesce(orderRank, "0|999999:") asc, coalesce(order, 9999) asc)',
+  );
 }
 
 export async function getProjects(): Promise<Project[]> {
-  return sanityClient.fetch('*[_type == "project"] | order(order asc)');
+  return sanityClient.fetch(
+    '*[_type == "project" && !(_id in path("drafts.**"))] | order(coalesce(orderRank, "0|999999:") asc, coalesce(order, 9999) asc)',
+  );
 }
 
 export async function getTestimonials(): Promise<Testimonial[]> {
-  return sanityClient.fetch('*[_type == "testimonial"]');
+  return sanityClient.fetch('*[_type == "testimonial" && !(_id in path("drafts.**"))]');
+}
+
+/**
+ * Section headings are stored as a keyed list rather than as one field per section, so the
+ * template asks for the one it needs. Returns an empty object rather than undefined so callers
+ * can write `sectionOf(page, 'servicios').heading ?? DEFAULT` without a guard at every use.
+ */
+export function sectionOf(page: Page | null, key: string): Partial<SectionHeader> {
+  return page?.sections?.find((s) => s.key === key) ?? {};
 }

@@ -2,8 +2,8 @@
 import SanityImage from './SanityImage.astro';
 import NavyTexture from './NavyTexture.astro';
 import StatStrip from './StatStrip.astro';
-import type { Project } from '../lib/sanityQueries';
-import { DEFAULT_PROJECTS } from '../lib/content';
+import type { Project, Stat } from '../lib/sanityQueries';
+import { DEFAULT_PROJECTS, DEFAULT_PAGES } from '../lib/content';
 import projectVerification from '../assets/photos/project-verification-room.png';
 import projectPediatric from '../assets/photos/project-pediatric-headwall.png';
 import { ArrowRight } from 'lucide-react';
@@ -13,9 +13,23 @@ interface Props {
   // Home shows a few highlights and links on to /trayectoria; the full list lives there.
   limit?: number;
   moreHref?: string;
+  eyebrow?: string;
+  heading?: string;
+  subheading?: string;
+  ctaLabel?: string;
+  stats?: Stat[];
 }
 
-const { projects, limit, moreHref } = Astro.props;
+const {
+  projects,
+  limit,
+  moreHref,
+  eyebrow = 'Trayectoria',
+  heading = DEFAULT_PAGES.inicio.sections?.proyectos?.heading,
+  subheading = DEFAULT_PAGES.inicio.sections?.proyectos?.subheading,
+  ctaLabel = DEFAULT_PAGES.inicio.sections?.proyectos?.ctaLabel,
+  stats,
+} = Astro.props;
 const source = projects.length > 0 ? projects : DEFAULT_PROJECTS;
 const items = limit ? source.slice(0, limit) : source;
 // Shown for any project (seed or real Sanity doc) that doesn't have its own uploaded image yet.
@@ -30,17 +44,14 @@ const fallbackPhotos = [projectVerification, projectPediatric];
 
   <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl" data-reveal>
-      <div class="text-accent-100 mb-3 text-xs font-semibold tracking-[0.08em] uppercase">Trayectoria</div>
+      <div class="text-accent-100 mb-3 text-xs font-semibold tracking-[0.08em] uppercase">{eyebrow}</div>
       <h2 class="font-display text-2xl font-extrabold tracking-tight text-balance text-white md:text-3xl">
-        Presencia comprobada en Latinoamérica
+        {heading}
       </h2>
-      <p class="mt-3 text-base text-white/75">
-        Desde 2020 acompañamos a instituciones de salud en la inspección y verificación de sus sistemas de gases
-        medicinales.
-      </p>
+      {subheading && <p class="mt-3 text-base text-white/75">{subheading}</p>}
     </div>
 
-    <StatStrip class="mb-16" />
+    <StatStrip class="mb-16" stats={stats} />
 
     <div class="grid gap-6 md:grid-cols-2">
       {
@@ -87,7 +98,7 @@ const fallbackPhotos = [projectVerification, projectPediatric];
             href={moreHref}
             class="press-feedback focus-visible:ring-accent-200 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-[var(--color-accent-700)] shadow-lg shadow-black/20 transition-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-accent)] focus-visible:outline-none motion-safe:hover:-translate-y-0.5 [&_svg]:transition-transform [&_svg]:duration-200 hover:[&_svg]:translate-x-1 motion-reduce:[&_svg]:transform-none"
           >
-            Ver toda la trayectoria
+            {ctaLabel}
             <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
           </a>
         </div>

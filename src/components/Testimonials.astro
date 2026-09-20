@@ -4,13 +4,15 @@
 // no seed fallback here on purpose — an invented testimonial is worse than none — so the whole
 // section stays out of the DOM until the client publishes a real one.
 import type { Testimonial } from '../lib/sanityQueries';
+import { DEFAULT_PAGES } from '../lib/content';
 import { accentFor } from '../lib/icons';
 
 interface Props {
   testimonials: Testimonial[];
+  heading?: string;
 }
 
-const { testimonials } = Astro.props;
+const { testimonials, heading = DEFAULT_PAGES.trayectoria.sections?.testimonios?.heading } = Astro.props;
 ---
 
 {
@@ -19,7 +21,7 @@ const { testimonials } = Astro.props;
       <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
         <div class="mb-12 max-w-2xl" data-reveal>
           <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
-            Lo que dicen las instituciones con las que trabajamos
+            {heading}
           </h2>
         </div>
 

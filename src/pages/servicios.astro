@@ -4,20 +4,26 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PageHero from '../components/PageHero.astro';
 import ContactCta from '../components/ContactCta.astro';
-import { getSiteSettings, getServices } from '../lib/sanityQueries';
-import { DEFAULT_SERVICES, DEFAULT_PRODUCTS } from '../lib/content';
+import { getSiteSettings, getServices, getPage, sectionOf } from '../lib/sanityQueries';
+import { DEFAULT_SERVICES, DEFAULT_PRODUCTS, DEFAULT_PAGES, pageSeo } from '../lib/content';
 import { resolveServiceIcon, accentFor } from '../lib/icons';
 import { ArrowRight, Check } from 'lucide-react';
 
 let settings = null;
 let services: Awaited<ReturnType<typeof getServices>> = [];
+let page: Awaited<ReturnType<typeof getPage>> = null;
 try {
-  [settings, services] = await Promise.all([getSiteSettings(), getServices()]);
+  [settings, services, page] = await Promise.all([getSiteSettings(), getServices(), getPage('servicios')]);
 } catch (err) {
   console.warn('[Sanity] falling back to seed content:', err);
 }
 const items = services.length > 0 ? services : DEFAULT_SERVICES;
 const products = settings?.products?.length ? settings.products : DEFAULT_PRODUCTS;
+
+const seed = DEFAULT_PAGES.servicios;
+const seo = pageSeo('servicios', page);
+const productosSeed = seed.sections?.productos ?? {};
+const productos = sectionOf(page, 'productos');
 
 const graph = [
   {
@@ -30,18 +36,13 @@ const graph = [
 ];
 ---
 
-<Layout
-  title="Servicios en sistemas de gases medicinales"
-  description="Verificación, inspección, diseño, asesoría, capacitación ASSE 6000 y comercialización de productos para sistemas de gases medicinales en hospitales y clínicas."
-  settings={settings}
-  graph={graph}
->
+<Layout title={seo.title} description={seo.description} settings={settings} graph={graph}>
   <Header settings={settings} />
   <main id="contenido">
     <PageHero
-      eyebrow="Servicios"
-      title="Todo lo que su institución necesita en gases medicinales"
-      subtitle="Desde el diseño hasta la verificación final, cubrimos cada etapa bajo la norma ASSE serie 6000 y el código NFPA 99."
+      eyebrow={page?.heroEyebrow ?? seed.heroEyebrow}
+      title={page?.heroTitle ?? seed.heroTitle ?? seo.title}
+      subtitle={page?.heroSubtitle ?? seed.heroSubtitle}
     />
 
     <section class="bg-white">
@@ -94,14 +95,13 @@ const graph = [
         <div class="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           <div data-reveal>
             <div class="text-accent mb-3 text-xs font-semibold tracking-[0.08em] uppercase">
-              Portafolio de Soluciones
+              {productos.eyebrow ?? productosSeed.eyebrow}
             </div>
             <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
-              Productos y repuestos para gases medicinales
+              {productos.heading ?? productosSeed.heading}
             </h2>
             <p class="mt-4 text-base leading-relaxed text-slate-600">
-              Nuestros años en el mercado nos han permitido construir lazos con fabricantes de productos y repuestos.
-              Elaboramos cotizaciones según el proyecto o los requerimientos específicos de cada cliente.
+              {productos.subheading ?? productosSeed.subheading}
             </p>
           </div>
           <ul class="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2" data-reveal>
@@ -124,7 +124,7 @@ const graph = [
       </div>
     </section>
 
-    <ContactCta />
+    <ContactCta settings={settings} />
     <Footer settings={settings} />
   </main>
 </Layout>

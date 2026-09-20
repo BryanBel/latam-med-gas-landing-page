@@ -1,4 +1,5 @@
 import siteSettings from './siteSettings';
+import page from './page';
 import heroSection from './heroSection';
 import aboutSection from './aboutSection';
 import service from './service';
@@ -9,6 +10,7 @@ import testimonial from './testimonial';
 
 export const schemaTypes = [
   siteSettings,
+  page,
   heroSection,
   aboutSection,
   service,
