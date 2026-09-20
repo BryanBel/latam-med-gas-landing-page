@@ -27,7 +27,7 @@ export const DEFAULT_HERO = {
 export const DEFAULT_ABOUT = {
   eyebrow: 'Sobre Nosotros',
   heading: 'Especialistas en sistemas de gases medicinales para instituciones de salud',
-  body: 'Latam Med Gas USA LLC es una empresa con sede en Miami, Florida, dedicada a la inspección, mantenimiento, diseño, asesoría y verificación de sistemas de gases medicinales. Acompañamos a hospitales y centros de salud en Latinoamérica en cada etapa de sus proyectos, bajo los estándares de la norma ASSE serie 6000 y el código NFPA 99, con un programa de capacitación profesional en convenio con CONECOTEC y NITC, entes acreditados para certificar.',
+  body: 'Latam Med Gas USA LLC es una empresa con sede en Miami, Florida, dedicada al diseño, instalación, inspección, mantenimiento, asesoría y verificación de sistemas de gases medicinales. Acompañamos a hospitales y centros de salud en Latinoamérica en cada etapa de sus proyectos, bajo los estándares de la norma ASSE serie 6000 y el código NFPA 99, con un programa de capacitación profesional en convenio con CONECOTEC y NITC, entes acreditados para certificar.',
   highlights: [
     'Cobertura en instituciones de salud públicas y privadas en Latinoamérica',
     'Capacitación bajo la norma ASSE serie 6000, con certificación a través de entes acreditados',
@@ -77,8 +77,7 @@ export const DEFAULT_SERVICES: Service[] = [
   {
     _id: 'seed-cursos',
     title: 'Cursos de Capacitación ASSE 6000',
-    description:
-      'Formación profesional bajo la norma ASSE serie 6000, código NFPA 99, dictada por instructores certificados ASSE 6050.',
+    description: 'Formación profesional para todos los perfiles de la norma ASSE serie 6000 y el código NFPA 99.',
     icon: 'graduation-cap',
     link: '/cursos/',
   },
@@ -294,7 +293,7 @@ export const DEFAULT_COURSES: Course[] = [
   {
     code: '6010',
     title: 'Instalador',
-    description: 'Instalación certificada de sistemas de tubería para gases medicinales.',
+    description: 'Instalación de sistemas de tubería para gases medicinales conforme a la norma.',
   },
   {
     code: '6015',
@@ -309,12 +308,12 @@ export const DEFAULT_COURSES: Course[] = [
   {
     code: '6030',
     title: 'Verificador',
-    description: 'Inspección y pruebas de sistemas de gas medicinal, con certificación e informe final.',
+    description: 'Inspección y pruebas de sistemas de gas medicinal, con informe final de verificación.',
   },
   {
     code: '6035',
     title: 'Verificador a granel',
-    description: 'Verificación y certificación de sistemas de suministro a granel (criogénicos).',
+    description: 'Verificación de sistemas de suministro a granel (criogénicos).',
   },
   {
     code: '6040',
@@ -324,7 +323,7 @@ export const DEFAULT_COURSES: Course[] = [
   {
     code: '6050',
     title: 'Instructor',
-    description: 'Formación e instrucción certificada en sistemas de gases medicinales.',
+    description: 'Formación e instrucción en sistemas de gases medicinales bajo la norma ASSE serie 6000.',
   },
   {
     code: '6055',

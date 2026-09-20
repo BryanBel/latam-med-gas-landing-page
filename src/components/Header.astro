@@ -1,4 +1,6 @@
 ---
+// Mobile-nav toggle + Escape handling live in src/scripts/site.ts, which re-binds on every
+// View Transitions navigation. The button is a real <button> so it stays keyboard-reachable.
 import { NAV_LINKS, DEFAULT_SITE_SETTINGS } from '../lib/content';
 import { sanityImageUrl } from '../lib/sanityImage';
 import type { SiteSettings } from '../lib/sanityQueries';
@@ -88,6 +90,3 @@ const ctaClass =
     </nav>
   </div>
 </header>
-
-<!-- Mobile-nav toggle + Escape handling live in src/scripts/site.ts, which re-binds on every
-     View Transitions navigation. The button is a real <button> so it stays keyboard-reachable. -->

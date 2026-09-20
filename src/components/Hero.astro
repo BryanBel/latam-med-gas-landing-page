@@ -44,9 +44,11 @@ const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
       <h1 class="font-display text-3xl leading-[1.1] font-extrabold tracking-tight text-white md:text-4xl">
         {
           headingWords.map((w, i) => (
-            <span data-reveal data-reveal-delay={80 + i * 55} class="mr-[0.28em] inline-block">
-              {w}
-            </span>
+            <Fragment>
+              <span data-reveal data-reveal-delay={80 + i * 55} class="inline-block">
+                {w}
+              </span>{' '}
+            </Fragment>
           ))
         }
       </h1>

@@ -58,7 +58,12 @@ function initCounters(): void {
       }),
     { threshold: 0.4 },
   );
-  nums.forEach((el) => io.observe(el));
+  // The markup carries the final figure so crawlers and no-JS visitors read it. Zero it only
+  // here, on the path that is definitely going to animate.
+  nums.forEach((el) => {
+    el.textContent = '0';
+    io.observe(el);
+  });
 }
 
 function initTilt(): void {

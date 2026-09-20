@@ -18,11 +18,12 @@ const {
 } = Astro.props;
 
 const light = tone === 'light';
+
+// No border-top on the light tone: every other section change on the page is a diagonal, so a
+// full-width 1px rule here read as a stray horizontal line right under one. It is white, the
+// same ground the diagonal above it reveals, so the two meet with no step.
 ---
 
-<!-- No border-top on the light tone: every other section change on the page is a diagonal,
-     so a full-width 1px rule here read as a stray horizontal line right under one. It is
-     white, the same ground the diagonal above it reveals, so the two meet with no step. -->
 <section class:list={['relative overflow-hidden', light ? 'bg-white' : 'bg-accent-700']}>
   <div class="relative mx-auto w-full max-w-7xl px-5 py-16 text-center md:px-9 md:py-20" data-reveal>
     {
