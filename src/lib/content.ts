@@ -15,7 +15,9 @@ export const DEFAULT_SITE_SETTINGS = {
   // Sin punto final: un eslogan cierra solo, y el punto le quita aire.
   slogan: 'Confianza que fluye en cada línea de gas',
   ctaTitle: '¿Listo para normalizar su sistema de gases medicinales?',
-  ctaText: 'Cuéntenos sobre su institución y le responderemos con la información técnica y comercial que necesite.',
+  // Vacío a propósito: el titular y el botón ya dicen todo, y el párrafo solo repetía la
+  // invitación. Sigue siendo editable desde el Studio si alguna página lo necesita.
+  ctaText: '',
   footerNote: 'Sus datos de contacto se utilizan únicamente para responder a su solicitud.',
 };
 

@@ -1,6 +1,6 @@
 ---
-// Closing call-to-action band. Links to the /contacto page. `tone="navy"` (default) for the
-// interior pages; `tone="light"` for the home, where it follows a navy section.
+// Closing call-to-action band. Links to the /contacto page. Navy by default; `tone="light"`
+// exists for a page where the section above it is already navy.
 import { ArrowRight } from 'lucide-react';
 import type { SiteSettings } from '../lib/sanityQueries';
 import { DEFAULT_SITE_SETTINGS } from '../lib/content';
@@ -17,12 +17,15 @@ const text = Astro.props.text ?? settings?.ctaText ?? DEFAULT_SITE_SETTINGS.ctaT
 
 const light = tone === 'light';
 
-// No border-top on the light tone: every other section change on the page is a diagonal, so a
-// full-width 1px rule here read as a stray horizontal line right under one. It is white, the
-// same ground the diagonal above it reveals, so the two meet with no step.
+// The slogan band above this one is white, so the navy tone cuts its own top edge and the two
+// meet on the diagonal the rest of the page uses. The light tone has nothing to reveal — a
+// clip against the same white is invisible — so it stays square.
+//
+// No border-top on the light tone either: a full-width 1px rule read as a stray horizontal
+// line right under a diagonal.
 ---
 
-<section class:list={['relative overflow-hidden', light ? 'bg-white' : 'bg-accent-700']}>
+<section class:list={['relative overflow-hidden', light ? 'bg-white' : 'bg-accent-700 seam-cut-top']}>
   <div class="relative mx-auto w-full max-w-7xl px-5 py-16 text-center md:px-9 md:py-20" data-reveal>
     <h2
       class:list={[
@@ -32,7 +35,11 @@ const light = tone === 'light';
     >
       {title}
     </h2>
-    <p class:list={['mx-auto mt-4 max-w-[52ch] text-base', light ? 'text-slate-600' : 'text-white/75']}>{text}</p>
+    {
+      text && (
+        <p class:list={['mx-auto mt-4 max-w-[52ch] text-base', light ? 'text-slate-600' : 'text-white/75']}>{text}</p>
+      )
+    }
     <a
       href="/contacto/"
       class:list={[
