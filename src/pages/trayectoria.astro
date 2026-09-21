@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import NavyTexture from '../components/NavyTexture.astro';
 import StatStrip from '../components/StatStrip.astro';
 import ContactCta from '../components/ContactCta.astro';
+import Slogan from '../components/Slogan.astro';
 import PageBlocks from '../components/PageBlocks.astro';
 import Testimonials from '../components/Testimonials.astro';
 import { getSiteSettings, getProjects, getTestimonials, getPage, sectionOf } from '../lib/sanityQueries';
@@ -110,6 +111,7 @@ const graph = [
 
     <Testimonials testimonials={testimonials} heading={testimoniosHeading} />
     <PageBlocks blocks={page?.blocks} />
+    <Slogan settings={settings} />
     <ContactCta settings={settings} />
     <Footer settings={settings} />
   </main>

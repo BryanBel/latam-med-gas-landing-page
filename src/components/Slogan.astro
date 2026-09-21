@@ -1,0 +1,55 @@
+---
+// La promesa de marca, en su propia franja.
+//
+// Antes vivía dentro de ContactCta, en 15px y cursiva, justo encima de un titular que compite
+// con ella: dos mensajes apilados y el más débil arriba, así que se leía como pie de foto. Con
+// franja propia cada uno tiene su turno.
+//
+// El gráfico no es decorativo: la frase interrumpe un tramo de tubería, con dos nodos en rombo
+// donde irían las válvulas. Es de lo que habla el eslogan y es de lo que vive la empresa.
+//
+// Sin cursiva a propósito. El sitio carga Figtree en 600/700/800 y Noto Sans en 400/500/600 —
+// ninguna itálica — así que la cursiva anterior la sintetizaba el navegador inclinando los
+// glifos, que es buena parte de por qué se veía barata.
+import { DEFAULT_SITE_SETTINGS } from '../lib/content';
+import type { SiteSettings } from '../lib/sanityQueries';
+
+interface Props {
+  settings?: SiteSettings | null;
+  // Se pasa vacío en una página donde repetiría algo dicho justo arriba.
+  text?: string;
+}
+
+const { settings } = Astro.props;
+const text = Astro.props.text ?? settings?.slogan ?? DEFAULT_SITE_SETTINGS.slogan;
+---
+
+{
+  text && (
+    <section class="relative overflow-hidden bg-white" aria-label="Eslogan">
+      <div class="mx-auto w-full max-w-7xl px-5 py-14 md:px-9 md:py-16">
+        {/* Desde tablet la tubería atraviesa el ancho y la frase la interrumpe. */}
+        <div class="hidden items-center md:flex" data-reveal>
+          <div class="from-accent/0 to-accent/35 h-px flex-1 bg-gradient-to-r" aria-hidden="true" />
+          <div class="bg-accent mx-5 size-[7px] shrink-0 rotate-45" aria-hidden="true" />
+          <p class="font-display text-accent shrink-0 text-2xl leading-tight font-extrabold text-balance lg:text-3xl">
+            {text}
+          </p>
+          <div class="bg-accent mx-5 size-[7px] shrink-0 rotate-45" aria-hidden="true" />
+          <div class="from-accent/35 to-accent/0 h-px flex-1 bg-gradient-to-r" aria-hidden="true" />
+        </div>
+
+        {/* En móvil la frase ocupa el ancho, así que el tramo de tubería se apila encima en
+          lugar de partirse en dos trozos de pocos píxeles. */}
+        <div class="text-center md:hidden" data-reveal>
+          <div class="mb-4 flex items-center justify-center gap-3" aria-hidden="true">
+            <div class="from-accent/0 to-accent/40 h-px w-14 bg-gradient-to-r" />
+            <div class="bg-accent size-1.5 rotate-45" />
+            <div class="from-accent/40 to-accent/0 h-px w-14 bg-gradient-to-r" />
+          </div>
+          <p class="font-display text-accent text-xl leading-snug font-extrabold text-balance">{text}</p>
+        </div>
+      </div>
+    </section>
+  )
+}

@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PageHero from '../components/PageHero.astro';
 import ContactCta from '../components/ContactCta.astro';
+import Slogan from '../components/Slogan.astro';
 import PageBlocks from '../components/PageBlocks.astro';
 import { getSiteSettings, getCourses, getPage, sectionOf } from '../lib/sanityQueries';
 import { DEFAULT_COURSES, DEFAULT_PAGES, pageSeo } from '../lib/content';
@@ -89,6 +90,7 @@ const graph = [
     </section>
 
     <PageBlocks blocks={page?.blocks} />
+    <Slogan settings={settings} />
     <ContactCta
       settings={settings}
       title={banda.heading ?? bandaSeed.heading}
