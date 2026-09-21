@@ -2,6 +2,7 @@
 // Closing call-to-action band. Links to the /contacto page. Navy by default; `tone="light"`
 // exists for a page where the section above it is already navy.
 import { ArrowRight } from 'lucide-react';
+import NavyTexture from './NavyTexture.astro';
 import type { SiteSettings } from '../lib/sanityQueries';
 import { DEFAULT_SITE_SETTINGS } from '../lib/content';
 
@@ -21,11 +22,26 @@ const light = tone === 'light';
 // on the closing band it cut into the breathing room above the heading and made the page end
 // on a slant instead of on the call to action.
 //
+// The navy tone carries the same gradient and dot field as every other navy section. It was
+// the one flat one, which showed as soon as the diagonal came off and left a plain rectangle
+// next to textured neighbours.
+//
 // No border-top on the light tone either: a full-width 1px rule read as a stray horizontal
 // line right under a diagonal.
 ---
 
-<section class:list={['relative overflow-hidden', light ? 'bg-white' : 'bg-accent-700']}>
+<section
+  class:list={[
+    'relative overflow-hidden',
+    light ? 'bg-white' : 'from-accent-700 via-accent to-accent-400 bg-gradient-to-br',
+  ]}
+>
+  {
+    /* El violeta WAGD no lo usa ninguna otra sección, así que la banda de cierre se distingue
+    de la que tenga encima en cualquier página. El resplandor abajo a la izquierda asienta el
+    final de la página en vez de tirar la mirada hacia arriba. */
+  }
+  {!light && <NavyTexture glow="#7c3aed33" glowClass="-bottom-28 -left-24 h-[420px] w-[420px]" />}
   <div class="relative mx-auto w-full max-w-7xl px-5 py-16 text-center md:px-9 md:py-20" data-reveal>
     <h2
       class:list={[
