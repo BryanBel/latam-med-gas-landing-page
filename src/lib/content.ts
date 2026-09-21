@@ -449,10 +449,10 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
         heading:
           'Los cursos se dictan conforme a la norma ASSE serie 6000. Escríbanos para conocer fechas, modalidades y el temario detallado de cada perfil.',
       },
+      // Sin texto de apoyo, igual que el resto: la banda de cierre es titular y botón, y un
+      // párrafo aquí hacía que esta página terminara más alta que las demás.
       bandaContacto: {
         heading: 'Capacite a su equipo bajo la norma ASSE 6000',
-        subheading:
-          'Solicite información sobre nuestros cursos de capacitación profesional y el trámite de certificación ante los entes acreditados.',
       },
     },
   },
