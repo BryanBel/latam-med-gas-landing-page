@@ -17,15 +17,15 @@ const text = Astro.props.text ?? settings?.ctaText ?? DEFAULT_SITE_SETTINGS.ctaT
 
 const light = tone === 'light';
 
-// The slogan band above this one is white, so the navy tone cuts its own top edge and the two
-// meet on the diagonal the rest of the page uses. The light tone has nothing to reveal — a
-// clip against the same white is invisible — so it stays square.
+// Both edges square, by request. The diagonal belongs to the seams between content sections;
+// on the closing band it cut into the breathing room above the heading and made the page end
+// on a slant instead of on the call to action.
 //
 // No border-top on the light tone either: a full-width 1px rule read as a stray horizontal
 // line right under a diagonal.
 ---
 
-<section class:list={['relative overflow-hidden', light ? 'bg-white' : 'bg-accent-700 seam-cut-top']}>
+<section class:list={['relative overflow-hidden', light ? 'bg-white' : 'bg-accent-700']}>
   <div class="relative mx-auto w-full max-w-7xl px-5 py-16 text-center md:px-9 md:py-20" data-reveal>
     <h2
       class:list={[
