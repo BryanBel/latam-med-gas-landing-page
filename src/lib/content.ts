@@ -14,7 +14,7 @@ export const DEFAULT_SITE_SETTINGS = {
   address: '2 S Biscayne Boulevard, Suite 3200 #2088, Miami, Florida 33132, Estados Unidos',
   // Sin punto final: un eslogan cierra solo, y el punto le quita aire.
   slogan: 'Confianza que fluye en cada línea de gas',
-  ctaTitle: '¿Listo para normalizar su sistema de gases medicinales?',
+  ctaTitle: '¿Listo para poner su sistema de gases medicinales en conformidad?',
   // Vacío a propósito: el titular y el botón ya dicen todo, y el párrafo solo repetía la
   // invitación. Sigue siendo editable desde el Studio si alguna página lo necesita.
   ctaText: '',
@@ -34,10 +34,10 @@ export const DEFAULT_HERO = {
 export const DEFAULT_ABOUT = {
   eyebrow: 'Sobre Nosotros',
   heading: 'Especialistas en sistemas de gases medicinales para instituciones de salud',
-  body: 'Latam Med Gas USA LLC es una empresa con sede en Miami, Florida, dedicada al diseño, instalación, inspección, mantenimiento, asesoría y verificación de sistemas de gases medicinales. Acompañamos a hospitales y centros de salud en Latinoamérica en cada etapa de sus proyectos, bajo los estándares de la norma ASSE serie 6000 y el código NFPA 99, con un programa de capacitación profesional en convenio con CONECOTEC y NITC, entes acreditados para certificar.',
+  body: 'Latam Med Gas USA LLC es una empresa con sede en Miami, Florida, dedicada al diseño, instalación, inspección, mantenimiento, asesoría y verificación de sistemas de gases medicinales. Acompañamos a hospitales y centros de salud en Latinoamérica en cada etapa de sus proyectos, bajo los estándares de la norma ASSE serie 6000 y el código NFPA 99. Nosotros impartimos la capacitación profesional; la certificación la emiten CONECOTEC, acreditado por ema, y NITC.',
   highlights: [
     'Cobertura en instituciones de salud públicas y privadas en Latinoamérica',
-    'Capacitación bajo la norma ASSE serie 6000, con certificación a través de entes acreditados',
+    'Capacitación bajo la norma ASSE serie 6000; la certificación la emiten CONECOTEC, acreditado por ema, y NITC',
     'Venta de equipos de prueba para instalación ASSE 6010 y verificación ASSE 6030',
   ],
 };
@@ -45,8 +45,9 @@ export const DEFAULT_ABOUT = {
 export const DEFAULT_SERVICES: Service[] = [
   {
     _id: 'seed-inspeccion',
-    title: 'Inspección de Sistemas GM',
-    description: 'Revisión técnica de redes y centrales de gases medicinales conforme a la normativa vigente.',
+    title: 'Inspección de sistemas de gases medicinales',
+    description:
+      'Revisión técnica de redes y centrales de gases medicinales conforme a la norma ASSE serie 6000 y el código NFPA 99.',
     icon: 'clipboard-check',
   },
   {
@@ -65,7 +66,7 @@ export const DEFAULT_SERVICES: Service[] = [
     _id: 'seed-instalacion',
     title: 'Instalación',
     description:
-      'Instalación de redes y centrales de gases medicinales bajo los perfiles de la norma ASSE 6010 y el código NFPA 99.',
+      'Instalación de redes y centrales de gases medicinales bajo el perfil ASSE 6010 de la norma serie 6000 y el código NFPA 99.',
     icon: 'hard-hat',
   },
   {
@@ -78,12 +79,12 @@ export const DEFAULT_SERVICES: Service[] = [
     _id: 'seed-verificacion',
     title: 'Verificación',
     description:
-      'Verificación de sistemas de tubería de gases medicinales bajo la norma ASSE 6030, con informe final y anexos.',
+      'Verificación de sistemas de tubería de gases medicinales bajo el perfil ASSE 6030 de la norma serie 6000, con informe final y anexos.',
     icon: 'shield-check',
   },
   {
     _id: 'seed-cursos',
-    title: 'Cursos de Capacitación ASSE 6000',
+    title: 'Cursos de capacitación ASSE 6000',
     description: 'Formación profesional para todos los perfiles de la norma ASSE serie 6000 y el código NFPA 99.',
     icon: 'graduation-cap',
     link: '/cursos/',
@@ -96,7 +97,7 @@ export const DEFAULT_SERVICES: Service[] = [
   },
   {
     _id: 'seed-equipos',
-    title: 'Venta de Equipos de Prueba',
+    title: 'Venta de equipos de prueba',
     description: 'Equipos para instalación bajo ASSE 6010 y verificación bajo ASSE 6030.',
     icon: 'package',
   },
@@ -166,7 +167,7 @@ export const DEFAULT_PROJECTS: Project[] = [
   {
     _id: 'seed-troncoso',
     clientName: 'Centro de Atención de Salud Troncoso',
-    location: 'México',
+    location: 'Ciudad de México',
     country: 'México',
     date: 'Febrero 2024',
     serviceType: 'Verificación',
@@ -176,7 +177,7 @@ export const DEFAULT_PROJECTS: Project[] = [
   {
     _id: 'seed-isla-mujeres-2023',
     clientName: 'Hospital Naval de Isla Mujeres',
-    location: 'Quintana Roo',
+    location: 'Isla Mujeres, Quintana Roo',
     country: 'México',
     date: 'Octubre 2023',
     serviceType: 'Inspección',
@@ -267,7 +268,7 @@ export interface Stat {
   label: string;
 }
 export const DEFAULT_STATS: Stat[] = [
-  { value: 5, suffix: '+', label: 'Años en el mercado' },
+  { value: 6, suffix: '+', label: 'Años en el mercado' },
   { value: 12, suffix: '+', label: 'Proyectos de inspección y verificación' },
   { value: 6, label: 'Países en Latinoamérica' },
   { value: 10, label: 'Cursos ASSE serie 6000' },
@@ -284,7 +285,8 @@ export const DEFAULT_COURSES: Course[] = [
   {
     code: '6005',
     title: 'Generalista',
-    description: 'Comprensión integral de los sistemas y normativas de gases medicinales; rol de apoyo y supervisión.',
+    description:
+      'Comprensión integral de los sistemas de gases medicinales y de las normas que los rigen; no habilita para instalar.',
   },
   {
     code: '6010',
@@ -299,12 +301,12 @@ export const DEFAULT_COURSES: Course[] = [
   {
     code: '6020',
     title: 'Inspector',
-    description: 'Inspección de sistemas de gases medicinales y prevención de reflujo en instalaciones médicas.',
+    description: 'Inspección de la instalación de sistemas de gases medicinales y vacío en instituciones de salud.',
   },
   {
     code: '6030',
     title: 'Verificador',
-    description: 'Inspección y pruebas de sistemas de gas medicinal, con informe final de verificación.',
+    description: 'Inspección y pruebas de sistemas de gases medicinales, con informe final de verificación.',
   },
   {
     code: '6035',
@@ -314,7 +316,7 @@ export const DEFAULT_COURSES: Course[] = [
   {
     code: '6040',
     title: 'Mantenimiento',
-    description: 'Mantenimiento preventivo y correctivo de sistemas de gases médicos.',
+    description: 'Mantenimiento preventivo y correctivo de sistemas de gases medicinales.',
   },
   {
     code: '6050',
@@ -329,7 +331,7 @@ export const DEFAULT_COURSES: Course[] = [
   {
     code: '6060',
     title: 'Diseñador',
-    description: 'Diseño de sistemas de suministro de gas médico conforme al código NFPA 99.',
+    description: 'Diseño de sistemas de suministro de gases medicinales conforme al código NFPA 99.',
   },
 ];
 
@@ -436,7 +438,7 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
     },
   },
   cursos: {
-    seoTitle: 'Cursos de Capacitación ASSE 6000 (6005–6060)',
+    seoTitle: 'Cursos de capacitación ASSE 6000 (6005–6060)',
     metaDescription:
       'Capacitación profesional bajo la norma ASSE serie 6000 y el código NFPA 99: generalista, instalador, inspector, verificador, instructor y diseñador.',
     heroEyebrow: 'Capacitación',
@@ -458,13 +460,13 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
   trayectoria: {
     seoTitle: 'Trayectoria y presencia internacional',
     metaDescription:
-      'Proyectos de inspección y verificación de sistemas de gases medicinales en México, Honduras, Panamá, Venezuela y Bolivia desde 2020.',
+      'Proyectos de inspección y verificación de sistemas de gases medicinales en México, Colombia, Honduras, Panamá, Venezuela y Bolivia desde 2020.',
     heroEyebrow: 'Trayectoria',
     heroTitle: 'Presencia en el mercado desde 2020',
     heroSubtitle:
       'Acompañamos a instituciones de salud de toda Latinoamérica en cada etapa de sus sistemas de gases medicinales —diseño, instalación, inspección, verificación y mantenimiento—, con resultados comprobados año tras año.',
     sections: {
-      proyectosLista: { heading: 'Proyectos de inspección y verificación' },
+      proyectosLista: { heading: 'Proyectos y capacitaciones' },
       testimonios: { heading: 'Lo que dicen las instituciones con las que trabajamos' },
     },
   },
