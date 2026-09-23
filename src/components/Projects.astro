@@ -18,6 +18,10 @@ interface Props {
   subheading?: string;
   ctaLabel?: string;
   stats?: Stat[];
+  // Sin fondo ni trama propios: la sección va dentro de un tramo azul que ya los pone. Es lo
+  // que permite que Trayectoria, el eslogan y la banda de contacto sean una sola superficie en
+  // la portada en vez de tres bloques con costura visible entre ellos.
+  bare?: boolean;
 }
 
 const {
@@ -29,6 +33,7 @@ const {
   subheading = DEFAULT_PAGES.inicio.sections?.proyectos?.subheading,
   ctaLabel = DEFAULT_PAGES.inicio.sections?.proyectos?.ctaLabel,
   stats,
+  bare = false,
 } = Astro.props;
 const source = projects.length > 0 ? projects : DEFAULT_PROJECTS;
 const items = limit ? source.slice(0, limit) : source;
@@ -38,9 +43,12 @@ const fallbackPhotos = [projectVerification, projectPediatric];
 
 <section
   id="proyectos"
-  class="from-accent-700 via-accent to-accent-400 seam-cut-top relative overflow-hidden bg-gradient-to-br"
+  class:list={[
+    'relative overflow-hidden',
+    !bare && 'from-accent-700 via-accent to-accent-400 seam-cut-top bg-gradient-to-br',
+  ]}
 >
-  <NavyTexture glow="#0d948833" glowClass="-top-20 -right-20 h-[380px] w-[380px]" />
+  {!bare && <NavyTexture glow="#0d948833" glowClass="-top-20 -right-20 h-[380px] w-[380px]" />}
 
   <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl" data-reveal>

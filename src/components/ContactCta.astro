@@ -11,8 +11,10 @@ interface Props {
   title?: string;
   text?: string;
   tone?: 'navy' | 'light';
+  // Sin fondo propio: hereda el del tramo azul que la envuelve.
+  bare?: boolean;
 }
-const { settings, tone = 'navy' } = Astro.props;
+const { settings, tone = 'navy', bare = false } = Astro.props;
 const title = Astro.props.title ?? settings?.ctaTitle ?? DEFAULT_SITE_SETTINGS.ctaTitle;
 const text = Astro.props.text ?? settings?.ctaText ?? DEFAULT_SITE_SETTINGS.ctaText;
 
@@ -33,7 +35,7 @@ const light = tone === 'light';
 <section
   class:list={[
     'relative overflow-hidden',
-    light ? 'bg-white' : 'from-accent-700 via-accent to-accent-400 bg-gradient-to-br',
+    bare ? '' : light ? 'bg-white' : 'from-accent-700 via-accent to-accent-400 bg-gradient-to-br',
   ]}
 >
   {
@@ -41,7 +43,7 @@ const light = tone === 'light';
     de la que tenga encima en cualquier página. El resplandor abajo a la izquierda asienta el
     final de la página en vez de tirar la mirada hacia arriba. */
   }
-  {!light && <NavyTexture glow="#7c3aed33" glowClass="-bottom-28 -left-24 h-[420px] w-[420px]" />}
+  {!light && !bare && <NavyTexture glow="#7c3aed33" glowClass="-bottom-28 -left-24 h-[420px] w-[420px]" />}
   <div class="relative mx-auto w-full max-w-7xl px-5 py-16 text-center md:px-9 md:py-20" data-reveal>
     <h2
       class:list={[
