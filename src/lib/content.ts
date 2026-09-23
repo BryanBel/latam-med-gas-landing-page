@@ -92,7 +92,7 @@ export const DEFAULT_SERVICES: Service[] = [
     _id: 'seed-capacitacion',
     title: 'Convenio con entes certificadores',
     description:
-      'Convenio con CONECOTEC, acreditado por ema, y con NITC: los entes certificadores ante los que gestionamos el trámite.',
+      'Convenio con CONECOTEC, acreditado por ema, y con NITC para la certificación del personal que capacitamos.',
     icon: 'award',
   },
   {
@@ -392,7 +392,7 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
     sections: {
       servicios: {
         eyebrow: 'Servicios',
-        heading: 'Todo lo que su institución necesita en gases medicinales',
+        heading: 'Todo lo que su institución necesita en Sistemas de Gases Medicinales',
         subheading:
           'Desde el diseño hasta la verificación final, cubrimos cada etapa bajo la norma ASSE serie 6000 y el código NFPA 99.',
         ctaLabel: 'Ver todos los servicios',
@@ -424,7 +424,7 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
     metaDescription:
       'Verificación, inspección, diseño, asesoría, capacitación ASSE 6000 y comercialización de productos para sistemas de gases medicinales en hospitales y clínicas.',
     heroEyebrow: 'Servicios',
-    heroTitle: 'Todo lo que su institución necesita en gases medicinales',
+    heroTitle: 'Todo lo que su institución necesita en Sistemas de Gases Medicinales',
     heroSubtitle:
       'Desde el diseño hasta la verificación final, cubrimos cada etapa bajo la norma ASSE serie 6000 y el código NFPA 99.',
     sections: {
