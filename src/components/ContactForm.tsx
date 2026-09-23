@@ -1,5 +1,5 @@
 import { useRef, useState, type SyntheticEvent } from 'react';
-import { supabase } from '../lib/supabase';
+import { submitLead, LEAD_LIMITS } from '../lib/leads';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 type FieldErrors = Partial<Record<'name' | 'email' | 'message', string>>;
@@ -48,20 +48,21 @@ export default function ContactForm() {
     setStatus('submitting');
 
     try {
-      const { error } = await supabase.from('leads').insert({
+      await submitLead({
         name: String(data.get('name') || ''),
         email: String(data.get('email') || ''),
         phone: String(data.get('phone') || '') || null,
         company: String(data.get('company') || '') || null,
         message: String(data.get('message') || ''),
       });
-      if (error) throw error;
       setStatus('success');
       form.reset();
       // Move focus to the confirmation — the form it replaces is gone, so without this
       // a keyboard or screen-reader user lands nowhere and never hears the result.
       requestAnimationFrame(() => successRef.current?.focus());
-    } catch {
+    } catch (err) {
+      // El motivo real queda en la consola; al visitante se le da una salida, no un stack.
+      console.error('[contacto] no se pudo registrar el lead:', err);
       setStatus('error');
     }
   }
@@ -98,6 +99,7 @@ export default function ContactForm() {
             name="name"
             type="text"
             autoComplete="name"
+            maxLength={LEAD_LIMITS.name}
             required
             aria-invalid={Boolean(errors.name)}
             aria-describedby={describedBy('name')}
@@ -120,6 +122,7 @@ export default function ContactForm() {
             inputMode="email"
             autoComplete="email"
             spellCheck={false}
+            maxLength={LEAD_LIMITS.email}
             required
             aria-invalid={Boolean(errors.email)}
             aria-describedby={describedBy('email')}
@@ -145,6 +148,7 @@ export default function ContactForm() {
             inputMode="tel"
             autoComplete="tel"
             spellCheck={false}
+            maxLength={LEAD_LIMITS.phone}
             className={inputClass}
           />
         </div>
@@ -152,7 +156,14 @@ export default function ContactForm() {
           <label htmlFor="company" className={labelClass}>
             Empresa / Institución
           </label>
-          <input id="company" name="company" type="text" autoComplete="organization" className={inputClass} />
+          <input
+            id="company"
+            name="company"
+            type="text"
+            autoComplete="organization"
+            maxLength={LEAD_LIMITS.company}
+            className={inputClass}
+          />
         </div>
       </div>
 
@@ -164,6 +175,7 @@ export default function ContactForm() {
           id="message"
           name="message"
           rows={4}
+          maxLength={LEAD_LIMITS.message}
           required
           aria-invalid={Boolean(errors.message)}
           aria-describedby={describedBy('message')}
@@ -176,7 +188,7 @@ export default function ContactForm() {
         )}
       </div>
 
-      <p role="status" aria-live="polite" className="text-xs text-red-600 empty:hidden">
+      <p role="alert" className="text-xs text-red-600 empty:hidden">
         {status === 'error' && 'No se pudo enviar el mensaje. Intente de nuevo o escríbanos directamente por correo.'}
       </p>
 
@@ -187,6 +199,20 @@ export default function ContactForm() {
       >
         {status === 'submitting' ? 'Enviando…' : 'Enviar mensaje'}
       </button>
+
+      {/* El aviso va aquí, en el punto donde se recogen los datos, no solo en el pie. Es lo que
+          piden la LFPDPPP mexicana y la Ley 1581 colombiana, que son la ley de la mayoría de
+          quienes escriben por este formulario. */}
+      <p className="text-2xs mt-3 leading-relaxed text-slate-500">
+        Sus datos se utilizan únicamente para responder a su solicitud.{' '}
+        <a
+          href="/privacidad/"
+          className="text-accent hover:text-accent-600 focus-visible:ring-accent rounded-sm font-medium underline underline-offset-2 focus-visible:ring-2 focus-visible:outline-none"
+        >
+          Política de Privacidad
+        </a>
+        .
+      </p>
     </form>
   );
 }
