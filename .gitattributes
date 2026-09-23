@@ -1,0 +1,16 @@
+# Sin esto, el final de línea de cada archivo dependía de qué herramienta lo escribió último:
+# el repositorio tenía CRLF y LF mezclados, y `prettier --check` marcaba 17 archivos que en
+# realidad no tenían ningún problema de estilo. Normaliza a LF dentro del repositorio; en el
+# disco de Windows Git sigue entregando lo que corresponda.
+* text=auto eol=lf
+
+# Binarios: que Git no intente convertir nada ni calcular diffs de texto sobre ellos.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
+*.bundle binary
