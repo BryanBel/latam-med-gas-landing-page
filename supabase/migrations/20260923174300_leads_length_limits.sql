@@ -8,7 +8,10 @@
 -- Esto acota el tamaño de cada fila. Lo que acota la cantidad de correos es el filtro de
 -- notify-lead; y revocar el INSERT de `anon` para pasar por Turnstile queda como cambio aparte.
 --
--- Aplicar:  npx supabase db push --project-ref xsdmvvsksddnvvclndvu
+-- El nombre tiene que ser una marca de tiempo de 14 dígitos: el CLI ignora en silencio
+-- cualquier otra cosa y responde «Remote database is up to date» sin haber mirado el archivo.
+--
+-- Aplicada el 23 de septiembre de 2026:  npx supabase db push --project-ref xsdmvvsksddnvvclndvu
 --
 -- Si alguna de estas restricciones falla al crearse es porque ya existe una fila que la
 -- incumple. Eso es información, no un problema: revisa esa fila antes de relajar el tope.
