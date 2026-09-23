@@ -4,10 +4,13 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PageHero from '../components/PageHero.astro';
 import ContactCta from '../components/ContactCta.astro';
+import CertifyingBodies from '../components/CertifyingBodies.astro';
 import Slogan from '../components/Slogan.astro';
 import PageBlocks from '../components/PageBlocks.astro';
 import { getSiteSettings, getCourses, getPage, sectionOf } from '../lib/sanityQueries';
 import { DEFAULT_COURSES, DEFAULT_PAGES, pageSeo } from '../lib/content';
+import { Image } from 'astro:assets';
+import cursoFoto from '../assets/photos/curso-asse-6000.jpg';
 import { accentFor } from '../lib/icons';
 
 let settings = null;
@@ -82,14 +85,37 @@ const graph = [
             ))
           }
         </div>
+      </div>
+    </section>
 
-        <p class="mt-10 max-w-3xl text-sm leading-relaxed text-slate-500" data-reveal>
-          {nota}
-        </p>
+    {
+      /* La foto es de un curso real de LMG. Es vertical y el techo del salón se lleva el tercio
+      superior, así que se recorta a 4/5 y se encuadra algo por debajo del centro para que la
+      mesa y los asistentes queden en el eje. */
+    }
+    <section class="bg-white">
+      <div class="mx-auto w-full max-w-7xl px-5 pb-20 md:px-9 md:pb-24">
+        <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+          <div data-reveal>
+            <Image
+              src={cursoFoto}
+              alt="Asistentes tomando notas durante un curso de capacitación de Latam Med Gas"
+              widths={[480, 800, 900]}
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              format="webp"
+              class="aspect-[4/5] w-full rounded-2xl object-cover shadow-xl shadow-slate-200/70 sm:aspect-[4/3] lg:aspect-[4/5]"
+              style={{ objectPosition: 'center 62%' }}
+            />
+          </div>
+          <p class="text-base leading-relaxed text-slate-600" data-reveal>
+            {nota}
+          </p>
+        </div>
       </div>
     </section>
 
     <PageBlocks blocks={page?.blocks} />
+    <CertifyingBodies />
     <Slogan settings={settings} />
     <ContactCta
       settings={settings}

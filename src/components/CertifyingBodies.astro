@@ -1,0 +1,73 @@
+---
+// Los entes que emiten la certificación, con sus logos.
+//
+// Es el respaldo que separa lo que hace LMG de lo que hace un tercero: aquí se capacita, y el
+// certificado lo emite un organismo acreditado. Decirlo con los logos y el número de
+// acreditación pesa más que repetirlo en otra frase.
+//
+// Los logos van sobre tarjetas blancas a propósito: los archivos vienen con fondo blanco, así
+// que sobre la banda gris se verían como recuadros sueltos. En tarjeta, ese blanco es el
+// soporte y no un defecto.
+import { Image } from 'astro:assets';
+import conecotecLogo from '../assets/logos/conecotec.png';
+import emaLogo from '../assets/logos/ema.png';
+
+interface Props {
+  eyebrow?: string;
+  heading?: string;
+}
+
+const { eyebrow = 'Entes certificadores', heading = 'La certificación la emite un organismo acreditado' } = Astro.props;
+
+// NITC entra en cuanto llegue un archivo utilizable: el que enviaron es una captura de 248×122
+// con fondo, no un logo, y junto a estos dos se notaría. Mientras tanto se nombra en el texto,
+// que es lo que importa — no queda fuera, solo sin logo.
+const entes = [
+  {
+    nombre: 'CONECOTEC',
+    logo: conecotecLogo,
+    pie: 'Consultoría Económica y Tecnológica',
+  },
+  {
+    nombre: 'ema',
+    logo: emaLogo,
+    pie: 'Acredita a CONECOTEC como organismo de certificación · 252/25',
+  },
+];
+---
+
+<section class="relative overflow-hidden bg-slate-50">
+  <div class="mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
+    <div class="mb-12 max-w-2xl" data-reveal>
+      <div class="text-accent mb-3 text-xs font-semibold tracking-[0.08em] uppercase">{eyebrow}</div>
+      <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">{heading}</h2>
+      <p class="mt-3 text-base leading-relaxed text-slate-600">
+        Latam Med Gas imparte la capacitación. El certificado lo emiten <strong class="font-semibold">CONECOTEC</strong
+        >, acreditado por <strong class="font-semibold">ema</strong>, y <strong class="font-semibold">NITC</strong>, con
+        los que mantenemos convenio.
+      </p>
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2">
+      {
+        entes.map((ente, i) => (
+          <div
+            data-reveal
+            data-reveal-delay={i * 90}
+            class="flex flex-col items-center rounded-xl bg-white p-8 text-center ring-1 ring-slate-200/80"
+          >
+            <Image
+              src={ente.logo}
+              alt={ente.nombre}
+              widths={[240, 360]}
+              sizes="(min-width: 640px) 240px, 60vw"
+              format="webp"
+              class="h-16 w-auto object-contain"
+            />
+            <p class="mt-6 text-xs leading-relaxed text-balance text-slate-500">{ente.pie}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

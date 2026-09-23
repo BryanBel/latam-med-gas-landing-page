@@ -91,8 +91,7 @@ export const DEFAULT_SERVICES: Service[] = [
   {
     _id: 'seed-capacitacion',
     title: 'Convenio con entes certificadores',
-    description:
-      'Convenio con CONECOTEC, acreditado por ema, y con NITC para la certificación del personal que capacitamos.',
+    description: 'Nosotros capacitamos; la certificación será emitida por CONECOTEC, acreditado por ema, y NITC.',
     icon: 'award',
   },
   {
