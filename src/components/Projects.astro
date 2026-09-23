@@ -38,7 +38,13 @@ const {
 const source = projects.length > 0 ? projects : DEFAULT_PROJECTS;
 const items = limit ? source.slice(0, limit) : source;
 // Shown for any project (seed or real Sanity doc) that doesn't have its own uploaded image yet.
-const fallbackPhotos = [projectVerification, projectPediatric];
+// Cada una lleva su propio alt: describe la foto que se ve, no el hospital de la ficha, que es
+// otro sitio. En cuanto el cliente suba la foto real del proyecto, el alt pasa a ser el nombre
+// del hospital, que entonces sí es cierto.
+const fallbackPhotos = [
+  { src: projectVerification, alt: 'Sala hospitalaria durante la verificación de su sistema de gases medicinales' },
+  { src: projectPediatric, alt: 'Cabecero hospitalario con tomas de gases medicinales instaladas' },
+];
 ---
 
 <section
@@ -76,7 +82,8 @@ const fallbackPhotos = [projectVerification, projectPediatric];
                 alt={p.clientName}
                 caption={p.clientName}
                 aspect="aspect-[21/9]"
-                fallback={fallbackPhotos[i % fallbackPhotos.length]}
+                fallback={fallbackPhotos[i % fallbackPhotos.length].src}
+                fallbackAlt={fallbackPhotos[i % fallbackPhotos.length].alt}
               />
               {p.serviceType && (
                 <span class="text-accent-700 font-display text-2xs absolute top-4 left-4 rounded-full bg-white/90 px-2.5 py-1 font-bold backdrop-blur">

@@ -14,7 +14,6 @@ interface Props {
 const { hero } = Astro.props;
 const eyebrow = hero?.eyebrow ?? DEFAULT_HERO.eyebrow;
 const heading = hero?.heading ?? DEFAULT_HERO.heading;
-const headingWords = heading.split(' ');
 const subheading = hero?.subheading ?? DEFAULT_HERO.subheading;
 const ctaLabel = hero?.ctaLabel ?? DEFAULT_HERO.ctaLabel;
 const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
@@ -41,16 +40,16 @@ const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
       >
         {eyebrow}
       </span>
+      {
+        /* Sin `data-reveal`: este titular es el candidato a LCP de la portada y antes entraba
+          palabra por palabra desde opacity 0 — diez spans escalonados, la última aterrizaba
+          ~1.2s después de entrar en viewport, y el navegador no cuenta el LCP hasta que el
+          elemento se pinta a su opacidad final. Pinta de una. El resto del hero (antetítulo,
+          bajada, botones) conserva la entrada escalonada, así que la coreografía se mantiene
+          alrededor del titular en vez de retrasarlo. */
+      }
       <h1 class="font-display text-3xl leading-[1.1] font-extrabold tracking-tight text-white md:text-4xl">
-        {
-          headingWords.map((w, i) => (
-            <Fragment>
-              <span data-reveal data-reveal-delay={80 + i * 55} class="inline-block">
-                {w}
-              </span>{' '}
-            </Fragment>
-          ))
-        }
+        {heading}
       </h1>
       <p
         data-reveal

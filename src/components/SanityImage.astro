@@ -17,6 +17,11 @@ interface Props {
   // imported asset itself, not its `.src`: a bare URL skips astro:assets, which is how the
   // 1.1 MB hero PNG ended up being served untouched.
   fallback?: ImageMetadata;
+  // Alt para cuando se muestra `fallback` en vez de la imagen de Sanity. Existe porque el alt
+  // de la ficha describe el contenido real — «Hospital General de Tuxtla Gutiérrez» — y la foto
+  // de relleno no es ese hospital: anunciarla así engaña a quien usa lector de pantalla y le da
+  // a Google una asociación falsa entre foto y nombre. Sin este prop se usa `alt` para las dos.
+  fallbackAlt?: string;
   // How wide the image actually renders, for the srcset. Defaults to the common case here:
   // full width on phones, half of the container from tablet up.
   sizes?: string;
@@ -32,6 +37,7 @@ const {
   class: className = '',
   width = 1200,
   fallback,
+  fallbackAlt,
   sizes = '(min-width: 768px) 50vw, 100vw',
   priority = false,
 } = Astro.props;
@@ -61,6 +67,8 @@ const optimized =
     : null;
 
 const src = sanitySrc ?? optimized?.src ?? null;
+// El alt sigue a la imagen que realmente se pinta, no a la ficha que la rodea.
+const altText = sanitySrc ? alt : (fallbackAlt ?? alt);
 const srcset = optimized?.srcSet?.attribute || undefined;
 ---
 
@@ -70,7 +78,7 @@ const srcset = optimized?.srcSet?.attribute || undefined;
       src={src}
       srcset={srcset}
       sizes={srcset ? sizes : undefined}
-      alt={alt}
+      alt={altText}
       width={width}
       height={height}
       loading={priority ? 'eager' : 'lazy'}

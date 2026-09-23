@@ -24,21 +24,25 @@ const { eyebrow = 'Entes certificadores', heading = 'La certificación la emite 
 // fondo que llegó en el envío. Son 220×105 con transparencia: alcanza para la altura a la que
 // se muestra, pero es lo más chico de los tres, así que si NITC manda un vectorial conviene
 // cambiarlo. Queda pendiente pedirles por escrito la autorización de uso de marca.
+// El pie dice el papel de cada uno, no la expansión de la sigla. Un gerente de hospital en
+// Bogotá o Panamá no tiene por qué saber qué es «ema», y antes la tarjeta lo daba por sabido:
+// decía «acredita a CONECOTEC» sin decir nunca quién acredita. Quién es cada uno y qué aporta
+// es lo que hace que el respaldo signifique algo.
 const entes = [
   {
     nombre: 'CONECOTEC',
     logo: conecotecLogo,
-    pie: 'Consultoría Económica y Tecnológica',
+    pie: 'Organismo de certificación de personas, acreditado por ema',
   },
   {
     nombre: 'ema',
     logo: emaLogo,
-    pie: 'Acredita a CONECOTEC como organismo de certificación · 252/25',
+    pie: 'Entidad Mexicana de Acreditación · acreditación 252/25',
   },
   {
     nombre: 'NITC',
     logo: nitcLogo,
-    pie: 'National Inspection Testing and Certification',
+    pie: 'National Inspection Testing and Certification Corporation · Estados Unidos',
   },
 ];
 ---
