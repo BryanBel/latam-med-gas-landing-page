@@ -11,6 +11,7 @@
 import { Image } from 'astro:assets';
 import conecotecLogo from '../assets/logos/conecotec.png';
 import emaLogo from '../assets/logos/ema.png';
+import nitcLogo from '../assets/logos/nitc.png';
 
 interface Props {
   eyebrow?: string;
@@ -19,9 +20,10 @@ interface Props {
 
 const { eyebrow = 'Entes certificadores', heading = 'La certificación la emite un organismo acreditado' } = Astro.props;
 
-// NITC entra en cuanto llegue un archivo utilizable: el que enviaron es una captura de 248×122
-// con fondo, no un logo, y junto a estos dos se notaría. Mientras tanto se nombra en el texto,
-// que es lo que importa — no queda fuera, solo sin logo.
+// El archivo de NITC es el oficial de su propio sitio (nationalitc.net), no la captura con
+// fondo que llegó en el envío. Son 220×105 con transparencia: alcanza para la altura a la que
+// se muestra, pero es lo más chico de los tres, así que si NITC manda un vectorial conviene
+// cambiarlo. Queda pendiente pedirles por escrito la autorización de uso de marca.
 const entes = [
   {
     nombre: 'CONECOTEC',
@@ -33,6 +35,11 @@ const entes = [
     logo: emaLogo,
     pie: 'Acredita a CONECOTEC como organismo de certificación · 252/25',
   },
+  {
+    nombre: 'NITC',
+    logo: nitcLogo,
+    pie: 'National Inspection Testing and Certification',
+  },
 ];
 ---
 
@@ -42,13 +49,11 @@ const entes = [
       <div class="text-accent mb-3 text-xs font-semibold tracking-[0.08em] uppercase">{eyebrow}</div>
       <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">{heading}</h2>
       <p class="mt-3 text-base leading-relaxed text-slate-600">
-        Latam Med Gas imparte la capacitación. El certificado lo emiten <strong class="font-semibold">CONECOTEC</strong
-        >, acreditado por <strong class="font-semibold">ema</strong>, y <strong class="font-semibold">NITC</strong>, con
-        los que mantenemos convenio.
+        Latam Med Gas imparte la capacitación. El certificado lo emiten los organismos con los que mantenemos convenio.
       </p>
     </div>
 
-    <div class="grid gap-5 sm:grid-cols-2">
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {
         entes.map((ente, i) => (
           <div
