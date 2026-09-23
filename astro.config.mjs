@@ -9,11 +9,27 @@ import sanity from '@sanity/astro';
 
 // astro.config.mjs runs in plain Node, so .env values must be loaded explicitly
 // (import.meta.env inside components is populated by Vite separately).
-const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET, PUBLIC_SANITY_PREVIEW, SANITY_VIEWER_TOKEN } = loadEnv(
-  process.env.NODE_ENV ?? 'development',
-  process.cwd(),
-  '',
-);
+const {
+  PUBLIC_SANITY_PROJECT_ID,
+  PUBLIC_SANITY_DATASET,
+  PUBLIC_SANITY_PREVIEW,
+  SANITY_VIEWER_TOKEN,
+  PUBLIC_TURNSTILE_SITE_KEY,
+} = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), '');
+
+// Sin esta clave el widget de Turnstile no se dibuja, el formulario no consigue token y la
+// edge function rechaza todo envío: el formulario de contacto queda inservible. Es una variable
+// que solo existe si alguien la dio de alta en el proyecto de Cloudflare, así que es justo el
+// tipo de cosa que se olvida y que no se nota hasta que un cliente no puede escribir. Que falle
+// aquí, ruidosamente, en vez de desplegar un formulario roto.
+if (!PUBLIC_TURNSTILE_SITE_KEY) {
+  throw new Error(
+    'Falta PUBLIC_TURNSTILE_SITE_KEY. El formulario de contacto la necesita para dibujar el ' +
+      'widget de Turnstile y obtener el token que exige la edge function submit-lead.\n' +
+      '  · Local: añádela a .env (clave de prueba: 1x00000000000000000000AA).\n' +
+      '  · Producción: Cloudflare → Workers → latam-med-gas-web → Settings → Variables.',
+  );
+}
 
 // The preview deployment is this same repository built with PUBLIC_SANITY_PREVIEW=true, as a
 // second Cloudflare Worker. It renders on the server so a saved draft shows immediately, and it
