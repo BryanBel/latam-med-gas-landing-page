@@ -1,8 +1,34 @@
-import { useRef, useState, type SyntheticEvent } from 'react';
-import { submitLead, LEAD_LIMITS } from '../lib/leads';
+import { useEffect, useRef, useState, type SyntheticEvent } from 'react';
+import { submitLead, LEAD_LIMITS, TURNSTILE_SITE_KEY } from '../lib/leads';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 type FieldErrors = Partial<Record<'name' | 'email' | 'message', string>>;
+
+// La API que inyecta el script de Cloudflare. Solo lo que se usa aquí.
+interface Turnstile {
+  render: (
+    el: HTMLElement,
+    opts: {
+      sitekey: string;
+      execution?: 'render' | 'execute';
+      appearance?: 'always' | 'execute' | 'interaction-only';
+      callback?: (token: string) => void;
+      'error-callback'?: () => void;
+      'expired-callback'?: () => void;
+      language?: string;
+    },
+  ) => string;
+  execute: (id: string) => void;
+  reset: (id: string) => void;
+  remove: (id: string) => void;
+}
+declare global {
+  interface Window {
+    turnstile?: Turnstile;
+  }
+}
+
+const SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 
 const inputClass =
   'w-full rounded-lg ring-1 ring-slate-200 px-4 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent';
@@ -21,10 +47,118 @@ function validate(data: FormData): FieldErrors {
   return errors;
 }
 
+/** Carga el script una sola vez aunque el componente se monte varias veces. */
+function cargarTurnstile(): Promise<void> {
+  if (window.turnstile) return Promise.resolve();
+  const existente = document.querySelector<HTMLScriptElement>(`script[src="${SCRIPT_SRC}"]`);
+  if (existente) {
+    return new Promise((resolve, reject) => {
+      existente.addEventListener('load', () => resolve(), { once: true });
+      existente.addEventListener('error', () => reject(new Error('turnstile')), { once: true });
+    });
+  }
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = SCRIPT_SRC;
+    s.async = true;
+    s.defer = true;
+    s.addEventListener('load', () => resolve(), { once: true });
+    s.addEventListener('error', () => reject(new Error('turnstile')), { once: true });
+    document.head.appendChild(s);
+  });
+}
+
 export default function ContactForm() {
   const [status, setStatus] = useState<Status>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
   const [errors, setErrors] = useState<FieldErrors>({});
   const successRef = useRef<HTMLParagraphElement>(null);
+
+  // El widget va en modo `execute`: no pide nada al cargar, se dispara al enviar. Con
+  // `interaction-only` no dibuja nada salvo que Cloudflare decida que hace falta un reto, así
+  // que el formulario se ve igual que antes para casi todo el mundo.
+  const cajaRef = useRef<HTMLDivElement>(null);
+  const widgetId = useRef<string | null>(null);
+  // Turnstile devuelve el token por callback, no por promesa. Esto es el puente: `execute()`
+  // dispara, y el callback resuelve lo que `handleSubmit` está esperando.
+  const pendiente = useRef<{ resolve: (t: string) => void; reject: (e: Error) => void } | null>(null);
+
+  useEffect(() => {
+    let cancelado = false;
+
+    cargarTurnstile()
+      .then(() => {
+        if (cancelado || !cajaRef.current || !window.turnstile || widgetId.current) return;
+        widgetId.current = window.turnstile.render(cajaRef.current, {
+          sitekey: TURNSTILE_SITE_KEY,
+          execution: 'execute',
+          appearance: 'interaction-only',
+          language: 'es',
+          callback: (token) => {
+            pendiente.current?.resolve(token);
+            pendiente.current = null;
+          },
+          'error-callback': () => {
+            pendiente.current?.reject(new Error('No se pudo completar la verificación anti-spam.'));
+            pendiente.current = null;
+          },
+          'expired-callback': () => {
+            pendiente.current?.reject(new Error('La verificación caducó. Intente de nuevo.'));
+            pendiente.current = null;
+          },
+        });
+      })
+      .catch(() => {
+        // Sin script no hay token, y sin token la función rechaza el envío. Se avisa aquí en
+        // lugar de dejar que el visitante escriba el mensaje entero y lo pierda al enviar.
+        if (!cancelado) {
+          setStatus('error');
+          setErrorMsg('No se pudo cargar la verificación anti-spam. Recargue la página o escríbanos por correo.');
+        }
+      });
+
+    return () => {
+      cancelado = true;
+      if (widgetId.current && window.turnstile) {
+        window.turnstile.remove(widgetId.current);
+        widgetId.current = null;
+      }
+    };
+  }, []);
+
+  function obtenerToken(): Promise<string> {
+    const id = widgetId.current;
+    if (!id || !window.turnstile) {
+      return Promise.reject(new Error('La verificación anti-spam aún no está lista. Intente de nuevo en un momento.'));
+    }
+    return new Promise<string>((resolve, reject) => {
+      // Con tiempo límite. Turnstile responde por callback, y si por lo que sea no llama a
+      // ninguno —ni al de éxito ni al de error— la promesa no se resuelve nunca y el botón se
+      // queda en «Enviando…» para siempre. Mejor un error que el visitante pueda leer.
+      const timer = setTimeout(() => {
+        if (pendiente.current !== handlers) return;
+        pendiente.current = null;
+        reject(new Error('La verificación anti-spam tardó demasiado. Intente de nuevo o escríbanos por correo.'));
+      }, 20_000);
+
+      const handlers = {
+        resolve: (token: string) => {
+          clearTimeout(timer);
+          resolve(token);
+        },
+        reject: (err: Error) => {
+          clearTimeout(timer);
+          reject(err);
+        },
+      };
+      pendiente.current = handlers;
+
+      // Cada token sirve una sola vez, así que se parte de cero en cada envío — si no, un
+      // segundo intento reenviaría el token ya gastado y la función lo rechazaría.
+      window.turnstile!.reset(id);
+      window.turnstile!.execute(id);
+    });
+  }
 
   async function handleSubmit(e: SyntheticEvent<HTMLFormElement, SubmitEvent>) {
     e.preventDefault();
@@ -46,23 +180,32 @@ export default function ContactForm() {
     }
 
     setStatus('submitting');
+    setErrorMsg('');
 
     try {
-      await submitLead({
-        name: String(data.get('name') || ''),
-        email: String(data.get('email') || ''),
-        phone: String(data.get('phone') || '') || null,
-        company: String(data.get('company') || '') || null,
-        message: String(data.get('message') || ''),
-      });
+      const token = await obtenerToken();
+      await submitLead(
+        {
+          name: String(data.get('name') || ''),
+          email: String(data.get('email') || ''),
+          phone: String(data.get('phone') || '') || null,
+          company: String(data.get('company') || '') || null,
+          message: String(data.get('message') || ''),
+        },
+        token,
+      );
       setStatus('success');
       form.reset();
       // Move focus to the confirmation — the form it replaces is gone, so without this
       // a keyboard or screen-reader user lands nowhere and never hears the result.
       requestAnimationFrame(() => successRef.current?.focus());
     } catch (err) {
-      // El motivo real queda en la consola; al visitante se le da una salida, no un stack.
       console.error('[contacto] no se pudo registrar el lead:', err);
+      setErrorMsg(
+        err instanceof Error && err.message
+          ? err.message
+          : 'No se pudo enviar el mensaje. Intente de nuevo o escríbanos directamente por correo.',
+      );
       setStatus('error');
     }
   }
@@ -188,8 +331,11 @@ export default function ContactForm() {
         )}
       </div>
 
+      {/* Donde Turnstile dibuja el reto si hace falta. Vacío el resto del tiempo. */}
+      <div ref={cajaRef} className="empty:hidden" />
+
       <p role="alert" className="text-xs text-red-600 empty:hidden">
-        {status === 'error' && 'No se pudo enviar el mensaje. Intente de nuevo o escríbanos directamente por correo.'}
+        {status === 'error' && errorMsg}
       </p>
 
       <button
@@ -211,7 +357,7 @@ export default function ContactForm() {
         >
           Política de Privacidad
         </a>
-        .
+        . Protegido por Cloudflare Turnstile.
       </p>
     </form>
   );

@@ -1,0 +1,26 @@
+-- Cierra la puerta que Turnstile vino a cerrar.
+--
+-- Hasta aquí `anon` podía insertar en `leads` con `with check (true)`, y la anon key es pública
+-- por diseño: viaja en el bundle del sitio. Cualquiera podía copiarla y escribir filas, y como
+-- cada fila dispara el webhook que manda correo por Resend, un POST sin autenticar equivalía a
+-- un correo — al buzón de trabajo de la empresa, desde send.latammedgas.com.
+--
+-- Con esta migración la única vía para escribir en `leads` es la edge function `submit-lead`,
+-- que comprueba el token de Turnstile y luego inserta con el service role, que salta RLS.
+--
+-- ORDEN IMPORTA. Esto va en último lugar: si se aplica antes de que la función esté desplegada
+-- y el sitio en producción apunte a ella, el formulario deja de registrar mensajes. Y lo hace
+-- en silencio desde fuera, porque el visitante seguiría viendo su error genérico mientras los
+-- leads se pierden. Secuencia correcta:
+--
+--   1. supabase secrets set TURNSTILE_SECRET_KEY=…
+--   2. supabase functions deploy submit-lead --no-verify-jwt
+--   3. desplegar el sitio y comprobar que un envío real llega
+--   4. esta migración
+--
+-- Para revertir, si hiciera falta volver atrás en caliente:
+--
+--   create policy "anon can submit leads" on public.leads
+--     for insert to anon with check (true);
+
+drop policy if exists "anon can submit leads" on public.leads;

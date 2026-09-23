@@ -4,3 +4,4 @@ node_modules/
 pnpm-lock.yaml
 public/_headers
 .claude/settings.local.json
+.env.example

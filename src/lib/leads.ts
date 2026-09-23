@@ -1,19 +1,21 @@
-// Envío del formulario de contacto a Supabase.
+// Envío del formulario de contacto.
 //
-// Antes esto era `@supabase/supabase-js` completo — auth, realtime, storage, postgrest — para
-// hacer un solo INSERT. Son ~200 KB de JavaScript en la única página donde el visitante ya
-// decidió escribirnos, que es justo donde menos conviene hacerle esperar. PostgREST es una API
-// HTTP normal: un `fetch` hace exactamente lo mismo.
+// Va contra la edge function `submit-lead`, no contra PostgREST. Antes el navegador insertaba
+// directo con la anon key, que es pública: cualquiera podía copiarla del bundle y escribir en
+// `leads`, y como cada fila dispara un correo, eso equivalía a mandar correos. Ahora el INSERT
+// de `anon` está revocado y la única vía es la función, que exige un token de Turnstile válido
+// —de un solo uso— antes de escribir con el service role.
 //
-// La anon key es pública por diseño (viaja en el bundle, como antes) y RLS solo permite INSERT
-// sobre `leads`, nunca SELECT. Quien la copie puede escribir filas, no leerlas.
+// La validación de aquí abajo es por comodidad del visitante, no una defensa: la función
+// revalida todo por su cuenta, porque quien la llame no tiene por qué haber pasado por aquí.
 
 const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
-// Los mismos topes que el CHECK de la migración 0002. Están aquí para que el formulario los
-// aplique con `maxLength` y el visitante vea el límite antes de enviar, en vez de recibir un
-// error del servidor por algo que se podía avisar en el campo.
+export const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+
+// Los mismos topes que los CHECK de la migración 20260923174300 y que la edge function. Están
+// aquí para que el formulario los aplique con `maxLength` y el visitante vea el límite antes de
+// enviar, en vez de recibir un error por algo que se podía avisar en el campo.
 export const LEAD_LIMITS = {
   name: 120,
   email: 200,
@@ -30,27 +32,29 @@ export interface Lead {
   message: string;
 }
 
-export async function submitLead(lead: Lead): Promise<void> {
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    throw new Error('Faltan PUBLIC_SUPABASE_URL o PUBLIC_SUPABASE_ANON_KEY');
+/** Lanza con un mensaje ya apto para mostrar al visitante. */
+export async function submitLead(lead: Lead, turnstileToken: string): Promise<void> {
+  if (!SUPABASE_URL) throw new Error('No se pudo enviar el mensaje. Intente de nuevo más tarde.');
+
+  let res: Response;
+  try {
+    res = await fetch(`${SUPABASE_URL}/functions/v1/submit-lead`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...lead, turnstileToken }),
+    });
+  } catch {
+    // Sin red, o bloqueado por una extensión. No es lo mismo que un rechazo del servidor.
+    throw new Error('No hay conexión con el servidor. Revise su red e intente de nuevo.');
   }
 
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
-    method: 'POST',
-    headers: {
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json',
-      // Sin esto PostgREST devuelve la fila insertada, que la política RLS no deja leer: la
-      // inserción funciona y la respuesta falla igual.
-      Prefer: 'return=minimal',
-    },
-    body: JSON.stringify(lead),
-  });
+  if (res.ok) return;
 
-  if (!res.ok) {
-    // El cuerpo del error de PostgREST trae el motivo (violación de CHECK, de RLS…). Va al
-    // console para poder diagnosticar; al visitante se le muestra el mensaje genérico.
-    throw new Error(`Supabase respondió ${res.status}: ${await res.text().catch(() => '')}`);
-  }
+  // La función devuelve un mensaje pensado para el visitante; si no llega uno, se usa el
+  // genérico en vez de enseñar un código de estado.
+  const detalle = await res
+    .json()
+    .then((d) => (typeof d?.error === 'string' ? d.error : ''))
+    .catch(() => '');
+  throw new Error(detalle || 'No se pudo enviar el mensaje. Intente de nuevo o escríbanos por correo.');
 }
