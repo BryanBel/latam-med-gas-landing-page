@@ -21,6 +21,43 @@ interface LeadRow {
   created_at?: string;
 }
 
+// Cada INSERT en `leads` dispara un correo. La anon key es pública y RLS deja insertar a
+// cualquiera, así que un POST sin autenticar equivale a un correo: el daño real de un ataque no
+// son filas basura en una tabla, es inundar el buzón de trabajo de la empresa y quemar la
+// reputación de send.latammedgas.com en Resend.
+//
+// El filtro puntúa señales en vez de contar volumen. Un tope por hora también frenaría la
+// inundación, pero silenciaría al cliente legítimo que escriba durante el ataque; puntuando, ese
+// cliente pasa igual. La fila siempre se guarda — esto solo decide si además se avisa — así que
+// un falso positivo cuesta un aviso, nunca un lead.
+//
+// Se suprime a partir de 2 puntos: un mensaje legítimo que incluya un enlace al sitio del
+// hospital suma 1 y se notifica igual.
+const SPAM_KEYWORDS =
+  /\b(seo|backlink|link building|crypto|bitcoin|casino|viagra|forex|payday|loan|traffic|ranking)\b/i;
+// Cirílico y CJK: el sitio es en español para Latinoamérica.
+const NON_LATIN = /[Ѐ-ӿ一-鿿぀-ヿ]/;
+// Dos copias a propósito: `.test()` sobre un regex con /g avanza `lastIndex` y se lo lleva a la
+// siguiente llamada, y estas constantes viven en el módulo, que Deno reutiliza entre peticiones
+// del mismo isolate. La versión con /g se usa solo con `match`, que sí deja lastIndex en 0.
+const URL_RE = /(https?:\/\/|www\.)/i;
+const URL_RE_G = /(https?:\/\/|www\.)/gi;
+
+function spamScore(lead: LeadRow): { score: number; reasons: string[] } {
+  const reasons: string[] = [];
+  const blob = `${lead.name} ${lead.company ?? ''} ${lead.message}`;
+  const urls = lead.message.match(URL_RE_G)?.length ?? 0;
+
+  if (urls > 0) reasons.push('url');
+  if (urls > 1) reasons.push('urls-multiples');
+  if (NON_LATIN.test(blob)) reasons.push('alfabeto-no-latino');
+  if (SPAM_KEYWORDS.test(blob)) reasons.push('palabra-clave');
+  if (URL_RE.test(lead.name)) reasons.push('url-en-nombre');
+  if (lead.name.trim() === lead.message.trim()) reasons.push('nombre-igual-a-mensaje');
+
+  return { score: reasons.length, reasons };
+}
+
 // Human-readable timestamp for the email. The webhook payload carries created_at (UTC);
 // we render it in Mexico City time since that is where the verification unit operates.
 function formatFecha(value?: string): string {
@@ -56,6 +93,17 @@ serve(async (req) => {
     }
   } catch {
     return new Response('Invalid JSON payload', { status: 400 });
+  }
+
+  // La fila ya está guardada cuando llegamos aquí — esto decide únicamente si se manda el aviso.
+  // Se devuelve 200 para que Supabase no reintente el webhook: no hubo ningún fallo.
+  const { score, reasons } = spamScore(lead);
+  if (score >= 2) {
+    console.log(`Lead retenido sin notificar (puntuación ${score}: ${reasons.join(', ')}) — ${lead.email}`);
+    return new Response('OK (notificación omitida)', { status: 200 });
+  }
+  if (score > 0) {
+    console.log(`Lead con señal débil de spam (puntuación ${score}: ${reasons.join(', ')}) — se notifica igual`);
   }
 
   // Plain-text alternative alongside the HTML. An HTML-only message is itself a spam signal.
