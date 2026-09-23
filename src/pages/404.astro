@@ -23,12 +23,13 @@ const seo = pageSeo('404', page);
 
 <Layout title={seo.title} description={seo.description} settings={settings}>
   <Header settings={settings} />
-  <main id="contenido">
-    {
-      /* Reuses the Contacto screen wrapper so the message and the footer share one viewport
-        instead of the footer sitting below the fold on an otherwise empty page. */
-    }
-    <div class="contact-screen">
+  {
+    /* The wrapper sits outside <main> so the message and the footer still share one viewport
+      — instead of the footer sitting below the fold on an otherwise empty page — while the
+      footer stays a sibling of main and keeps its contentinfo landmark. */
+  }
+  <div class="contact-screen">
+    <main id="contenido">
       <section
         class="from-accent-700 via-accent to-accent-400 seam-cut-bottom relative overflow-hidden bg-gradient-to-br"
       >
@@ -64,8 +65,7 @@ const seo = pageSeo('404', page);
           </div>
         </div>
       </section>
-
-      <Footer settings={settings} />
-    </div>
-  </main>
+    </main>
+    <Footer settings={settings} />
+  </div>
 </Layout>

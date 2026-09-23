@@ -17,13 +17,12 @@ try {
 const seed = DEFAULT_PAGES.privacidad;
 const seo = pageSeo('privacidad', page);
 const sections = page?.contentSections?.length ? page.contentSections : (seed.contentSections ?? []);
-const siteName = settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName;
 const email = settings?.email ?? DEFAULT_SITE_SETTINGS.email;
 const address = settings?.address ?? DEFAULT_SITE_SETTINGS.address;
 ---
 
 <Layout title={seo.title} description={seo.description} settings={settings}>
-  <Header settings={null} />
+  <Header settings={settings} />
   <main id="contenido">
     <div class="mx-auto max-w-3xl px-5 py-16 md:px-9 md:py-20">
       <div class="text-accent mb-3 text-xs font-semibold tracking-[0.08em] uppercase">Legal</div>
@@ -31,11 +30,13 @@ const address = settings?.address ?? DEFAULT_SITE_SETTINGS.address;
         {page?.heroTitle ?? seed.heroTitle}
       </h1>
 
-      <p class="border-accent bg-accent-50 text-ink mt-8 rounded-lg border-l-[3px] px-5 py-4 text-sm leading-relaxed">
-        <strong>Borrador.</strong> Este texto describe con exactitud qué hace el sitio, pero
-        <strong>aún no ha sido revisado legalmente</strong>. Debe ser aprobado o reemplazado por el texto definitivo de
-        {siteName} antes del lanzamiento.
-      </p>
+      {
+        /* Sin aviso de borrador. Estuvo en vivo desde el lanzamiento diciendo que el sitio aún
+          no había lanzado, que es lo peor de los dos mundos: restaba confianza al visitante y
+          no acercaba la revisión legal. El texto describe con exactitud lo que hace el sitio,
+          así que como política es válida; que un abogado de la empresa la revise sigue
+          pendiente y está anotado en las dudas del cliente, no en la cara del visitante. */
+      }
 
       {
         sections.map(({ heading, body }) => (
@@ -60,10 +61,8 @@ const address = settings?.address ?? DEFAULT_SITE_SETTINGS.address;
         </p>
       </section>
 
-      <p class="mt-12 text-xs text-slate-500">
-        Última actualización: <em>pendiente de aprobación</em>.
-      </p>
+      <p class="mt-12 text-xs text-slate-500">Última actualización: 23 de septiembre de 2026.</p>
     </div>
   </main>
-  <Footer settings={null} />
+  <Footer settings={settings} />
 </Layout>

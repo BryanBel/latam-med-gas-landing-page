@@ -24,6 +24,11 @@
      America. Chosen from a side-by-side comparison of four pairings on real page copy. */
   --font-display: 'Figtree', ui-sans-serif, system-ui, sans-serif;
   --font-body: 'Noto Sans', ui-sans-serif, system-ui, sans-serif;
+  /* Only for standard designations — "ASSE 6000 · NFPA 99", "Error 404" — where a mono reads
+     as a spec reference rather than prose. No mono file is loaded, so this is deliberately a
+     system stack; declaring it here stops Tailwind's default leaking in as an untracked third
+     typeface, and keeps the fallback order ours. */
+  --font-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Menlo, Consolas, monospace;
 
   /* TYPE SCALE — 9 steps replacing the 18 one-off pixel values the page had accumulated
      (13 and 13.5, 14 and 14.5 and 15 and 15.5, 17 and 18 and 19 …). Differences that small
@@ -62,32 +67,25 @@
    those four classes were dead and came out. The page alternates navy and light instead:
    Inicio, Servicios and Proyectos dark, Nosotros, Certificaciones and Contacto light. */
 
-/* Every section is a nav target under the 76px sticky header. It owns the whole screen
-   below that header and centers its own content, so jumping to one never leaves the next
-   section peeking in at the bottom. Sections with more content than fits (Servicios) just
-   grow past the minimum. svh, not vh, so mobile browser chrome doesn't cause a jump.
-   Scoped to `.screens` (the home page) so the interior pages — /servicios, /cursos,
-   /trayectoria — can stack normal-height sections instead of one screen each. */
-.screens > section {
-  display: flex;
-  min-height: calc(100svh - 76px);
-  scroll-margin-top: 76px;
-  flex-direction: column;
-  justify-content: center;
-}
-
-/* Contacto and the footer share one screen instead of the footer landing on its own —
-   the section takes whatever height is left once the footer has its. Wrapping them means
-   #contacto is no longer a direct child of main, so the rule above doesn't fight this one. */
+/* The 404 message and the footer share one screen, so the footer does not land below the
+   fold on an otherwise empty page — the section takes whatever height is left once the
+   footer has its. svh, not vh, so mobile browser chrome doesn't cause a jump.
+   The wrapper is outside <main>, not inside it, so the footer stays a sibling of main and
+   keeps its contentinfo landmark; that makes main the flex child that grows. */
 .contact-screen {
   display: flex;
   min-height: calc(100svh - 76px);
   flex-direction: column;
 }
-.contact-screen > section {
+.contact-screen > main {
   display: flex;
   flex: 1;
   scroll-margin-top: 76px;
+  flex-direction: column;
+}
+.contact-screen > main > section {
+  display: flex;
+  flex: 1;
   flex-direction: column;
   justify-content: center;
 }
