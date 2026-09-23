@@ -1,0 +1,28 @@
+# Cabeceras servidas por Cloudflare Workers Assets. Astro copia public/ tal cual a dist/, que
+# es el directorio que wrangler.jsonc publica, así que este archivo llega como dist/_headers.
+#
+# Antes el sitio no enviaba ninguna: sin X-Frame-Options cualquiera podía meter latammedgas.com
+# en un iframe y presentarlo como propio, que para una empresa que vende confianza normativa a
+# hospitales es el riesgo que más pesa de los que había.
+
+/*
+  # Un tercero no puede enmarcar el sitio. SAMEORIGIN y no DENY por si el Studio alguna vez
+  # necesita enmarcar una página del propio dominio; contra terceros protege igual.
+  X-Frame-Options: SAMEORIGIN
+  # Sin esto el navegador puede adivinar el tipo de un archivo e ignorar el Content-Type.
+  X-Content-Type-Options: nosniff
+  # El referer completo solo viaja dentro del mismo origen; hacia fuera, solo el dominio.
+  Referrer-Policy: strict-origin-when-cross-origin
+  # El sitio no usa ninguna de estas. Negarlas explícitamente evita que un script incrustado
+  # las pida en nombre del dominio.
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=()
+  # Un año, y deliberadamente SIN includeSubDomains: el dominio raíz lleva los buzones de la
+  # empresa y subdominios que no administramos desde aquí (send.latammedgas.com para Resend,
+  # lo que sirva el registrador). Forzar HTTPS en todos ellos desde el sitio web puede romper
+  # algo que nadie relacionaría con este archivo. Tampoco `preload`: es difícil de revertir.
+  Strict-Transport-Security: max-age=31536000
+
+# Los nombres de archivo en /_astro/ llevan hash de contenido: un cambio produce un nombre
+# nuevo, así que el viejo puede cachearse para siempre sin riesgo de servir contenido rancio.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
