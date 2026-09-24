@@ -12,7 +12,6 @@ import { DEFAULT_COURSES, DEFAULT_PAGES, pageSeo } from '../lib/content';
 import { Image } from 'astro:assets';
 import cursoFoto from '../assets/photos/curso-asse-6000.jpg';
 import { accentFor } from '../lib/icons';
-import { ArrowRight } from 'lucide-react';
 
 let settings = null;
 let courses: Awaited<ReturnType<typeof getCourses>> = [];
@@ -26,15 +25,17 @@ const items = courses.length > 0 ? courses : DEFAULT_COURSES;
 
 const seed = DEFAULT_PAGES.cursos;
 const seo = pageSeo('cursos', page);
-// El bloque junto a la foto usa los tres campos que la sección ya tenía y nadie estaba usando:
-// antes las dos frases vivían apretadas en `heading`, se pintaban como un párrafo suelto de
-// 16px en gris claro al lado de una foto a media página, y el texto decía «Escríbanos» sin que
-// hubiera nada que pulsar — una instrucción sin su enlace.
+// El bloque junto a la foto reparte en dos campos lo que antes vivía apretado en `heading`: se
+// pintaba como un párrafo suelto de 16px en gris claro al lado de una foto a media página, sin
+// nada que lo anclara.
+//
+// Sin botón. Lo tuvo un rato y sobraba: «Contáctenos» ya está en el menú superior y la banda de
+// cierre lo repite al final de cada página, así que un tercer enlace al mismo sitio en mitad
+// del recorrido es ruido, no ayuda.
 const notaSec = sectionOf(page, 'cursosNota');
 const notaSeed = seed.sections?.cursosNota ?? {};
 const notaTitulo = notaSec.heading ?? notaSeed.heading;
 const notaTexto = notaSec.subheading ?? notaSeed.subheading;
-const notaCta = notaSec.ctaLabel ?? notaSeed.ctaLabel;
 const banda = sectionOf(page, 'bandaContacto');
 const bandaSeed = seed.sections?.bandaContacto ?? {};
 
@@ -108,7 +109,7 @@ const graph = [
           <div data-reveal>
             <Image
               src={cursoFoto}
-              alt="Asistentes tomando notas durante un curso de capacitación de Latam Med Gas"
+              alt="José Sepúlveda impartiendo un curso de gases medicinales de Latam Med Gas"
               widths={[480, 800, 900]}
               sizes="(min-width: 1024px) 50vw, 100vw"
               format="webp"
@@ -121,17 +122,21 @@ const graph = [
               {notaTitulo}
             </h2>
             {notaTexto && <p class="mt-4 max-w-[52ch] text-base leading-relaxed text-slate-600">{notaTexto}</p>}
+
             {
-              notaCta && (
-                <a
-                  href="/contacto/"
-                  class="press-feedback bg-accent hover:bg-accent-600 focus-visible:ring-accent mt-8 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none [&_svg]:transition-transform [&_svg]:duration-200 hover:[&_svg]:translate-x-1 motion-reduce:[&_svg]:transform-none"
-                >
-                  {notaCta}
-                  <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
-                </a>
-              )
+              /* Quién da la clase de la foto. Va codificado aquí y no en el Studio a propósito:
+                es el crédito de *esta* fotografía, que vive en el repositorio como ella, y deja
+                de ser cierto en cuanto se cambie la imagen. Un campo editable suelto en Sanity
+                se quedaría con el nombre viejo bajo una foto nueva.
+
+                «Instructor», no «instructor certificado ASSE 6050»: esa credencial sigue sin
+                verificarse y es exactamente la frase que se retiró de esta página en agosto.
+                Si se confirma, aquí es donde vuelve. */
             }
+            <div class="mt-8 border-t border-slate-200 pt-5">
+              <p class="font-display text-ink text-sm font-bold">José Sepúlveda</p>
+              <p class="text-2xs mt-0.5 font-medium text-slate-500">Propietario e instructor</p>
+            </div>
           </div>
         </div>
       </div>

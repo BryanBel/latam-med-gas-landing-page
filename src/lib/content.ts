@@ -447,11 +447,10 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
       'Formación para todos los perfiles de la norma ASSE serie 6000, orientada a aplicar con propiedad lo establecido en el código NFPA 99.',
     sections: {
       cursosNota: {
-        // Tres campos, no uno. El título afirma, el texto de apoyo explica y el enlace hace
-        // algo con el «Escríbanos» que antes se quedaba en una frase sin destino.
+        // Dos campos, no uno: el título afirma y el texto de apoyo explica. Sin ctaLabel —
+        // el enlace a Contacto ya está en el menú y en la banda de cierre de cada página.
         heading: 'Los cursos se dictan conforme a la norma ASSE serie 6000',
         subheading: 'Escríbanos para conocer fechas, modalidades y el temario detallado de cada perfil.',
-        ctaLabel: 'Consultar fechas y temario',
       },
       // Sin texto de apoyo, igual que el resto: la banda de cierre es titular y botón, y un
       // párrafo aquí hacía que esta página terminara más alta que las demás.
