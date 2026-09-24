@@ -30,8 +30,12 @@ declare global {
 
 const SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 
-const inputClass =
-  'w-full rounded-lg ring-1 ring-slate-200 px-4 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent';
+// Sin ancho: quien lo use decide el suyo. Dos utilidades de ancho en el mismo elemento se
+// resuelven por el orden del CSS generado, no por el del atributo, así que combinarlas deja el
+// resultado a suerte.
+const inputBase =
+  'rounded-lg ring-1 ring-slate-200 px-4 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent';
+const inputClass = `w-full ${inputBase}`;
 const labelClass = 'mb-1.5 block text-xs font-semibold text-slate-600';
 const errorClass = 'mt-1 text-2xs text-red-600';
 
@@ -66,14 +70,56 @@ const DOMINIOS_ERRATA: Record<string, string> = {
   'yahooo.com': 'yahoo.com',
 };
 
-// Teléfono, solo si lo rellenan. Se pide en formato internacional porque quien escribe puede
-// estar en cualquiera de los seis países donde hay trabajo hecho, y un «0414-2349582» sin
-// prefijo no se puede marcar desde fuera de Venezuela. E.164 admite 15 dígitos como máximo.
-const TELEFONO_RE = /^\+\d{8,15}$/;
+// Códigos de país. El prefijo se elige de una lista y el número va aparte, que es como lo
+// espera cualquiera que haya rellenado un formulario antes: pedirlo todo en un solo campo deja
+// al visitante adivinando si el signo va, si hay que poner el cero, o por dónde separar.
+//
+// La lista no es el mundo entero a propósito. Delante van los seis países donde hay trabajo
+// hecho más Estados Unidos; detrás, el resto de la región. Doscientas entradas se recorren
+// peor y no atienden mejor a nadie que vaya a escribir a esta empresa.
+const CODIGOS_FRECUENTES: readonly (readonly [string, string])[] = [
+  ['+1', 'EE. UU. y Canadá'],
+  ['+52', 'México'],
+  ['+57', 'Colombia'],
+  ['+58', 'Venezuela'],
+  ['+504', 'Honduras'],
+  ['+507', 'Panamá'],
+  ['+591', 'Bolivia'],
+];
 
-/** Quita lo que la gente usa para separar: espacios, guiones, paréntesis y puntos. */
-function normalizarTelefono(v: string): string {
-  return v.replace(/[\s().-]/g, '');
+const CODIGOS_RESTO: readonly (readonly [string, string])[] = [
+  ['+34', 'España'],
+  ['+51', 'Perú'],
+  ['+53', 'Cuba'],
+  ['+54', 'Argentina'],
+  ['+55', 'Brasil'],
+  ['+56', 'Chile'],
+  ['+501', 'Belice'],
+  ['+502', 'Guatemala'],
+  ['+503', 'El Salvador'],
+  ['+505', 'Nicaragua'],
+  ['+506', 'Costa Rica'],
+  ['+509', 'Haití'],
+  ['+592', 'Guyana'],
+  ['+593', 'Ecuador'],
+  ['+595', 'Paraguay'],
+  ['+597', 'Surinam'],
+  ['+598', 'Uruguay'],
+];
+
+/** Solo los dígitos: la gente separa con espacios, guiones, puntos y paréntesis. */
+function soloDigitos(v: string): string {
+  return v.replace(/\D/g, '');
+}
+
+/**
+ * Junta prefijo y número en E.164 —«+573183588075»—, o null si no pusieron número. Se guarda
+ * normalizado y no tal como lo escribieron, para que el número que le llega al cliente por
+ * correo se pueda marcar desde cualquier país sin interpretar ceros ni paréntesis.
+ */
+function componerTelefono(codigo: string, numero: string): string | null {
+  const digitos = soloDigitos(numero);
+  return digitos ? `${codigo}${digitos}` : null;
 }
 
 function validate(data: FormData): FieldErrors {
@@ -93,9 +139,14 @@ function validate(data: FormData): FieldErrors {
     if (sugerido) errors.email = `¿Quiso decir @${sugerido}?`;
   }
 
-  // Vacío es válido: el teléfono no es obligatorio.
-  if (phone && !TELEFONO_RE.test(normalizarTelefono(phone))) {
-    errors.phone = 'Incluya el código de país, por ejemplo +57 318 3588075.';
+  // Vacío es válido: el teléfono no es obligatorio. Si lo rellenan, el total de dígitos —el
+  // prefijo elegido más el número— tiene que caber en E.164, que admite 15 como máximo.
+  if (phone) {
+    const digitos = soloDigitos(phone);
+    const total = soloDigitos(String(data.get('phoneCode') || '')).length + digitos.length;
+    if (!digitos) errors.phone = 'Escriba el número.';
+    else if (total < 8) errors.phone = 'El número parece incompleto.';
+    else if (total > 15) errors.phone = 'El número tiene más dígitos de los que admite.';
   }
 
   if (!String(data.get('message') || '').trim()) errors.message = 'Escriba su mensaje.';
@@ -244,7 +295,7 @@ export default function ContactForm() {
         {
           name: String(data.get('name') || ''),
           email: String(data.get('email') || ''),
-          phone: String(data.get('phone') || '') || null,
+          phone: componerTelefono(String(data.get('phoneCode') || ''), String(data.get('phone') || '')),
           company: String(data.get('company') || '') || null,
           message: String(data.get('message') || ''),
         },
@@ -367,26 +418,57 @@ export default function ContactForm() {
           <label htmlFor="phone" className={labelClass}>
             Teléfono
           </label>
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            inputMode="tel"
-            autoComplete="tel"
-            spellCheck={false}
-            placeholder="+57 318 3588075"
-            maxLength={LEAD_LIMITS.phone}
-            aria-invalid={Boolean(errors.phone)}
-            aria-describedby={errors.phone ? 'phone-error' : 'phone-hint'}
-            className={inputClass}
-          />
+          {/* Prefijo y número en controles separados. El `select` lleva su propia etiqueta
+              accesible porque la visible apunta al campo del número, que es donde se escribe;
+              `tel-country-code` y `tel-national` son los valores que la especificación reserva
+              justo para un teléfono partido en dos, así que el autorrelleno del navegador sigue
+              funcionando. El control cerrado se queda estrecho, pero la lista desplegada la
+              dimensiona el navegador según su contenido: el país se lee entero al abrirla. */}
+          <div className="flex gap-2">
+            <select
+              id="phoneCode"
+              name="phoneCode"
+              defaultValue="+1"
+              autoComplete="tel-country-code"
+              aria-label="Código de país"
+              className={`${inputBase} w-[8.5rem] shrink-0 bg-white`}
+            >
+              <optgroup label="Más frecuentes">
+                {CODIGOS_FRECUENTES.map(([codigo, pais]) => (
+                  <option key={codigo} value={codigo}>
+                    {codigo} {pais}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="Otros países">
+                {CODIGOS_RESTO.map(([codigo, pais]) => (
+                  <option key={`resto-${codigo}`} value={codigo}>
+                    {codigo} {pais}
+                  </option>
+                ))}
+              </optgroup>
+            </select>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel-national"
+              spellCheck={false}
+              placeholder="318 3588075"
+              maxLength={LEAD_LIMITS.phone}
+              aria-invalid={Boolean(errors.phone)}
+              aria-describedby={errors.phone ? 'phone-error' : 'phone-hint'}
+              className={`${inputBase} min-w-0 flex-1`}
+            />
+          </div>
           {errors.phone ? (
             <p id="phone-error" className={errorClass}>
               {errors.phone}
             </p>
           ) : (
             <p id="phone-hint" className="text-2xs mt-1 text-slate-500">
-              Opcional. Con código de país.
+              Opcional.
             </p>
           )}
         </div>
