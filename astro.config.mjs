@@ -47,6 +47,17 @@ if (!PUBLIC_TURNSTILE_SITE_KEY) {
 // Everything below is a no-op when the flag is unset, so the production build is unchanged.
 const isPreview = PUBLIC_SANITY_PREVIEW === 'true';
 
+// El Studio se monta en desarrollo y en la vista previa, nunca en el sitio público. Iba en los
+// tres: `/studio` respondía 200 en latammedgas.com y arrastraba ~9 MB de JavaScript —dos tercios
+// del despliegue— para una superficie de administración que el cliente todavía no usa. No era
+// una brecha, porque Sanity autentica, pero era peso muerto en cada build y una puerta de admin
+// en el dominio con el que la empresa vende. Nada del sitio enlaza a /studio, así que quitarlo
+// de producción no deja ningún enlace roto.
+//
+// Si algún día hace falta una URL estable para editar, `npx sanity deploy` la publica en
+// <proyecto>.sanity.studio, hospedada por Sanity, sin que este repositorio cargue con ella.
+const isProdBuild = (process.env.NODE_ENV ?? 'development') === 'production' && !isPreview;
+
 // Imported dynamically rather than at the top: a static import would make the adapter a hard
 // requirement of every build, including the static one that has no use for it.
 const adapter = isPreview ? (await import('@astrojs/cloudflare')).default() : undefined;
@@ -75,7 +86,7 @@ export default defineConfig({
     sanity({
       projectId: PUBLIC_SANITY_PROJECT_ID,
       dataset: PUBLIC_SANITY_DATASET || 'production',
-      studioBasePath: '/studio',
+      ...(isProdBuild ? {} : { studioBasePath: '/studio' }),
       // The site is fully static, so this client only runs at build time — read fresh from the
       // live API rather than the CDN, which otherwise serves a stale cached result for the
       // fixed query strings (getProjects etc.) until its TTL expires, so a rebuild after a
