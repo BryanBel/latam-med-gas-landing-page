@@ -179,6 +179,9 @@ export default function ContactForm() {
   const [status, setStatus] = useState<Status>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [errors, setErrors] = useState<FieldErrors>({});
+  // El prefijo se lleva en estado porque de él depende cómo se pinta cada opción: la elegida
+  // muestra solo el código, para que el control cerrado no tenga que caber un país entero.
+  const [codigoPais, setCodigoPais] = useState('+1');
   const successRef = useRef<HTMLParagraphElement>(null);
 
   // El widget va en modo `execute`: no pide nada al cargar, se dispara al enviar. Con
@@ -362,8 +365,11 @@ export default function ContactForm() {
     );
   }
 
+  // Alto completo y columna flexible: el panel lo estira la rejilla para igualar la altura de
+  // la columna de al lado, y antes sobraba un hueco muerto al final. Ahora ese sobrante se lo
+  // queda el área de mensaje, que es el campo al que más le sirve.
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+    <form onSubmit={handleSubmit} className="flex h-full flex-col gap-4" noValidate>
       <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -376,6 +382,7 @@ export default function ContactForm() {
             name="name"
             type="text"
             autoComplete="name"
+            placeholder="Nombre Apellido"
             maxLength={LEAD_LIMITS.name}
             required
             aria-invalid={Boolean(errors.name)}
@@ -399,6 +406,7 @@ export default function ContactForm() {
             inputMode="email"
             autoComplete="email"
             spellCheck={false}
+            placeholder="ejemplo@ejemplo.com"
             maxLength={LEAD_LIMITS.email}
             required
             aria-invalid={Boolean(errors.email)}
@@ -418,32 +426,38 @@ export default function ContactForm() {
           <label htmlFor="phone" className={labelClass}>
             Teléfono
           </label>
-          {/* Prefijo y número en controles separados. El `select` lleva su propia etiqueta
-              accesible porque la visible apunta al campo del número, que es donde se escribe;
-              `tel-country-code` y `tel-national` son los valores que la especificación reserva
-              justo para un teléfono partido en dos, así que el autorrelleno del navegador sigue
-              funcionando. El control cerrado se queda estrecho, pero la lista desplegada la
-              dimensiona el navegador según su contenido: el país se lee entero al abrirla. */}
+          {/* Cerrado enseña solo el prefijo; abierto, el país entero. Se consigue sin JavaScript
+              de más: la opción elegida se pinta con el código a secas y las demás con código y
+              país. Lo que un `select` muestra cerrado es el texto de su opción seleccionada, así
+              que basta con eso. Antes ocupaba 8,5rem para acabar cortando «+58 Venezu…» y
+              dejando el número sin sitio; ahora son 5,5rem y el número casi dobla su ancho.
+
+              El `select` lleva etiqueta accesible propia porque la visible apunta al campo del
+              número, que es donde se escribe. `tel-country-code` y `tel-national` son los valores
+              que la especificación reserva para un teléfono partido en dos, de modo que el
+              autorrelleno sigue funcionando. Y sigue siendo un `select` nativo a propósito: en el
+              móvil abre el selector del sistema, que ningún desplegable propio iguala. */}
           <div className="flex gap-2">
             <select
               id="phoneCode"
               name="phoneCode"
-              defaultValue="+1"
+              value={codigoPais}
+              onChange={(e) => setCodigoPais(e.target.value)}
               autoComplete="tel-country-code"
               aria-label="Código de país"
-              className={`${inputBase} w-[8.5rem] shrink-0 bg-white`}
+              className={`${inputBase} w-[5.5rem] shrink-0 bg-white`}
             >
               <optgroup label="Más frecuentes">
                 {CODIGOS_FRECUENTES.map(([codigo, pais]) => (
                   <option key={codigo} value={codigo}>
-                    {codigo} {pais}
+                    {codigo === codigoPais ? codigo : `${codigo} ${pais}`}
                   </option>
                 ))}
               </optgroup>
               <optgroup label="Otros países">
                 {CODIGOS_RESTO.map(([codigo, pais]) => (
                   <option key={`resto-${codigo}`} value={codigo}>
-                    {codigo} {pais}
+                    {codigo === codigoPais ? codigo : `${codigo} ${pais}`}
                   </option>
                 ))}
               </optgroup>
@@ -476,18 +490,28 @@ export default function ContactForm() {
           <label htmlFor="company" className={labelClass}>
             Empresa / Institución
           </label>
+          {/* «Opcional.» va debajo, igual que en el teléfono, y no dentro del campo. Un
+              placeholder sirve para enseñar el formato que se espera, no para dar instrucciones:
+              metido en la caja, un «puede quedar vacío» parece un valor ya escrito, se borra en
+              cuanto se teclea la primera letra —justo cuando aún podría hacer falta— y no deja
+              rastro para quien vuelve a revisar el formulario antes de enviarlo. */}
           <input
             id="company"
             name="company"
             type="text"
             autoComplete="organization"
+            placeholder="Hospital, clínica o empresa"
             maxLength={LEAD_LIMITS.company}
+            aria-describedby="company-hint"
             className={inputClass}
           />
+          <p id="company-hint" className="text-2xs mt-1 text-slate-500">
+            Opcional.
+          </p>
         </div>
       </div>
 
-      <div>
+      <div className="flex flex-1 flex-col">
         <label htmlFor="message" className={labelClass}>
           Mensaje *
         </label>
@@ -495,11 +519,12 @@ export default function ContactForm() {
           id="message"
           name="message"
           rows={4}
+          placeholder="Cuéntenos qué necesita: tipo de institución, servicio que le interesa y en qué plazo."
           maxLength={LEAD_LIMITS.message}
           required
           aria-invalid={Boolean(errors.message)}
           aria-describedby={describedBy('message')}
-          className={inputClass}
+          className={`${inputClass} min-h-[7rem] flex-1 resize-y`}
         />
         {errors.message && (
           <p id="message-error" className={errorClass}>
@@ -526,7 +551,7 @@ export default function ContactForm() {
       {/* El aviso va aquí, en el punto donde se recogen los datos, no solo en el pie. Es lo que
           piden la LFPDPPP mexicana y la Ley 1581 colombiana, que son la ley de la mayoría de
           quienes escriben por este formulario. */}
-      <p className="text-2xs mt-3 leading-relaxed text-slate-500">
+      <p className="text-2xs leading-relaxed text-slate-500">
         Sus datos se utilizan únicamente para responder a su solicitud.{' '}
         <a
           href="/privacidad/"
