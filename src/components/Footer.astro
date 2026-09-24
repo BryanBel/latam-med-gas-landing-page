@@ -27,8 +27,10 @@ if (logoUrl) {
 }
 const year = new Date().getFullYear();
 
-// Explicit role: the footer sits inside <main> so it can share a screen with Contacto, which
-// would otherwise drop its implicit contentinfo landmark.
+// `role="contentinfo"` is redundant now and kept on purpose. It was load-bearing while the
+// footer sat inside <main>, where the implicit landmark is dropped; that was fixed on
+// 2026-09-23 and every page now renders it as a sibling of main. Keeping the explicit role
+// costs nothing and means a future layout change cannot silently take the landmark away again.
 ---
 
 <footer role="contentinfo" class="bg-slate-50">

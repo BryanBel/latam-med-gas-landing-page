@@ -55,11 +55,17 @@ const ctaClass =
       <a href="/contacto/" class={ctaClass}>Contáctenos</a>
     </nav>
 
+    {
+      /* Etiqueta sin estado a propósito: `aria-expanded` ya dice si está abierto o cerrado. La
+      anterior decía «Abrir menú de…» siempre, así que con el menú desplegado un lector de
+      pantalla anunciaba «Abrir menú…, expandido», que se contradice. Sin estado en la etiqueta
+      no hay nada que sincronizar desde el script. */
+    }
     <button
       type="button"
       id="mobile-nav-button"
       class="focus-visible:ring-accent flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg ring-1 ring-slate-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:hidden"
-      aria-label={`Abrir menú de ${siteName}`}
+      aria-label="Menú de navegación"
       aria-expanded="false"
       aria-controls="mobile-nav"
     >

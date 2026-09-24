@@ -389,7 +389,7 @@ export interface PageSeed {
 
 export const DEFAULT_PAGES: Record<string, PageSeed> = {
   inicio: {
-    seoTitle: 'Latam Med Gas USA LLC - Gases Medicinales ASSE 6000 / NFPA 99',
+    seoTitle: 'Latam Med Gas USA LLC | Gases Medicinales ASSE 6000 y NFPA 99',
     sections: {
       servicios: {
         eyebrow: 'Servicios',
@@ -409,7 +409,7 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
     },
   },
   nosotros: {
-    seoTitle: 'Nosotros',
+    seoTitle: 'Especialistas en gases medicinales',
     metaDescription:
       'Especialistas en diseño, instalación, inspección, mantenimiento y verificación de sistemas de gases medicinales bajo ASSE serie 6000 y NFPA 99.',
     heroEyebrow: 'Nosotros',
@@ -438,7 +438,7 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
     },
   },
   cursos: {
-    seoTitle: 'Cursos de capacitación ASSE 6000 (6005–6060)',
+    seoTitle: 'Capacitación ASSE 6000 (6005–6060)',
     metaDescription:
       'Capacitación profesional bajo la norma ASSE serie 6000 y el código NFPA 99: generalista, instalador, inspector, verificador, instructor y diseñador.',
     heroEyebrow: 'Capacitación',

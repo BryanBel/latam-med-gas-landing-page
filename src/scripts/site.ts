@@ -90,18 +90,27 @@ function initTilt(): void {
   });
 }
 
+// Module scope, and it looks the elements up each time, so the click handler below and the
+// global Escape handler drive the menu through one function instead of two copies of the same
+// three lines that have to be kept in step.
+function setMobileNav(open: boolean): void {
+  const button = document.getElementById('mobile-nav-button');
+  const nav = document.getElementById('mobile-nav');
+  if (!button || !nav) return;
+  button.setAttribute('aria-expanded', String(open));
+  nav.classList.toggle('hidden', !open);
+  nav.classList.toggle('flex', open);
+}
+
+const mobileNavOpen = () => document.getElementById('mobile-nav-button')?.getAttribute('aria-expanded') === 'true';
+
 function initMobileNav(): void {
   const button = document.getElementById('mobile-nav-button');
   const nav = document.getElementById('mobile-nav');
   if (!button || !nav || button.dataset.bound) return;
   button.dataset.bound = '1';
-  const setOpen = (open: boolean) => {
-    button.setAttribute('aria-expanded', String(open));
-    nav.classList.toggle('hidden', !open);
-    nav.classList.toggle('flex', open);
-  };
-  button.addEventListener('click', () => setOpen(button.getAttribute('aria-expanded') !== 'true'));
-  nav.querySelectorAll('a').forEach((l) => l.addEventListener('click', () => setOpen(false)));
+  button.addEventListener('click', () => setMobileNav(!mobileNavOpen()));
+  nav.querySelectorAll('a').forEach((l) => l.addEventListener('click', () => setMobileNav(false)));
 }
 
 function initPage(): void {
@@ -120,17 +129,26 @@ const updateProgress = () => {
   bar.style.setProperty('--progress', String(max > 0 ? el.scrollTop / max : 0));
 };
 
-addEventListener('scroll', updateProgress, { passive: true });
-addEventListener('resize', updateProgress, { passive: true });
+// Throttled to one write per frame. Scroll fires far more often than the screen refreshes, and
+// each call wrote a custom property, so a fast scroll queued style recalculations the browser
+// could never use — the bar can only move once per frame regardless.
+let progressPending = false;
+const queueProgress = () => {
+  if (progressPending) return;
+  progressPending = true;
+  requestAnimationFrame(() => {
+    progressPending = false;
+    updateProgress();
+  });
+};
+
+addEventListener('scroll', queueProgress, { passive: true });
+addEventListener('resize', queueProgress, { passive: true });
 document.addEventListener('keydown', (e) => {
-  if (e.key !== 'Escape') return;
-  const button = document.getElementById('mobile-nav-button');
-  if (button?.getAttribute('aria-expanded') === 'true') {
-    button.setAttribute('aria-expanded', 'false');
-    document.getElementById('mobile-nav')?.classList.add('hidden');
-    document.getElementById('mobile-nav')?.classList.remove('flex');
-    button.focus();
-  }
+  if (e.key !== 'Escape' || !mobileNavOpen()) return;
+  setMobileNav(false);
+  // Focus goes back to the control that opened it, or a keyboard user is left nowhere.
+  document.getElementById('mobile-nav-button')?.focus();
 });
 
 function boot(): void {
