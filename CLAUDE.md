@@ -23,6 +23,8 @@ Supabase puts a JWT gate in front of edge functions by default. `notify-lead` is
 
 **Never let `anon` write to `leads` again.** Every insert fires the webhook that emails the client, so one unauthenticated POST equals one email to the company's working mailbox, from `send.latammedgas.com`. Writes go through `submit-lead`, which checks a Turnstile token and inserts with the service role. If that path ever has to be rolled back, restore the policy first and revert the frontend second — never leave the form pointing at a function that cannot write, because it still says "Gracias" while losing every lead.
 
+**Revoking a policy is not revoking a grant.** `20260923190000` dropped the RLS policy and stopped there, so for a day `anon` and `authenticated` still held INSERT, SELECT, UPDATE, DELETE, TRUNCATE and REFERENCES on `public.leads` — Supabase grants those by default to everything created in the public schema. Nothing was exploitable, because RLS with zero policies denies regardless, but the whole defence hung on one flag: disable RLS to debug something, or add a permissive policy later for another purpose, and a key that ships in the bundle can empty the customer table. `20260924030000` revokes them. When locking a table down, check `information_schema.role_table_grants`, not just `pg_policies`, and never revoke from `service_role` — the edge function writes with it.
+
 **`PUBLIC_TURNSTILE_SITE_KEY` must be set on BOTH Cloudflare Workers**, or `astro.config.mjs` fails the build on purpose. Absent, the widget never renders and the contact form silently takes nothing.
 
 This repository feeds two Workers — the live site and the preview deployment — so every build variable has to be added twice. Setting this one on production only left preview failing every build for three and a half hours on 2026-09-23 while it served a stale copy. Same key both places; it is public, and the Turnstile widget already lists both hostnames.
@@ -30,6 +32,8 @@ This repository feeds two Workers — the live site and the preview deployment �
 **Cloudflare's git hook does not always fire.** The same day, a pushed commit simply never appeared in the Worker's deployment list. "Retry build" does not help — it rebuilds the commit that already ran, which is an older one. Push another commit, which is what the Sanity rebuild workflow does anyway.
 
 **Sanity content overrides the code.** Every section falls back to `src/lib/content.ts`, but a populated Sanity field always wins. A test value published in Studio once became the site's live `<meta name="description">`. When copy on the live site does not match `content.ts`, the answer is in Studio, not the code.
+
+**The Studio is not on the public site.** `astro.config.mjs` mounts `studioBasePath` everywhere except the production build, so `/studio` exists in `pnpm dev` and on the preview deployment and 404s on latammedgas.com. It used to be on all three, where it answered 200 and carried ~9 MB of JavaScript — two thirds of the whole deploy — for an admin surface the client was not using. Nothing on the site links to it. If a stable editing URL is ever needed, `npx sanity deploy` publishes one at `<project>.sanity.studio` that this repository does not have to carry.
 
 **In Sanity, Publish is what makes content live** — saving only updates a draft. The site is static, so a publish also needs a rebuild, which the GitHub workflow triggers automatically. Changes appear a couple of minutes later, not instantly.
 
@@ -45,7 +49,7 @@ Do not revert these without being asked. They were deliberate choices, and at le
 
 - The **diagonal wedge** across every section seam, the **full-screen sections**, and the **alternating navy** stay, even though `design-taste-frontend`'s Page Theme Lock rule argues against the alternation.
 - **Eyebrows are capped at 2** on the home page on purpose. Do not add one per section.
-- **The bare domain is canonical**; `www` redirects to it. `astro.config.mjs` `site` reflects this and feeds the canonical tags, sitemap and OG URLs.
+- **The bare domain is canonical.** `astro.config.mjs` `site` reflects this and feeds the canonical tags, sitemap and OG URLs. Note that `www` does **not** redirect — it serves the same site at 200. Both copies emit a canonical pointing at the bare domain, so search engines consolidate them and the practical SEO cost is nil, but this file claimed a redirect that has never existed. A Cloudflare redirect rule would make it true; until then, do not assume it.
 - **Type scale and shape system are tokenized** in `src/styles/global.css`. Use `text-sm` / `text-2xl` etc., never arbitrary `text-[15px]`. Interactive elements are fully round, surfaces 16px, nested elements 8px.
 - The client has delegated visual judgment to Bryan, so design choices do not need client sign-off.
 
