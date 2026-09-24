@@ -40,7 +40,14 @@ export default defineConfig({
   name: 'default',
   title: 'Latam Med Gas — CMS',
 
-  projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
+  // Los mismos valores que `sanity.cli.ts`, y por el mismo motivo: son identificadores
+  // públicos, viajan al navegador en el bundle del sitio y no hay nada que proteger en ellos.
+  //
+  // El respaldo no es adorno. Bajo Astro, Vite expone las variables con prefijo `PUBLIC_` y la
+  // primera rama gana. Pero el CLI de Sanity monta su propio Vite con `envPrefix`
+  // `SANITY_STUDIO_`, así que al arrancar el Studio con `npx sanity dev` estas dos llegan
+  // `undefined` y el Studio muere con «Configuration must contain `projectId`».
+  projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID || 'mms9p1ms',
   dataset: import.meta.env.PUBLIC_SANITY_DATASET || 'production',
 
   // Sanity's built-in picker can already upload and reuse an image across documents, but it
