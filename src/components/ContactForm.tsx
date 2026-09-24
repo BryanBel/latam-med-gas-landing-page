@@ -74,38 +74,48 @@ const DOMINIOS_ERRATA: Record<string, string> = {
 // espera cualquiera que haya rellenado un formulario antes: pedirlo todo en un solo campo deja
 // al visitante adivinando si el signo va, si hay que poner el cero, o por dónde separar.
 //
-// La lista no es el mundo entero a propósito. Delante van los seis países donde hay trabajo
-// hecho más Estados Unidos; detrás, el resto de la región. Doscientas entradas se recorren
-// peor y no atienden mejor a nadie que vaya a escribir a esta empresa.
-const CODIGOS_FRECUENTES: readonly (readonly [string, string])[] = [
-  ['+1', 'EE. UU. y Canadá'],
-  ['+52', 'México'],
-  ['+57', 'Colombia'],
-  ['+58', 'Venezuela'],
-  ['+504', 'Honduras'],
-  ['+507', 'Panamá'],
-  ['+591', 'Bolivia'],
-];
+// La lista no es el mundo entero a propósito: los países de la región, España y Estados Unidos.
+// Doscientas entradas se recorren peor y no atienden mejor a nadie que vaya a escribir aquí.
+//
+// Una sola lista y en orden alfabético, sin agrupar. Los grupos «Más frecuentes» y «Otros
+// países» parecían una ayuda y estorbaban: el buscador por letra de un `select` nativo compara
+// contra el texto de cada opción desde el primer carácter, y con el mismo país apareciendo
+// antes o después según el grupo, teclear una letra no llevaba a ningún sitio previsible.
+//
+// Por eso el nombre va delante del código en el texto de la opción. Es lo que hace que pulsar
+// «V» salte a Venezuela. Con «+58 Venezuela» habría que teclear «+58», que no se le ocurre a
+// nadie. El orden lo pone `localeCompare` en español, para que «España» y «Perú» caigan donde
+// se las busca y no detrás de la Z.
+type Pais = readonly [codigo: string, nombre: string];
 
-const CODIGOS_RESTO: readonly (readonly [string, string])[] = [
-  ['+34', 'España'],
-  ['+51', 'Perú'],
-  ['+53', 'Cuba'],
-  ['+54', 'Argentina'],
-  ['+55', 'Brasil'],
-  ['+56', 'Chile'],
-  ['+501', 'Belice'],
-  ['+502', 'Guatemala'],
-  ['+503', 'El Salvador'],
-  ['+505', 'Nicaragua'],
-  ['+506', 'Costa Rica'],
-  ['+509', 'Haití'],
-  ['+592', 'Guyana'],
-  ['+593', 'Ecuador'],
-  ['+595', 'Paraguay'],
-  ['+597', 'Surinam'],
-  ['+598', 'Uruguay'],
-];
+const PAISES: readonly Pais[] = (
+  [
+    ['+54', 'Argentina'],
+    ['+501', 'Belice'],
+    ['+591', 'Bolivia'],
+    ['+55', 'Brasil'],
+    ['+56', 'Chile'],
+    ['+57', 'Colombia'],
+    ['+506', 'Costa Rica'],
+    ['+53', 'Cuba'],
+    ['+593', 'Ecuador'],
+    ['+503', 'El Salvador'],
+    ['+34', 'España'],
+    ['+1', 'Estados Unidos y Canadá'],
+    ['+502', 'Guatemala'],
+    ['+592', 'Guyana'],
+    ['+509', 'Haití'],
+    ['+504', 'Honduras'],
+    ['+52', 'México'],
+    ['+505', 'Nicaragua'],
+    ['+507', 'Panamá'],
+    ['+595', 'Paraguay'],
+    ['+51', 'Perú'],
+    ['+597', 'Surinam'],
+    ['+598', 'Uruguay'],
+    ['+58', 'Venezuela'],
+  ] as Pais[]
+).sort((a, b) => a[1].localeCompare(b[1], 'es'));
 
 /** Solo los dígitos: la gente separa con espacios, guiones, puntos y paréntesis. */
 function soloDigitos(v: string): string {
@@ -426,42 +436,66 @@ export default function ContactForm() {
           <label htmlFor="phone" className={labelClass}>
             Teléfono
           </label>
-          {/* Cerrado enseña solo el prefijo; abierto, el país entero. Se consigue sin JavaScript
-              de más: la opción elegida se pinta con el código a secas y las demás con código y
-              país. Lo que un `select` muestra cerrado es el texto de su opción seleccionada, así
-              que basta con eso. Antes ocupaba 8,5rem para acabar cortando «+58 Venezu…» y
-              dejando el número sin sitio; ahora son 5,5rem y el número casi dobla su ancho.
+          {/* El `select` va encima del recuadro y transparente. Suena raro, pero resuelve dos
+              cosas que se peleaban entre sí.
 
-              El `select` lleva etiqueta accesible propia porque la visible apunta al campo del
-              número, que es donde se escribe. `tel-country-code` y `tel-national` son los valores
-              que la especificación reserva para un teléfono partido en dos, de modo que el
-              autorrelleno sigue funcionando. Y sigue siendo un `select` nativo a propósito: en el
-              móvil abre el selector del sistema, que ningún desplegable propio iguala. */}
+              Para que teclear «V» salte a Venezuela, el texto de la opción tiene que empezar por
+              el país: el buscador de un `select` nativo compara desde el primer carácter. Pero
+              entonces el control cerrado —que muestra el texto de la opción elegida— volvería a
+              enseñar «Venezuela (+58)» entero, que es lo que ocupaba sitio y acababa cortado.
+
+              Así que lo que se ve es el `div` de debajo, que pinta solo el prefijo, y encima va
+              el `select` real a opacidad cero: recibe los clics, abre su lista con los nombres
+              completos, responde al teclado y en el móvil abre el selector del sistema. Sigue
+              siendo un control nativo, no un desplegable imitado, que es lo que mantiene todo
+              eso funcionando gratis.
+
+              El `div` está `aria-hidden` para que no se lea dos veces, y el anillo de foco lo
+              hereda por `peer` porque el `select` invisible no puede enseñar el suyo. La
+              etiqueta accesible la lleva el propio `select`, porque la visible apunta al campo
+              del número, que es donde se escribe. `tel-country-code` y `tel-national` son los
+              valores que la especificación reserva para un teléfono partido en dos, de modo que
+              el autorrelleno del navegador sigue funcionando. */}
           <div className="flex gap-2">
-            <select
-              id="phoneCode"
-              name="phoneCode"
-              value={codigoPais}
-              onChange={(e) => setCodigoPais(e.target.value)}
-              autoComplete="tel-country-code"
-              aria-label="Código de país"
-              className={`${inputBase} w-[5.5rem] shrink-0 bg-white`}
-            >
-              <optgroup label="Más frecuentes">
-                {CODIGOS_FRECUENTES.map(([codigo, pais]) => (
+            <div className="relative shrink-0">
+              <select
+                id="phoneCode"
+                name="phoneCode"
+                value={codigoPais}
+                onChange={(e) => setCodigoPais(e.target.value)}
+                autoComplete="tel-country-code"
+                aria-label="Código de país"
+                className="peer absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
+              >
+                {PAISES.map(([codigo, pais]) => (
                   <option key={codigo} value={codigo}>
-                    {codigo === codigoPais ? codigo : `${codigo} ${pais}`}
+                    {/* Una sola interpolación, no `{pais} ({codigo})`: texto y expresiones
+                        alternados hacen que React intercale comentarios separadores en el
+                        HTML del servidor. Se ve igual y el buscador por letra funciona igual,
+                        porque los comentarios no cuentan como texto, pero ensucia el marcado
+                        de las 24 opciones sin dar nada a cambio. */}
+                    {`${pais} (${codigo})`}
                   </option>
                 ))}
-              </optgroup>
-              <optgroup label="Otros países">
-                {CODIGOS_RESTO.map(([codigo, pais]) => (
-                  <option key={`resto-${codigo}`} value={codigo}>
-                    {codigo === codigoPais ? codigo : `${codigo} ${pais}`}
-                  </option>
-                ))}
-              </optgroup>
-            </select>
+              </select>
+              <div
+                aria-hidden="true"
+                className={`${inputBase} peer-focus-visible:ring-accent flex w-[5.5rem] items-center justify-between gap-1 bg-white peer-focus-visible:ring-2`}
+              >
+                <span>{codigoPais}</span>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-3.5 w-3.5 shrink-0 text-slate-500"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </div>
+            </div>
             <input
               id="phone"
               name="phone"
