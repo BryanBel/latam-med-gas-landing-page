@@ -390,6 +390,16 @@ export interface PageSeed {
 export const DEFAULT_PAGES: Record<string, PageSeed> = {
   inicio: {
     seoTitle: 'Latam Med Gas USA LLC | Gases Medicinales ASSE 6000 y NFPA 99',
+    // La única página que no tenía una escrita. Sin este campo `pageSeo` cae al `tagline`, y
+    // el tagline es una enumeración sin verbo —«Diseño, instalación, inspección…»— que describe
+    // el catálogo en vez de decir qué se lleva el cliente. Iba en la página más rastreada del
+    // sitio y en el fragmento que Google enseña bajo el título.
+    //
+    // Deliberadamente distinta de la de /servicios y /nosotros: las tres competían por las
+    // mismas palabras. Esta abre con la acción («poner en conformidad», el término que el
+    // sector usa y que ya rige los CTA), las otras dos con el catálogo y con quiénes somos.
+    metaDescription:
+      'Ponemos en conformidad los sistemas de gases medicinales de hospitales y clínicas: verificación, inspección, diseño y capacitación bajo ASSE 6000 y NFPA 99.',
     sections: {
       servicios: {
         eyebrow: 'Servicios',

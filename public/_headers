@@ -21,6 +21,29 @@
   # lo que sirva el registrador). Forzar HTTPS en todos ellos desde el sitio web puede romper
   # algo que nadie relacionaría con este archivo. Tampoco `preload`: es difícil de revertir.
   Strict-Transport-Security: max-age=31536000
+  # CSP parcial, y parcial a propósito.
+  #
+  # Estas cuatro directivas cierran agujeros sin depender de enumerar cada origen que el sitio
+  # carga, así que no se rompen cuando mañana se añada un script:
+  #   base-uri         impide que un <base> inyectado redirija todas las rutas relativas.
+  #   object-src       mata <object>/<embed>: no se usan y son vía de ejecución.
+  #   form-action      el único <form> del sitio no lleva `action` y envía por fetch, así que
+  #                    limitarlo a 'self' no cambia nada salvo bloquear un secuestro del envío.
+  #   frame-ancestors  forma moderna de X-Frame-Options, que se queda arriba para navegadores
+  #                    viejos. Donde conviven, manda esta.
+  #
+  # NO lleva script-src, connect-src ni default-src, que es lo que de verdad frenaría un XSS.
+  # El Studio ya no se monta en producción, pero este archivo se copia a `dist/` en LAS DOS
+  # construcciones, y la de vista previa sí lo lleva: 'unsafe-eval', blob:, websockets y una
+  # lista larga de orígenes de sanity.io. Una política de scripts aquí lo dejaría inservible
+  # allí, y no vale aflojarla por ruta, porque Cloudflare **combina** las reglas de `_headers`
+  # que coinciden en vez de sustituirlas: las dos aplicarían y el navegador exige pasar ambas.
+  #
+  # Para cerrarlo hace falta que cada despliegue sirva su propia cabecera —un `_headers` por
+  # construcción, o moverlas al adaptador— y enumerar los orígenes que el sitio carga en
+  # tiempo de ejecución: challenges.cloudflare.com (Turnstile), static.cloudflareinsights.com
+  # (analítica), cdn.sanity.io (imágenes) y el proyecto de Supabase (la edge function).
+  Content-Security-Policy: base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'self'
 
 # Los nombres de archivo en /_astro/ llevan hash de contenido: un cambio produce un nombre
 # nuevo, así que el viejo puede cachearse para siempre sin riesgo de servir contenido rancio.
