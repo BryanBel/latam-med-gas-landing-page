@@ -31,6 +31,12 @@ const phoneLinks = phone
 // la ciudad: dice dónde está la empresa sin convertir el pie en una ficha postal.
 const ciudad = 'Miami, Florida · Estados Unidos';
 
+// «Contáctenos» no viaja en NAV_LINKS porque la cabecera lo pinta como botón aparte; en el pie
+// es un enlace más de la lista.
+const footerNav = [...navLinks, { href: '/contacto/', label: 'Contáctenos' }];
+const footerNavLink =
+  'hover:text-accent focus-visible:ring-accent rounded-sm text-xs font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
+
 const footerLink =
   'hover:text-accent focus-visible:ring-accent rounded-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
 const logoUrl = sanityImageUrl(settings?.logo, 140);
@@ -81,26 +87,30 @@ const year = new Date().getFullYear();
       </ul>
     </div>
 
-    <nav aria-labelledby="footer-nav-titulo" class="flex flex-col gap-2">
-      <h2 id="footer-nav-titulo" class="text-2xs text-ink mb-1 font-semibold tracking-[0.08em] uppercase">
+    {
+      /* Los seis enlaces, en dos columnas. Apilados en una sola eran lo que estiraba el pie
+        —seis filas seguidas— mientras la columna de la marca se quedaba medio vacía justo al
+        lado. Repartidos, las tres secciones acaban a una altura parecida y el pie pierde unos
+        70 px sin perder nada de contenido.
+
+        Y va como lista, que es lo que es: un lector de pantalla anuncia «seis elementos» en
+        vez de recitarlos sueltos. */
+    }
+    <nav aria-labelledby="footer-nav-titulo">
+      <h2 id="footer-nav-titulo" class="text-2xs text-ink mb-3 font-semibold tracking-[0.08em] uppercase">
         Navegación
       </h2>
-      {
-        navLinks.map((l) => (
-          <a
-            href={l.href}
-            class="hover:text-accent focus-visible:ring-accent rounded-sm text-xs font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-          >
-            {l.label}
-          </a>
-        ))
-      }
-      <a
-        href="/contacto/"
-        class="hover:text-accent focus-visible:ring-accent rounded-sm text-xs font-medium text-slate-600 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-      >
-        Contáctenos
-      </a>
+      <ul class="grid grid-cols-2 gap-x-6 gap-y-2">
+        {
+          footerNav.map((l) => (
+            <li>
+              <a href={l.href} class={footerNavLink}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </nav>
   </div>
   <div class="border-t border-slate-200">
