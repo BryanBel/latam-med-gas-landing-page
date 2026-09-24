@@ -1,0 +1,51 @@
+{
+  // .gitattributes normaliza el repositorio entero a LF (`* text=auto eol=lf`). Sin fijarlo
+  // aquí, VS Code en Windows crea los archivos nuevos con CRLF y Git los convierte al añadirlos,
+  // que es de donde salió que `prettier --check` marcara 17 archivos sin un solo problema real
+  // de estilo. Que nazcan ya en LF y no haya conversión que perseguir.
+  "files.eol": "\n",
+
+  // Prettier al guardar, y declarado por lenguaje además de en general: con la extensión de
+  // Astro instalada, VS Code tiene dos formateadores candidatos para .astro y elige por su
+  // cuenta si no se le dice. Importa cuál gane, porque solo Prettier carga
+  // prettier-plugin-tailwindcss, que es lo que mantiene el orden canónico de las clases; con el
+  // otro, cada guardado reordenaría medio archivo y el diff dejaría de decir nada.
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[astro]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[jsonc]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[markdown]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+
+  // La extensión de ESLint no mira .astro por omisión, así que los avisos que sí da
+  // `pnpm exec eslint .` en la terminal no aparecían subrayados en el editor.
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "astro"],
+
+  // Sin esto, el autocompletado de Tailwind no funciona dentro de un .astro: la extensión no
+  // reconoce el lenguaje y no ofrece ni clases ni el color de cada token.
+  "tailwindCSS.includeLanguages": { "astro": "html" },
+
+  // El TypeScript del proyecto, no el que trae VS Code. Son versiones distintas, y cuando
+  // difieren el editor puede marcar errores que `pnpm exec astro check` no da —o callarse los
+  // que sí—, que es la peor forma de perder una tarde.
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  // dist/ y .astro/ se regeneran en cada build. En la búsqueda son ruido —el mismo texto
+  // aparece dos veces, una en el fuente y otra en la copia construida— y en el vigilante de
+  // archivos son miles de escrituras por build que VS Code no tiene por qué seguir.
+  "search.exclude": {
+    "**/dist": true,
+    "**/.astro": true,
+    "**/node_modules": true,
+    "**/pnpm-lock.yaml": true
+  },
+  "files.watcherExclude": {
+    "**/dist/**": true,
+    "**/.astro/**": true,
+    "**/node_modules/**": true
+  }
+}

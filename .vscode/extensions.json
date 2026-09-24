@@ -1,4 +1,14 @@
 {
-  "recommendations": ["astro-build.astro-vscode"],
+  "recommendations": [
+    "astro-build.astro-vscode",
+    // Formatea .astro con los plugins del proyecto. settings.json lo fija como formateador por
+    // defecto, así que sin instalarlo el guardado no formatea nada.
+    "esbenp.prettier-vscode",
+    // Los mismos avisos que `pnpm exec eslint .`, subrayados mientras se escribe.
+    "dbaeumer.vscode-eslint",
+    // Autocompletado de clases y el color de cada token. Los tokens de este proyecto se definen
+    // en src/styles/global.css, no en un tailwind.config.js, y la extensión los lee de ahí.
+    "bradlc.vscode-tailwindcss"
+  ],
   "unwantedRecommendations": []
 }
