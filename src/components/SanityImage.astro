@@ -2,7 +2,7 @@
 import type { ImageMetadata } from 'astro';
 import { getImage } from 'astro:assets';
 import ImagePlaceholder from './ImagePlaceholder.astro';
-import { sanityImageUrl } from '../lib/sanityImage';
+import { sanityImageUrl, sanityImageSrcSet } from '../lib/sanityImage';
 import type { SanityImageRef } from '../lib/sanityQueries';
 
 interface Props {
@@ -45,6 +45,7 @@ const {
 // Sanity serves its own derivatives; only the local seed photos need astro:assets. Widths are
 // capped at the source width so sharp never upscales.
 const sanitySrc = sanityImageUrl(image, width);
+const sanitySrcSet = sanityImageSrcSet(image, width);
 
 // Reserve layout space from the same ratio the `aspect` class enforces, so the width/height
 // attributes and the CSS box can never disagree.
@@ -69,7 +70,7 @@ const optimized =
 const src = sanitySrc ?? optimized?.src ?? null;
 // El alt sigue a la imagen que realmente se pinta, no a la ficha que la rodea.
 const altText = sanitySrc ? alt : (fallbackAlt ?? alt);
-const srcset = optimized?.srcSet?.attribute || undefined;
+const srcset = sanitySrcSet ?? optimized?.srcSet?.attribute ?? undefined;
 ---
 
 {
