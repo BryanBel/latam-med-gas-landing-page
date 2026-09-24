@@ -10,13 +10,20 @@ Project notes — task status, the DNS cutover runbook and the branding rational
 
 **Never cancel the registrar's hosting.** The domain carries the company's live mailboxes. The site running on Cloudflare makes that hosting look redundant. It is not.
 
-**Always deploy the edge function with `--no-verify-jwt`:**
+**Always deploy edge functions with `--no-verify-jwt` — both of them, for different reasons:**
 
 ```sh
 npx supabase functions deploy notify-lead --project-ref xsdmvvsksddnvvclndvu --no-verify-jwt
+npx supabase functions deploy submit-lead --project-ref xsdmvvsksddnvvclndvu --no-verify-jwt
 ```
 
-Supabase puts a JWT gate in front of edge functions by default, and the Database Webhook that triggers this one sends no `Authorization` header. Without the flag every notification is rejected at the gateway with a 401 that never reaches the function and never surfaces as a failure. Auth is the `x-webhook-secret` header instead.
+Supabase puts a JWT gate in front of edge functions by default. `notify-lead` is triggered by a Database Webhook that sends no `Authorization` header. `submit-lead` is called by a browser, but this project's publishable key is the new `sb_publishable_` format, which is not a JWT, so the gateway rejects it too. Either way the call is refused at the gateway with a 401 that never reaches the function and never surfaces as a failure. Auth is the `x-webhook-secret` header for the first and the Turnstile token for the second.
+
+**Supabase migrations must be named `<14-digit timestamp>_name.sql`.** The CLI lists any other name in `migration list` and then skips it, so `db push` reports "Remote database is up to date" without having applied anything. `0001_`/`0002_` prefixes looked fine and did nothing for a month.
+
+**Never let `anon` write to `leads` again.** Every insert fires the webhook that emails the client, so one unauthenticated POST equals one email to the company's working mailbox, from `send.latammedgas.com`. Writes go through `submit-lead`, which checks a Turnstile token and inserts with the service role. If that path ever has to be rolled back, restore the policy first and revert the frontend second — never leave the form pointing at a function that cannot write, because it still says "Gracias" while losing every lead.
+
+**`PUBLIC_TURNSTILE_SITE_KEY` must be set in the Cloudflare project**, or `astro.config.mjs` fails the build on purpose. Absent, the widget never renders and the contact form silently takes nothing.
 
 **Sanity content overrides the code.** Every section falls back to `src/lib/content.ts`, but a populated Sanity field always wins. A test value published in Studio once became the site's live `<meta name="description">`. When copy on the live site does not match `content.ts`, the answer is in Studio, not the code.
 

@@ -71,16 +71,31 @@ Maps behind a static card instead of embedding an iframe, so no third party is c
 visitor asks for it. The result is a site with no consent banner, because there is nothing to
 consent to — not a banner that lies.
 
-### Lead capture that cannot leak
+### Lead capture that cannot leak, and cannot be used as a mail cannon
 
-The form inserts into a Supabase `leads` table using the public anon key, with row-level security
-that permits `insert` and nothing else — no `select`, `update` or `delete`. Leads are readable
-only from the Supabase dashboard. A honeypot field filters basic bots before any request is sent.
+Leads live in a Supabase `leads` table whose row-level security grants no `select`, `update` or
+`delete` to anyone public — they are readable only from the Supabase dashboard.
 
-Each insert fires a Database Webhook into the [`notify-lead`](supabase/functions/notify-lead/)
-edge function, which emails the company through Resend. It sends from a verified **subdomain**
-(`send.latammedgas.com`): the root domain already publishes an SPF record for the company
-mailboxes, and a second SPF record there would invalidate both and break mail people depend on.
+Writing used to be open, though, and that mattered more than it looked. The browser inserted
+straight into PostgREST with the anon key, which is public by design: it ships in the bundle.
+Anyone could copy it and write rows — and since every row fires a webhook that sends an email,
+**one unauthenticated POST equalled one email** to the company's working mailbox. The damage
+was never junk rows; it was flooding that inbox and burning the sending reputation of
+`send.latammedgas.com`.
+
+So the browser no longer writes to the table at all. It posts to
+[`submit-lead`](supabase/functions/submit-lead/), which verifies a Cloudflare Turnstile token
+and only then inserts with the service role. `anon` has no insert policy any more, so that
+function is the only way in. Turnstile tokens are single-use, the widget is reset before every
+submission, and the function revalidates every field — whoever calls it has no obligation to
+have come through our form.
+
+Each insert fires a Database Webhook into [`notify-lead`](supabase/functions/notify-lead/),
+which emails through Resend from a verified **subdomain** (`send.latammedgas.com`): the root
+already publishes an SPF record for the company mailboxes, and a second SPF record there would
+invalidate both and break mail people depend on. That function scores spam signals rather than
+counting volume, so a real enquiry that happens to include a link still gets delivered, while
+the row is stored either way — a false positive costs a notification, never a lead.
 
 ### Type scale in one place
 
@@ -91,15 +106,16 @@ was a four-token change that lifted the whole site at once.
 
 ## Stack
 
-| Layer         | Choice                                                    | Why                                                                                                   |
-| ------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Framework     | [Astro](https://astro.build), static output               | Ships zero JS by default; only what needs interactivity hydrates                                      |
-| Interactivity | [React](https://react.dev) islands                        | Exactly one ([`ContactForm.tsx`](src/components/ContactForm.tsx)) — everything else is plain `.astro` |
-| Styling       | [Tailwind CSS v4](https://tailwindcss.com)                | Design tokens centralized in [`global.css`](src/styles/global.css)                                    |
-| CMS           | [Sanity](https://sanity.io), Studio embedded at `/studio` | Client edits on the deployed site; no separate CMS host to run or pay for                             |
-| Backend       | [Supabase](https://supabase.com)                          | Contact leads only, insert-only RLS                                                                   |
-| Hosting       | [Cloudflare Workers](https://workers.cloudflare.com)      | Free tier, git-push deploys, global CDN                                                               |
-| Language      | TypeScript, strict                                        | `astro check` runs clean across the project                                                           |
+| Layer         | Choice                                                                 | Why                                                                                                   |
+| ------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Framework     | [Astro](https://astro.build), static output                            | Ships zero JS by default; only what needs interactivity hydrates                                      |
+| Interactivity | [React](https://react.dev) islands                                     | Exactly one ([`ContactForm.tsx`](src/components/ContactForm.tsx)) — everything else is plain `.astro` |
+| Styling       | [Tailwind CSS v4](https://tailwindcss.com)                             | Design tokens centralized in [`global.css`](src/styles/global.css)                                    |
+| CMS           | [Sanity](https://sanity.io), Studio embedded at `/studio`              | Client edits on the deployed site; no separate CMS host to run or pay for                             |
+| Backend       | [Supabase](https://supabase.com)                                       | Contact leads only; nothing public may read or write the table — writes go through an edge function   |
+| Bot defence   | [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Invisible unless challenged; its token is what authorises a lead write                                |
+| Hosting       | [Cloudflare Workers](https://workers.cloudflare.com)                   | Free tier, git-push deploys, global CDN                                                               |
+| Language      | TypeScript, strict                                                     | `astro check` runs clean across the project                                                           |
 
 ## Project structure
 
@@ -114,14 +130,15 @@ was a four-token change that lifted the whole site at once.
 │   ├── lib/
 │   │   ├── content.ts         # Seed/fallback copy
 │   │   ├── sanityQueries.ts   # Typed GROQ fetchers, build time
-│   │   └── supabase.ts        # Supabase client, anon key
+│   │   └── leads.ts           # Contact form → submit-lead edge function
 │   ├── pages/                 # index, nosotros, servicios, cursos, trayectoria, contacto, privacidad, 404
 │   ├── sanity/schemaTypes/    # Content model
 │   ├── scripts/site.ts        # All client interactions; re-runs on astro:page-load
 │   └── styles/global.css      # Design tokens, keyframes
 └── supabase/
-    ├── functions/notify-lead/ # Edge function: webhook → branded email
-    └── migrations/            # `leads` table + RLS policy
+    ├── functions/submit-lead/ # Edge function: Turnstile check → insert (service role)
+    ├── functions/notify-lead/ # Edge function: webhook → branded email, spam-scored
+    └── migrations/            # `leads` table, length limits, RLS policy
 ```
 
 ## Getting started
@@ -132,13 +149,14 @@ cp .env.example .env   # fill in Sanity + Supabase values
 pnpm dev               # http://localhost:4321
 ```
 
-| Variable                   | Where to get it                                                                                                       |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `PUBLIC_SANITY_PROJECT_ID` | [sanity.io/manage](https://sanity.io/manage) → your project                                                           |
-| `PUBLIC_SANITY_DATASET`    | Usually `production`                                                                                                  |
-| `PUBLIC_SUPABASE_URL`      | [supabase.com/dashboard](https://supabase.com/dashboard) → Project Settings → API                                     |
-| `PUBLIC_SUPABASE_ANON_KEY` | Same page — the anon key, never the service role key                                                                  |
-| `PUBLIC_CF_BEACON_TOKEN`   | Cloudflare → Web Analytics. Public identifier, not a secret. Leave blank locally so dev traffic stays out of the data |
+| Variable                    | Where to get it                                                                                                                                                 |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PUBLIC_SANITY_PROJECT_ID`  | [sanity.io/manage](https://sanity.io/manage) → your project                                                                                                     |
+| `PUBLIC_SANITY_DATASET`     | Usually `production`                                                                                                                                            |
+| `PUBLIC_SUPABASE_URL`       | [supabase.com/dashboard](https://supabase.com/dashboard) → Project Settings → API                                                                               |
+| `PUBLIC_SUPABASE_ANON_KEY`  | Same page — the anon key, never the service role key                                                                                                            |
+| `PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare → Turnstile → your widget. Public, ships in the bundle. **The build fails without it**, on purpose: absent, the contact form silently takes no leads |
+| `PUBLIC_CF_BEACON_TOKEN`    | Cloudflare → Web Analytics. Public identifier, not a secret. Leave blank locally so dev traffic stays out of the data                                           |
 
 | Command            | Action                                               |
 | ------------------ | ---------------------------------------------------- |
@@ -173,12 +191,19 @@ for a month that way, and the seed fallback rendered the same thirteen, so nothi
    empty 404 instead of the styled one.
 2. **Environment variables** — set the same keys in the Cloudflare project settings. A missing
    beacon token builds without analytics and without an error.
-3. **Lead notifications** — the edge function must be deployed with `--no-verify-jwt`, or the
-   Database Webhook is rejected before reaching it. See
-   [`supabase/functions/notify-lead/README.md`](supabase/functions/notify-lead/README.md).
-4. **Before every push** — `git fetch` and rebase. The Sanity rebuild workflow pushes empty
+3. **Both edge functions need `--no-verify-jwt`**, for different reasons. `notify-lead` is
+   called by a Database Webhook that sends no `Authorization` header. `submit-lead` is called
+   by a browser, but this project's publishable key is the new `sb_publishable_` format, which
+   is not a JWT — so the gateway would reject it before it reached the code. Either way the
+   failure is an invisible 401 that never surfaces as a broken form. See
+   [`submit-lead`](supabase/functions/submit-lead/README.md) and
+   [`notify-lead`](supabase/functions/notify-lead/README.md).
+4. **Supabase migrations must be named with a 14-digit timestamp.** The CLI lists any other
+   name and then skips it, and `db push` answers "Remote database is up to date" without
+   having applied anything.
+5. **Before every push** — `git fetch` and rebase. The Sanity rebuild workflow pushes empty
    commits, so `origin/master` moves without warning.
-5. **Content backups** — `pnpm backup` snapshots the dataset into `../sanity-backups`, which is
+6. **Content backups** — `pnpm backup` snapshots the dataset into `../sanity-backups`, which is
    [a private repository](https://github.com/BryanBel/latam-med-gas-sanity-backups) outside this
    one, with a scheduled job of its own that runs the same snapshot daily. Document history on the current Sanity plan is short: on
    2026-09-20 the oldest transaction still held for `siteSettings` was from the previous day,

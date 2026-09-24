@@ -1,15 +1,39 @@
 # notify-lead
 
-Sends an email to `bryanbelandriav@gmail.com` every time someone submits the contact
-form (a new row lands in `public.leads`). Interim recipient until the client has a real
-company inbox — see `docs/guides/branding.md` for the address/email situation.
+Emails the company every time a row lands in `public.leads`, unless the row scores as spam.
+
+Recipient is the `LEAD_NOTIFY_EMAIL` secret, today `administracion@latammedgas.com` — the
+client's own inbox. It was `bryanbelandriav@gmail.com` while none existed, and this file still
+said so long after the secret had moved on. Worth remembering before trusting a recipient
+written down anywhere other than the secret itself.
+
+Rows reach `leads` through [`submit-lead`](../submit-lead/), which is now the only way in:
+`anon` lost its insert policy in migration `20260923190000`.
+
+## Spam scoring
+
+Every insert fires this function and this function sends an email, so anyone able to write rows
+could flood the company's mailbox and burn the sending reputation of `send.latammedgas.com`.
+Turnstile stops that at the door now; this is the second bound, and it stays because defence in
+depth is cheap here.
+
+It scores signals rather than counting volume. An hourly cap would also stop a flood, but it
+would silence the legitimate customer who writes during one. Scoring lets them through: a real
+enquiry that happens to link their hospital's site scores 1 and is delivered, while a link plus
+a spam keyword, or a non-Latin alphabet, scores 2 and is held. **The row is always stored** —
+this only decides whether anyone is told — so a false positive costs a notification, never a
+lead. Held rows are logged with their score and the reasons.
 
 ## One-time setup
 
-1. **Resend account** — sign up at [resend.com](https://resend.com) with the same email
-   above (Resend's sandbox mode only sends to the account's own address until a sending
-   domain is verified — fine for now, no domain to verify yet). Grab an API key from
-   Resend → API Keys.
+1. **Resend account** — [resend.com](https://resend.com), with `send.latammedgas.com` verified
+   as the sending domain. That verification is what lets the function send to any recipient:
+   until a domain is verified, Resend's sandbox only delivers to the account's own address.
+   Grab an API key from Resend → API Keys.
+
+   The sending domain is a **subdomain** on purpose. The root already publishes an SPF record
+   for the company mailboxes, and a second SPF record there would invalidate both and break
+   mail people depend on.
 
 2. **Deploy the function** — this must happen _before_ the webhook below, or the
    dashboard's edge function dropdown shows "No edge functions created yet":
@@ -33,7 +57,7 @@ company inbox — see `docs/guides/branding.md` for the address/email situation.
 
    ```
    npx supabase secrets set RESEND_API_KEY=re_xxxxxxxx
-   npx supabase secrets set LEAD_NOTIFY_EMAIL=bryanbelandriav@gmail.com
+   npx supabase secrets set LEAD_NOTIFY_EMAIL=administracion@latammedgas.com
    npx supabase secrets set LEAD_WEBHOOK_SECRET=<any random string you make up>
    ```
 
@@ -54,5 +78,6 @@ company inbox — see `docs/guides/branding.md` for the address/email situation.
 
 5. Submit the contact form on the live site once to confirm the email arrives.
 
-Swap `LEAD_NOTIFY_EMAIL` to the client's real inbox once one exists — no code change,
-just update the secret.
+`LEAD_NOTIFY_EMAIL` is a secret, so changing who gets notified is one command and no deploy.
+Update this README when you do — it drifted once already, and a stale recipient in the docs
+sends you looking in the wrong inbox when something appears to be broken.
