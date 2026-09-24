@@ -65,7 +65,18 @@ pnpm build          # static build to ./dist
 npx astro check     # types, expect 0/0/0
 pnpm exec eslint .  # lint
 pnpm exec prettier --write <files>
+pnpm backup         # snapshot the Sanity dataset to ../sanity-backups
 ```
+
+Reading the leads table — `anon` can neither select nor insert, so this is the way in:
+
+```sh
+npx supabase db query "select count(*) from public.leads" --linked --project-ref xsdmvvsksddnvvclndvu
+```
+
+`--project-ref` requires `--linked`; on its own it errors. Rows hold real customer contact
+details once the site starts converting, so select the columns you need rather than `*`, and
+look before deleting anything.
 
 ## Astro reference
 
