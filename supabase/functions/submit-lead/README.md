@@ -85,9 +85,14 @@ not need to be set.
 
 Deploy the function, then ship the frontend that calls it, then revoke `anon`'s insert. Revoking
 first stops leads being recorded while the form still says "Gracias" — a failure with no visible
-symptom. To roll back in a hurry, restore the policy:
+symptom.
+
+To roll back in a hurry, **the policy alone is no longer enough**. `20260924030000` also revoked
+the table grants Supabase hands out by default, so a policy without a grant still fails with
+`42501` — the same invisible failure this section exists to prevent. Both halves:
 
 ```sql
+grant insert on public.leads to anon;
 create policy "anon can submit leads" on public.leads
   for insert to anon with check (true);
 ```
