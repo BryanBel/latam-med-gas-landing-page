@@ -15,6 +15,15 @@
 // El gráfico no es decorativo: la frase interrumpe un tramo de tubería, con dos nodos en rombo
 // donde irían las válvulas. Es de lo que habla el eslogan y es de lo que vive la empresa.
 //
+// Y la tubería fluye. La frase dice «Confianza que **fluye** en cada **línea** de gas», así que
+// unos puntos deslizándose por la línea no son un adorno encima de la frase: son la frase
+// dibujada. Es el mismo motivo que usa el hero, más lento y más espaciado — aquí compite con
+// silencio, no con un hero lleno, y al ritmo del hero se abarata.
+//
+// En móvil la tubería también va debajo. Con adorno solo arriba la composición quedaba coja: en
+// escritorio la línea atraviesa la frase y se equilibra sola, pero apilada no, y el texto se
+// quedaba colgando sobre el hueco que lo separa de la sección siguiente.
+//
 // Sin cursiva a propósito. El sitio carga Figtree en 600/700/800 y Noto Sans en 400/500/600 —
 // ninguna itálica — así que la cursiva anterior la sintetizaba el navegador inclinando los
 // glifos, que es buena parte de por qué se veía barata.
@@ -37,15 +46,24 @@ const linea = onNavy
   : ['from-accent/0 to-accent/35', 'from-accent/35 to-accent/0'];
 const nodo = onNavy ? 'bg-accent-100' : 'bg-accent';
 const frase = onNavy ? 'text-white' : 'text-accent';
+
+// Sobre azul el punto va claro y con halo, como en el hero. Sobre blanco va en el azul de marca
+// y sin halo: un resplandor alrededor de un punto oscuro sobre fondo claro se lee como un borrón,
+// no como luz. `--flow-dur` es el mismo en los dos, bastante más lento que los 3.2s del hero.
+const flujo = onNavy ? '--flow-dot:#d3e3fa; --flow-dur:5.4s' : '--flow-dot:#0a0a89; --flow-glow:none; --flow-dur:5.4s';
 ---
 
 {
   text && (
-    <section class:list={['relative overflow-hidden', !onNavy && 'bg-white']} aria-label="Eslogan">
+    <section class:list={['relative overflow-hidden', !onNavy && 'bg-white']} aria-label="Eslogan" style={flujo}>
       <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-28">
-        {/* Desde tablet la tubería atraviesa el ancho y la frase la interrumpe. */}
+        {/* Desde tablet la tubería atraviesa el ancho y la frase la interrumpe. Dos puntos por
+          tramo, desfasados entre sí y entre lados, para que nunca marchen en pareja. */}
         <div class="hidden items-center md:flex" data-reveal>
-          <div class:list={['h-px flex-1 bg-gradient-to-r', linea[0]]} aria-hidden="true" />
+          <div class:list={['relative h-px flex-1 bg-gradient-to-r', linea[0]]} aria-hidden="true">
+            <span class="gas-dot" style="--d:0s" />
+            <span class="gas-dot" style="--d:2.7s" />
+          </div>
           <div class:list={['mx-5 size-[7px] shrink-0 rotate-45', nodo]} aria-hidden="true" />
           <p
             class:list={['font-display shrink-0 text-2xl leading-tight font-extrabold text-balance lg:text-3xl', frase]}
@@ -53,18 +71,37 @@ const frase = onNavy ? 'text-white' : 'text-accent';
             {text}
           </p>
           <div class:list={['mx-5 size-[7px] shrink-0 rotate-45', nodo]} aria-hidden="true" />
-          <div class:list={['h-px flex-1 bg-gradient-to-r', linea[1]]} aria-hidden="true" />
+          <div class:list={['relative h-px flex-1 bg-gradient-to-r', linea[1]]} aria-hidden="true">
+            <span class="gas-dot" style="--d:1.35s" />
+            <span class="gas-dot" style="--d:4.05s" />
+          </div>
         </div>
 
-        {/* En móvil la frase ocupa el ancho, así que el tramo de tubería se apila encima en
-          lugar de partirse en dos trozos de pocos píxeles. */}
+        {/* En móvil la frase ocupa el ancho, así que el tramo de tubería se apila — y va arriba
+          y abajo, no solo arriba. Un punto por segmento: cuatro segmentos cortos con dos cada
+          uno se lee como tráfico, no como un caudal. */}
         <div class="text-center md:hidden" data-reveal>
-          <div class="mb-4 flex items-center justify-center gap-3" aria-hidden="true">
-            <div class:list={['h-px w-14 bg-gradient-to-r', linea[0]]} />
+          <div class="mb-5 flex items-center justify-center gap-3" aria-hidden="true">
+            <div class:list={['relative h-px w-16 bg-gradient-to-r', linea[0]]}>
+              <span class="gas-dot" style="--d:0s" />
+            </div>
             <div class:list={['size-1.5 rotate-45', nodo]} />
-            <div class:list={['h-px w-14 bg-gradient-to-r', linea[1]]} />
+            <div class:list={['relative h-px w-16 bg-gradient-to-r', linea[1]]}>
+              <span class="gas-dot" style="--d:2.7s" />
+            </div>
           </div>
+
           <p class:list={['font-display text-xl leading-snug font-extrabold text-balance', frase]}>{text}</p>
+
+          <div class="mt-5 flex items-center justify-center gap-3" aria-hidden="true">
+            <div class:list={['relative h-px w-16 bg-gradient-to-r', linea[0]]}>
+              <span class="gas-dot" style="--d:1.35s" />
+            </div>
+            <div class:list={['size-1.5 rotate-45', nodo]} />
+            <div class:list={['relative h-px w-16 bg-gradient-to-r', linea[1]]}>
+              <span class="gas-dot" style="--d:4.05s" />
+            </div>
+          </div>
         </div>
       </div>
     </section>

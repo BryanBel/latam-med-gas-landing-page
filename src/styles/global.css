@@ -210,9 +210,14 @@ html {
   filter: blur(64px);
 }
 
-/* GAS-FLOW — dots gliding along a hairline, a nod to a medical-gas pipeline. */
+/* GAS-FLOW — dots gliding along a hairline, a nod to a medical-gas pipeline.
+   Colour, glow and tempo come from custom properties so one mechanism serves two places that
+   need different treatment: the hero, on navy, where the defaults below apply; and the slogan,
+   which runs on navy on the home page and on white everywhere else — a white hairline and a
+   pale glowing dot simply vanish on white — and which runs slower, because it is the quiet
+   moment on the page and the hero's pace cheapens it. */
 .gas-flow {
-  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.28), transparent);
+  background: linear-gradient(to right, transparent, var(--flow-line, rgba(255, 255, 255, 0.28)), transparent);
 }
 .gas-dot {
   position: absolute;
@@ -222,8 +227,8 @@ html {
   width: 6px;
   margin-top: -3px;
   border-radius: 9999px;
-  background: #a8c2f0;
-  box-shadow: 0 0 8px 2px rgb(168 194 240 / 0.6);
+  background: var(--flow-dot, #a8c2f0);
+  box-shadow: var(--flow-glow, 0 0 8px 2px rgb(168 194 240 / 0.6));
   opacity: 0;
 }
 
@@ -262,7 +267,7 @@ html {
     }
   }
   .gas-dot {
-    animation: gasFlow 3.2s linear infinite;
+    animation: gasFlow var(--flow-dur, 3.2s) linear infinite;
     animation-delay: var(--d, 0s);
   }
 }
