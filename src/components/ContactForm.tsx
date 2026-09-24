@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type SyntheticEvent } from 'react';
 import { submitLead, LEAD_LIMITS, TURNSTILE_SITE_KEY } from '../lib/leads';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
-type FieldErrors = Partial<Record<'name' | 'email' | 'message', string>>;
+type FieldErrors = Partial<Record<'name' | 'email' | 'phone' | 'message', string>>;
 
 // La API que inyecta el script de Cloudflare. Solo lo que se usa aquí.
 interface Turnstile {
@@ -35,13 +35,69 @@ const inputClass =
 const labelClass = 'mb-1.5 block text-xs font-semibold text-slate-600';
 const errorClass = 'mt-1 text-2xs text-red-600';
 
+// Nombre y apellido. Letras de cualquier alfabeto, tildes, apóstrofos, guiones y puntos, que es
+// lo que llevan los nombres reales: «María de la Cruz», «J. Pérez», «O'Brien», «Jean-Luc».
+// Números y símbolos fuera.
+const NOMBRE_RE = /^[\p{L}\p{M}][\p{L}\p{M}'’.\- ]*$/u;
+
+// Correo. A propósito **no** se limita a gmail: quien escribe por aquí lo hace desde el dominio
+// de su hospital o su clínica, y filtrar por proveedor rechazaría justo los contactos que más
+// interesan. Lo que sí exige es la forma completa —parte local, dominio con etiquetas válidas y
+// un TLD de dos letras o más—, que es donde caen los errores de tecleo de verdad: falta la
+// arroba, falta el punto, se queda en «.c», o el dominio empieza o acaba en guion.
+const CORREO_RE =
+  /^[\p{L}\p{N}._%+-]+@[\p{L}\p{N}](?:[\p{L}\p{N}-]*[\p{L}\p{N}])?(?:\.[\p{L}\p{N}](?:[\p{L}\p{N}-]*[\p{L}\p{N}])?)*\.\p{L}{2,}$/u;
+
+// Erratas que se escriben solas al teclear rápido. Un correo mal puesto no da error a nadie: el
+// mensaje se guarda, el cliente responde y la respuesta rebota contra un buzón que no existe,
+// así que el lead se pierde sin que ninguna de las dos partes se entere.
+const DOMINIOS_ERRATA: Record<string, string> = {
+  'gmial.com': 'gmail.com',
+  'gmai.com': 'gmail.com',
+  'gmil.com': 'gmail.com',
+  'gnail.com': 'gmail.com',
+  'gmail.co': 'gmail.com',
+  'hotmial.com': 'hotmail.com',
+  'hotmai.com': 'hotmail.com',
+  'hotmail.co': 'hotmail.com',
+  'outlok.com': 'outlook.com',
+  'outloo.com': 'outlook.com',
+  'yaho.com': 'yahoo.com',
+  'yahooo.com': 'yahoo.com',
+};
+
+// Teléfono, solo si lo rellenan. Se pide en formato internacional porque quien escribe puede
+// estar en cualquiera de los seis países donde hay trabajo hecho, y un «0414-2349582» sin
+// prefijo no se puede marcar desde fuera de Venezuela. E.164 admite 15 dígitos como máximo.
+const TELEFONO_RE = /^\+\d{8,15}$/;
+
+/** Quita lo que la gente usa para separar: espacios, guiones, paréntesis y puntos. */
+function normalizarTelefono(v: string): string {
+  return v.replace(/[\s().-]/g, '');
+}
+
 function validate(data: FormData): FieldErrors {
   const errors: FieldErrors = {};
+  const name = String(data.get('name') || '').trim();
   const email = String(data.get('email') || '').trim();
+  const phone = String(data.get('phone') || '').trim();
 
-  if (!String(data.get('name') || '').trim()) errors.name = 'Indique su nombre.';
+  if (!name) errors.name = 'Indique su nombre y apellido.';
+  else if (!NOMBRE_RE.test(name)) errors.name = 'Use solo letras, sin números ni símbolos.';
+  else if (name.split(/\s+/).filter(Boolean).length < 2) errors.name = 'Falta el apellido.';
+
   if (!email) errors.email = 'Indique su correo.';
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = 'Revise el formato del correo.';
+  else if (!CORREO_RE.test(email)) errors.email = 'Revise el formato del correo.';
+  else {
+    const sugerido = DOMINIOS_ERRATA[email.slice(email.lastIndexOf('@') + 1).toLowerCase()];
+    if (sugerido) errors.email = `¿Quiso decir @${sugerido}?`;
+  }
+
+  // Vacío es válido: el teléfono no es obligatorio.
+  if (phone && !TELEFONO_RE.test(normalizarTelefono(phone))) {
+    errors.phone = 'Incluya el código de país, por ejemplo +57 318 3588075.';
+  }
+
   if (!String(data.get('message') || '').trim()) errors.message = 'Escriba su mensaje.';
 
   return errors;
@@ -219,11 +275,38 @@ export default function ContactForm() {
     // white surface and centres it vertically (see ContactSection). A nested card would double
     // the border and strand the message at the top of the stretched panel.
     return (
-      <div className="py-6 text-center" role="status" aria-live="polite">
-        <p ref={successRef} tabIndex={-1} className="text-ink text-base font-semibold focus-visible:outline-none">
+      <div
+        className="flex h-full min-h-[20rem] flex-col items-center justify-center py-6 text-center"
+        role="status"
+        aria-live="polite"
+      >
+        {/* GAS_ACCENTS[0], el verde de oxígeno. Va a mano y no importado de lib/icons porque ese
+            módulo arrastra lucide-react, y esto es una isla de cliente: importarlo le sumaría el
+            paquete entero de iconos a un chunk que hoy pesa 7 KB. Por lo mismo el check es un SVG
+            suelto en vez de un componente. */}
+        <span
+          className="mb-5 flex h-16 w-16 items-center justify-center rounded-full"
+          style={{ backgroundColor: '#15803d1a' }}
+          aria-hidden="true"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#15803d"
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-8 w-8"
+          >
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+        </span>
+        <p ref={successRef} tabIndex={-1} className="text-ink text-lg font-bold focus-visible:outline-none">
           Gracias por contactarnos.
         </p>
-        <p className="mt-2 text-sm text-slate-600">Le responderemos a la brevedad.</p>
+        <p className="mt-2 max-w-[34ch] text-sm leading-relaxed text-slate-600">
+          Hemos recibido su mensaje y le responderemos a la brevedad.
+        </p>
       </div>
     );
   }
@@ -235,7 +318,7 @@ export default function ContactForm() {
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className={labelClass}>
-            Nombre *
+            Nombre y apellido *
           </label>
           <input
             id="name"
@@ -291,9 +374,21 @@ export default function ContactForm() {
             inputMode="tel"
             autoComplete="tel"
             spellCheck={false}
+            placeholder="+57 318 3588075"
             maxLength={LEAD_LIMITS.phone}
+            aria-invalid={Boolean(errors.phone)}
+            aria-describedby={errors.phone ? 'phone-error' : 'phone-hint'}
             className={inputClass}
           />
+          {errors.phone ? (
+            <p id="phone-error" className={errorClass}>
+              {errors.phone}
+            </p>
+          ) : (
+            <p id="phone-hint" className="text-2xs mt-1 text-slate-500">
+              Opcional. Con código de país.
+            </p>
+          )}
         </div>
         <div>
           <label htmlFor="company" className={labelClass}>
