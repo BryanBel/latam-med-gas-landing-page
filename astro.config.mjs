@@ -22,12 +22,19 @@ const {
 // que solo existe si alguien la dio de alta en el proyecto de Cloudflare, así que es justo el
 // tipo de cosa que se olvida y que no se nota hasta que un cliente no puede escribir. Que falle
 // aquí, ruidosamente, en vez de desplegar un formulario roto.
+//
+// **Son DOS Workers**, y este repositorio alimenta a los dos. Darla de alta solo en el de
+// producción dejó el preview construyendo en rojo tres horas y media el 23/09, sirviendo una
+// versión vieja sin que nadie lo notara: la guarda hizo su trabajo, pero las instrucciones
+// nombraban un único destino.
 if (!PUBLIC_TURNSTILE_SITE_KEY) {
   throw new Error(
     'Falta PUBLIC_TURNSTILE_SITE_KEY. El formulario de contacto la necesita para dibujar el ' +
       'widget de Turnstile y obtener el token que exige la edge function submit-lead.\n' +
       '  · Local: añádela a .env (clave de prueba: 1x00000000000000000000AA).\n' +
-      '  · Producción: Cloudflare → Workers → latam-med-gas-web → Settings → Variables.',
+      '  · Cloudflare → Workers & Pages → Settings → Variables, en LOS DOS Workers que\n' +
+      '    construyen este repositorio: el del sitio y el de la vista previa. La misma clave\n' +
+      '    sirve para ambos; es pública y el widget ya tiene los dos dominios autorizados.',
   );
 }
 

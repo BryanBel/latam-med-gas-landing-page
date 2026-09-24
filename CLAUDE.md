@@ -23,7 +23,11 @@ Supabase puts a JWT gate in front of edge functions by default. `notify-lead` is
 
 **Never let `anon` write to `leads` again.** Every insert fires the webhook that emails the client, so one unauthenticated POST equals one email to the company's working mailbox, from `send.latammedgas.com`. Writes go through `submit-lead`, which checks a Turnstile token and inserts with the service role. If that path ever has to be rolled back, restore the policy first and revert the frontend second — never leave the form pointing at a function that cannot write, because it still says "Gracias" while losing every lead.
 
-**`PUBLIC_TURNSTILE_SITE_KEY` must be set in the Cloudflare project**, or `astro.config.mjs` fails the build on purpose. Absent, the widget never renders and the contact form silently takes nothing.
+**`PUBLIC_TURNSTILE_SITE_KEY` must be set on BOTH Cloudflare Workers**, or `astro.config.mjs` fails the build on purpose. Absent, the widget never renders and the contact form silently takes nothing.
+
+This repository feeds two Workers — the live site and the preview deployment — so every build variable has to be added twice. Setting this one on production only left preview failing every build for three and a half hours on 2026-09-23 while it served a stale copy. Same key both places; it is public, and the Turnstile widget already lists both hostnames.
+
+**Cloudflare's git hook does not always fire.** The same day, a pushed commit simply never appeared in the Worker's deployment list. "Retry build" does not help — it rebuilds the commit that already ran, which is an older one. Push another commit, which is what the Sanity rebuild workflow does anyway.
 
 **Sanity content overrides the code.** Every section falls back to `src/lib/content.ts`, but a populated Sanity field always wins. A test value published in Studio once became the site's live `<meta name="description">`. When copy on the live site does not match `content.ts`, the answer is in Studio, not the code.
 

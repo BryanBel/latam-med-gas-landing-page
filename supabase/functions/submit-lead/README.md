@@ -49,10 +49,15 @@ way in. Service role bypasses RLS, which is the point.
      rules here for pre-clearance to bypass, so it would be a cost with no benefit.
 
 2. **Site key** (public, ships in the bundle) — `.env` as `PUBLIC_TURNSTILE_SITE_KEY`, and the
-   same key in Cloudflare → Workers → `latam-med-gas-web` → Settings → Variables. Without it
-   `astro.config.mjs` refuses to build, on purpose: absent, the widget never renders, the form
-   never gets a token, and every submission is rejected — a contact form that looks fine and
-   silently takes no leads.
+   same key in Cloudflare → Workers & Pages → Settings → Variables **on both Workers that build
+   this repository**: the live site and the preview deployment. Without it `astro.config.mjs`
+   refuses to build, on purpose: absent, the widget never renders, the form never gets a token,
+   and every submission is rejected — a contact form that looks fine and silently takes no
+   leads.
+
+   Setting it on the live site only is exactly what happened on 2026-09-23, and the preview
+   spent three and a half hours failing every build and serving a stale copy before anyone
+   looked. One key, two places, every time — the same applies to any build variable added here.
 
 3. **Secret key** — a Supabase secret, never in `.env` and never in the bundle:
 
