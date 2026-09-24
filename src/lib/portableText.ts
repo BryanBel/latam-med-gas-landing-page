@@ -37,12 +37,16 @@ export interface PortableTextBlock {
 const escape = (value: string) =>
   value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-// Only http(s), mailto and tel. An editor pasting a `javascript:` URL into the link field would
-// otherwise become a script that runs for every visitor.
+// Only http(s), mailto, tel, a same-site path or an anchor. An editor pasting a `javascript:`
+// URL into the link field would otherwise become a script that runs for every visitor.
+//
+// `\/(?!\/)` and not `\/`: a protocol-relative `//evil.com` also starts with a slash, so the
+// looser test let an editor write what reads as an internal path in the Studio and lands on
+// someone else's domain.
 const safeHref = (href?: string) => {
   if (!href) return null;
   const trimmed = href.trim();
-  return /^(https?:|mailto:|tel:|\/|#)/i.test(trimmed) ? escape(trimmed) : null;
+  return /^(https?:|mailto:|tel:|\/(?!\/)|#)/i.test(trimmed) ? escape(trimmed) : null;
 };
 
 interface Classes {
