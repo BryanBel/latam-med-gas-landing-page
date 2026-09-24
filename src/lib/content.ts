@@ -522,7 +522,7 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
       },
       {
         heading: 'Cookies y analítica',
-        body: 'Este sitio no utiliza cookies de seguimiento ni de publicidad. Para medir el tráfico usamos Cloudflare Web Analytics, que no emplea cookies ni identifica a visitantes individuales: solo agrega páginas vistas, procedencia y rendimiento.',
+        body: 'Este sitio no utiliza cookies de seguimiento ni de publicidad. Para medir el tráfico usamos Cloudflare Web Analytics, que no emplea cookies ni identifica a visitantes individuales: solo agrega páginas vistas, procedencia y rendimiento. El mapa de la página de Contacto se carga desde OpenStreetMap, que tampoco instala cookies; al mostrarlo, su navegador comunica a ese servicio la dirección IP desde la que lo solicita, como sucede con cualquier contenido servido por un tercero.',
       },
       {
         heading: 'Sus derechos',

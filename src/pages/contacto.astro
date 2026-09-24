@@ -39,8 +39,24 @@ const CONTACT_ROWS = [
 const contactLinkClass =
   'hover:text-accent focus-visible:ring-accent rounded-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
 
-// Static "map" — a link out to Google Maps rather than an embedded iframe, so no third-party
-// cookies load (keeps the cookieless / no-consent-banner stance).
+// El mapa incrustado es OpenStreetMap, no Google. El embed de OSM no manda ni una cabecera
+// Set-Cookie —comprobado—, así que la Política de Privacidad puede seguir diciendo que el sitio
+// no usa cookies de seguimiento, que es lo que ahorra el banner de consentimiento. El iframe de
+// Google habría costado las dos cosas: reescribir esa frase y, para visitantes europeos, poner
+// banner.
+//
+// Las coordenadas son las de One Biscayne Tower, resueltas desde la dirección postal con
+// Nominatim, el geocodificador del propio OSM. El recuadro son unos 600 m de lado: suficiente
+// para situar la manzana sin que el edificio se pierda.
+const MAPA_LAT = 25.77382;
+const MAPA_LON = -80.18798;
+const mapaEmbed =
+  'https://www.openstreetmap.org/export/embed.html' +
+  '?bbox=-80.1910%2C25.7723%2C-80.1850%2C25.7753&layer=mapnik' +
+  `&marker=${MAPA_LAT}%2C${MAPA_LON}`;
+
+// El botón sigue llevando a Google Maps: es con lo que la gente navega de verdad, y como es un
+// enlace y no un iframe, nada de Google se carga hasta que el visitante decide ir.
 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
 const graph = [
@@ -105,22 +121,14 @@ const graph = [
               }
             </dl>
 
-            {/* Location — static card + link out (no embedded map, keeps it cookieless). */}
+            {/* Ubicación. El mapa es de verdad y navegable; ver el porqué de OSM arriba. */}
             <div class="mt-8 overflow-hidden rounded-2xl ring-1 ring-slate-200" data-reveal>
-              <div
-                class="from-accent-700 via-accent to-accent-500 relative flex h-40 items-center justify-center bg-gradient-to-br"
-              >
-                <div
-                  class="pointer-events-none absolute inset-0 opacity-[0.15]"
-                  aria-hidden="true"
-                  style={{
-                    backgroundImage: 'radial-gradient(circle, #ffffff 1.4px, transparent 1.4px)',
-                    backgroundSize: '22px 22px',
-                  }}
-                >
-                </div>
-                <MapPin size={40} color="#ffffff" strokeWidth={1.5} aria-hidden="true" />
-              </div>
+              <iframe
+                src={mapaEmbed}
+                title="Mapa de la ubicación de Latam Med Gas USA LLC en Miami, Florida"
+                class="block h-56 w-full border-0 sm:h-64"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
               <div class="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
                 <p class="text-sm leading-relaxed text-slate-600">{address}</p>
                 <a
