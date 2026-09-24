@@ -64,14 +64,97 @@ function formatFecha(value?: string): string {
   const d = value ? new Date(value) : new Date();
   if (Number.isNaN(d.getTime())) return '';
   try {
+    // America/New_York, que es la hora de Miami, donde está la empresa y el buzón que recibe
+    // esto. Estuvo en America/Mexico_City hasta el 24/09/2026 y eso ponía el aviso dos horas
+    // por detrás del reloj de quien lo lee: un mensaje recibido a las 2:16 p.m. llegaba
+    // fechado a las 12:16 p.m., sin nada que dijera de qué huso se trataba.
+    //
+    // La zona va escrita en el texto —«GMT-4»— porque sin ella la hora es una afirmación sin
+    // referencia, y el horario de verano la mueve sola dos veces al año: Intl devuelve GMT-4
+    // en septiembre y GMT-5 en enero sin que haya que tocar nada.
+    //
+    // No se usan dateStyle/timeStyle porque combinarlos con timeZoneName lanza excepción.
     return new Intl.DateTimeFormat('es-MX', {
-      dateStyle: 'long',
-      timeStyle: 'short',
-      timeZone: 'America/Mexico_City',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZone: 'America/New_York',
+      timeZoneName: 'short',
     }).format(d);
   } catch {
     return d.toISOString();
   }
+}
+
+// Prefijos que ofrece el desplegable del formulario. Se comparan de más largo a más corto para
+// que un número boliviano no se quede con «+59» habiendo «+591».
+const PREFIJOS = [
+  '+501',
+  '+502',
+  '+503',
+  '+504',
+  '+505',
+  '+506',
+  '+507',
+  '+509',
+  '+591',
+  '+592',
+  '+593',
+  '+595',
+  '+597',
+  '+598',
+  '+34',
+  '+51',
+  '+52',
+  '+53',
+  '+54',
+  '+55',
+  '+56',
+  '+57',
+  '+58',
+  '+1',
+];
+
+/**
+ * Agrupa el número nacional para que se pueda leer de un vistazo. Los últimos cuatro dígitos
+ * van juntos y el resto en grupos de tres desde la derecha, que da 3-3-4 para los diez dígitos
+ * de México, Colombia, Venezuela y Estados Unidos, y 4-4 para los ocho de Centroamérica.
+ */
+function agrupar(n: string): string {
+  if (n.length <= 8) {
+    const mitad = Math.ceil(n.length / 2);
+    return `${n.slice(0, mitad)} ${n.slice(mitad)}`;
+  }
+  const cola = n.slice(-4);
+  const resto = n.slice(0, -4);
+  const grupos: string[] = [];
+  for (let i = resto.length; i > 0; i -= 3) grupos.unshift(resto.slice(Math.max(0, i - 3), i));
+  return [...grupos, cola].join(' ');
+}
+
+/**
+ * Solo para mostrar. En `leads` el teléfono se guarda en E.164 —«+584241619345»— porque así se
+ * marca desde cualquier país sin interpretar nada, pero leído de corrido es un muro de dígitos.
+ * El enlace `tel:` sigue usando el valor sin tocar; lo único que cambia es el texto visible.
+ *
+ * Si el número no empieza por un prefijo conocido se devuelve tal cual: más vale enseñarlo sin
+ * formato que partirlo por donde no toca.
+ */
+function formatTelefono(valor: string): string {
+  const limpio = valor.trim();
+  if (!limpio.startsWith('+')) return limpio;
+
+  let prefijo = '';
+  for (const p of PREFIJOS) {
+    if (limpio.startsWith(p) && p.length > prefijo.length) prefijo = p;
+  }
+  if (!prefijo) return limpio;
+
+  const nacional = limpio.slice(prefijo.length);
+  if (nacional.length < 4 || !/^[0-9]+$/.test(nacional)) return limpio;
+  return `${prefijo} ${agrupar(nacional)}`;
 }
 
 serve(async (req) => {
@@ -118,7 +201,7 @@ serve(async (req) => {
     '',
     `Nombre: ${lead.name}`,
     `Correo: ${lead.email}`,
-    `Teléfono: ${lead.phone || '—'}`,
+    `Teléfono: ${lead.phone ? formatTelefono(lead.phone) : '—'}`,
     `Empresa / Institución: ${lead.company || '—'}`,
     '',
     'Mensaje:',
@@ -152,7 +235,7 @@ serve(async (req) => {
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
             ${row('Nombre', escapeHtml(lead.name))}
             ${row('Correo', `<a href="mailto:${escapeHtml(lead.email)}" style="color:#0a0a89;text-decoration:none;">${escapeHtml(lead.email)}</a>`)}
-            ${row('Teléfono', lead.phone ? `<a href="tel:${escapeHtml(lead.phone)}" style="color:#0a0a89;text-decoration:none;">${escapeHtml(lead.phone)}</a>` : '—')}
+            ${row('Teléfono', lead.phone ? `<a href="tel:${escapeHtml(lead.phone)}" style="color:#0a0a89;text-decoration:none;">${escapeHtml(formatTelefono(lead.phone))}</a>` : '—')}
             ${row('Empresa / Institución', lead.company ? escapeHtml(lead.company) : '—')}
           </table>
           <p style="margin:24px 0 8px;font:600 13px/1.4 Arial,Helvetica,sans-serif;color:#5b6172;">Mensaje</p>
@@ -182,7 +265,11 @@ serve(async (req) => {
       from: 'Latam Med Gas <notificaciones@send.latammedgas.com>',
       to: [NOTIFY_EMAIL],
       reply_to: lead.email,
-      subject: lead.company ? `Nuevo contacto — ${lead.name} · ${lead.company}` : `Nuevo contacto — ${lead.name}`,
+      // «Solicitud web» delante y siempre igual: separa el aviso de un correo escrito
+      // directamente a la empresa, y da un texto fijo por el que montar una regla de bandeja.
+      // Detrás va quién y de dónde, que es por lo que se prioriza en venta B2B. La empresa es
+      // un campo opcional, así que el asunto tiene que leerse bien también sin ella.
+      subject: lead.company ? `Solicitud web — ${lead.name} · ${lead.company}` : `Solicitud web — ${lead.name}`,
       text,
       html,
     }),
