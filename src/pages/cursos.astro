@@ -12,6 +12,7 @@ import { DEFAULT_COURSES, DEFAULT_PAGES, pageSeo } from '../lib/content';
 import { Image } from 'astro:assets';
 import cursoFoto from '../assets/photos/curso-asse-6000.jpg';
 import { accentFor } from '../lib/icons';
+import { ArrowRight } from 'lucide-react';
 
 let settings = null;
 let courses: Awaited<ReturnType<typeof getCourses>> = [];
@@ -25,7 +26,15 @@ const items = courses.length > 0 ? courses : DEFAULT_COURSES;
 
 const seed = DEFAULT_PAGES.cursos;
 const seo = pageSeo('cursos', page);
-const nota = sectionOf(page, 'cursosNota').heading ?? seed.sections?.cursosNota?.heading;
+// El bloque junto a la foto usa los tres campos que la sección ya tenía y nadie estaba usando:
+// antes las dos frases vivían apretadas en `heading`, se pintaban como un párrafo suelto de
+// 16px en gris claro al lado de una foto a media página, y el texto decía «Escríbanos» sin que
+// hubiera nada que pulsar — una instrucción sin su enlace.
+const notaSec = sectionOf(page, 'cursosNota');
+const notaSeed = seed.sections?.cursosNota ?? {};
+const notaTitulo = notaSec.heading ?? notaSeed.heading;
+const notaTexto = notaSec.subheading ?? notaSeed.subheading;
+const notaCta = notaSec.ctaLabel ?? notaSeed.ctaLabel;
 const banda = sectionOf(page, 'bandaContacto');
 const bandaSeed = seed.sections?.bandaContacto ?? {};
 
@@ -107,9 +116,23 @@ const graph = [
               style={{ objectPosition: 'center 62%' }}
             />
           </div>
-          <p class="text-base leading-relaxed text-slate-600" data-reveal>
-            {nota}
-          </p>
+          <div data-reveal>
+            <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
+              {notaTitulo}
+            </h2>
+            {notaTexto && <p class="mt-4 max-w-[52ch] text-base leading-relaxed text-slate-600">{notaTexto}</p>}
+            {
+              notaCta && (
+                <a
+                  href="/contacto/"
+                  class="press-feedback bg-accent hover:bg-accent-600 focus-visible:ring-accent mt-8 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none [&_svg]:transition-transform [&_svg]:duration-200 hover:[&_svg]:translate-x-1 motion-reduce:[&_svg]:transform-none"
+                >
+                  {notaCta}
+                  <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
+                </a>
+              )
+            }
+          </div>
         </div>
       </div>
     </section>

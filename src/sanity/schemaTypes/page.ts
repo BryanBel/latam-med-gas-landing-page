@@ -21,7 +21,7 @@ export const PAGE_SLUGS = [
 export const SECTION_KEYS = [
   { title: 'Servicios — encabezado', value: 'servicios' },
   { title: 'Trayectoria — encabezado', value: 'proyectos' },
-  { title: 'Normativas y estándares — encabezado', value: 'certificaciones' },
+  { title: 'Estándares de la industria — encabezado', value: 'certificaciones' },
   { title: 'Testimonios — encabezado', value: 'testimonios' },
   { title: 'Misión y Visión — encabezado', value: 'misionVision' },
   { title: 'Portafolio de productos — encabezado', value: 'productos' },

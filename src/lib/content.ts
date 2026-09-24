@@ -417,7 +417,7 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
       'Acompañamos a hospitales y centros de salud en Latinoamérica bajo la norma ASSE serie 6000 y el código NFPA 99.',
     sections: {
       misionVision: { heading: 'Misión y Visión' },
-      certificaciones: { heading: 'Normativas y estándares' },
+      certificaciones: { heading: 'Respaldados por los estándares internacionales de la industria' },
     },
   },
   servicios: {
@@ -447,8 +447,11 @@ export const DEFAULT_PAGES: Record<string, PageSeed> = {
       'Formación para todos los perfiles de la norma ASSE serie 6000, orientada a aplicar con propiedad lo establecido en el código NFPA 99.',
     sections: {
       cursosNota: {
-        heading:
-          'Los cursos se dictan conforme a la norma ASSE serie 6000. Escríbanos para conocer fechas, modalidades y el temario detallado de cada perfil.',
+        // Tres campos, no uno. El título afirma, el texto de apoyo explica y el enlace hace
+        // algo con el «Escríbanos» que antes se quedaba en una frase sin destino.
+        heading: 'Los cursos se dictan conforme a la norma ASSE serie 6000',
+        subheading: 'Escríbanos para conocer fechas, modalidades y el temario detallado de cada perfil.',
+        ctaLabel: 'Consultar fechas y temario',
       },
       // Sin texto de apoyo, igual que el resto: la banda de cierre es titular y botón, y un
       // párrafo aquí hacía que esta página terminara más alta que las demás.

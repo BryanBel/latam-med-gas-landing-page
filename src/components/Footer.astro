@@ -14,6 +14,25 @@ const siteName = settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName;
 const navLinks = settings?.navLinks?.length ? settings.navLinks : NAV_LINKS;
 const tagline = settings?.tagline ?? DEFAULT_SITE_SETTINGS.tagline;
 const footerNote = settings?.footerNote ?? DEFAULT_SITE_SETTINGS.footerNote;
+
+// Teléfono y correo en el pie, no solo en /contacto/. Un responsable de mantenimiento que
+// quiere llamar no debería tener que navegar a otra página para encontrar el número — y en
+// venta B2B internacional el teléfono visible es parte de parecer una empresa localizable.
+// El mismo criterio de división que la página de Contacto: el cliente dio dos números en un
+// solo campo, así que cada uno va como su propio enlace `tel:`.
+const phone = settings?.phone ?? DEFAULT_SITE_SETTINGS.phone;
+const email = settings?.email ?? DEFAULT_SITE_SETTINGS.email;
+const phoneLinks = phone
+  .split('/')
+  .map((p) => p.trim())
+  .filter(Boolean)
+  .map((p) => ({ href: `tel:${p.replace(/[^+\d]/g, '')}`, text: p }));
+// La dirección completa son 80 caracteres y ya está en /contacto/ y en el JSON-LD. Aquí basta
+// la ciudad: dice dónde está la empresa sin convertir el pie en una ficha postal.
+const ciudad = 'Miami, Florida · Estados Unidos';
+
+const footerLink =
+  'hover:text-accent focus-visible:ring-accent rounded-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none';
 const logoUrl = sanityImageUrl(settings?.logo, 140);
 // Same reasoning as Header: Sanity returns no intrinsic height, so reserve the rendered box.
 // The seed mark is a 730x265 PNG rendered ~36px tall; served raw it was the heaviest
@@ -34,9 +53,7 @@ const year = new Date().getFullYear();
 ---
 
 <footer role="contentinfo" class="bg-slate-50">
-  <div
-    class="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-5 py-12 md:flex-row md:items-center md:px-9"
-  >
+  <div class="mx-auto grid max-w-7xl gap-10 px-5 py-12 md:grid-cols-[1.4fr_1fr_auto] md:gap-12 md:px-9 lg:gap-16">
     <div>
       <div class="flex items-center gap-2">
         <img src={logo.src} alt="" width={logo.width} height={logo.height} class="h-8 w-auto shrink-0" />
@@ -45,7 +62,29 @@ const year = new Date().getFullYear();
       <p class="mt-2 max-w-[46ch] text-xs text-slate-500">{tagline}</p>
     </div>
 
-    <nav class="flex flex-wrap gap-x-6 gap-y-2" aria-label="Enlaces del pie de página">
+    <div>
+      <h2 class="text-2xs text-ink mb-3 font-semibold tracking-[0.08em] uppercase">Contacto</h2>
+      <ul class="space-y-1.5 text-xs text-slate-600">
+        {
+          phoneLinks.map((p) => (
+            <li>
+              <a href={p.href} class={footerLink}>
+                {p.text}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href={`mailto:${email}`} class:list={[footerLink, 'break-all']}>{email}</a>
+        </li>
+        <li class="text-slate-500">{ciudad}</li>
+      </ul>
+    </div>
+
+    <nav aria-labelledby="footer-nav-titulo" class="flex flex-col gap-2">
+      <h2 id="footer-nav-titulo" class="text-2xs text-ink mb-1 font-semibold tracking-[0.08em] uppercase">
+        Navegación
+      </h2>
       {
         navLinks.map((l) => (
           <a
