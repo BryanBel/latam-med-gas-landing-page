@@ -8,11 +8,24 @@ import { structure, SINGLETON_TYPES } from './src/sanity/structure';
 
 const singletons = new Set<string>(SINGLETON_TYPES);
 
-// Where the Presentation tool loads the site from. The preview deployment is a second
-// Cloudflare Worker built from this repository with PUBLIC_SANITY_PREVIEW=true; production
-// cannot be used, because visual editing needs stega markers inside the text and those must
-// never reach the public HTML. Falls back to the local dev server.
-const PREVIEW_ORIGIN = import.meta.env.PUBLIC_SANITY_PREVIEW_ORIGIN || 'http://localhost:4321';
+// De dónde carga el sitio la herramienta Vista previa. Tiene que ser el despliegue de preview:
+// un segundo Worker de Cloudflare construido desde este repositorio con PUBLIC_SANITY_PREVIEW=true.
+// Producción no sirve, porque la edición visual necesita los marcadores stega dentro del texto y
+// esos no pueden llegar nunca al HTML público.
+//
+// El respaldo apunta al Worker y no a `localhost:4321`, que es lo que ponía antes. Dos motivos,
+// y el segundo es el que rompía:
+//
+//   1. El dev server normal no lleva stega ni el runtime de edición visual —eso solo aparece con
+//      PUBLIC_SANITY_PREVIEW=true, que además cambia el build a servidor y exige un token—, así
+//      que enmarcarlo daba «Unable to connect to visual editing» y nada más.
+//   2. Bajo `npx sanity dev` esta variable llega siempre `undefined`, porque el CLI de Sanity
+//      expone al navegador las que empiezan por SANITY_STUDIO_ y Astro las que empiezan por
+//      PUBLIC_. O sea que el respaldo no era un caso raro: era el camino normal del Studio local.
+//
+// Comprobado el 24/09/2026: el Worker sirve 98.920 caracteres stega y carga @sanity/visual-editing.
+const PREVIEW_ORIGIN =
+  import.meta.env.PUBLIC_SANITY_PREVIEW_ORIGIN || 'https://latam-med-gas-preview.bryanbelandriav.workers.dev';
 
 // The route each page document renders at, so Presentation can jump to the right screen when
 // an editor opens a document — and so a document shows which page it appears on.
