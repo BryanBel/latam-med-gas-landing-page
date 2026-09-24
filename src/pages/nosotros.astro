@@ -4,13 +4,14 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PageHero from '../components/PageHero.astro';
 import MissionVision from '../components/MissionVision.astro';
+import Certifications from '../components/Certifications.astro';
 import ContactCta from '../components/ContactCta.astro';
 import Slogan from '../components/Slogan.astro';
 import PageBlocks from '../components/PageBlocks.astro';
 import SanityImage from '../components/SanityImage.astro';
 import aboutCorridor from '../assets/photos/about-corridor.png';
 import { getSiteSettings, getAboutSection, getCertifications, getPage, sectionOf } from '../lib/sanityQueries';
-import { DEFAULT_ABOUT, DEFAULT_CERTIFICATIONS, DEFAULT_PAGES, pageSeo } from '../lib/content';
+import { DEFAULT_ABOUT, DEFAULT_PAGES, pageSeo } from '../lib/content';
 import { accentFor } from '../lib/icons';
 import { ShieldCheck, Globe2, Award, BadgeCheck } from 'lucide-react';
 
@@ -36,7 +37,6 @@ const misionVisionHeading = sectionOf(page, 'misionVision').heading ?? seed.sect
 const certificacionesHeading = sectionOf(page, 'certificaciones').heading ?? seed.sections?.certificaciones?.heading;
 const body = about?.body ?? DEFAULT_ABOUT.body;
 const highlights = about?.highlights?.length ? about.highlights : DEFAULT_ABOUT.highlights;
-const certs = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATIONS;
 const PILLAR_ICONS = [ShieldCheck, Globe2, Award];
 
 const graph = [
@@ -123,29 +123,16 @@ const graph = [
       </div>
     </section>
 
-    <section class="border-t border-slate-200 bg-white">
-      <div class="mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
-        <h2
-          class="font-display text-ink mb-10 max-w-2xl text-2xl font-extrabold tracking-tight text-balance md:text-3xl"
-          data-reveal
-        >
-          {certificacionesHeading}
-        </h2>
-        <div class="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-          {
-            certs.map((c, i) => (
-              <div data-reveal data-reveal-delay={(i % 4) * 70}>
-                <div class="mb-4 h-[3px] w-12" style={{ backgroundColor: accentFor(i) }} aria-hidden="true" />
-                <h3 class="font-display text-ink mb-2 text-base font-bold" translate="no">
-                  {c.name}
-                </h3>
-                <p class="text-xs leading-relaxed text-slate-600">{c.description}</p>
-              </div>
-            ))
-          }
-        </div>
-      </div>
-    </section>
+    {
+      /* El mismo componente que la portada. Esta página tenía su propia copia del marcado, que
+        se había quedado en `lg:grid-cols-3`: la misma lista de cuatro salía a cuatro columnas
+        en la portada y a tres más una huérfana aquí. */
+    }
+    <Certifications
+      certifications={certifications}
+      heading={certificacionesHeading}
+      class="border-t border-slate-200 bg-white"
+    />
 
     <PageBlocks blocks={page?.blocks} />
     <Slogan settings={settings} />

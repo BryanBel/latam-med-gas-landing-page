@@ -7,9 +7,18 @@ import { accentFor } from '../lib/icons';
 interface Props {
   certifications: Certification[];
   heading?: string;
+  // Clases de la sección, para la página que necesita fondo y filete propios. Existe para que
+  // /nosotros pueda usar este componente en vez de su propia copia del marcado: la tenía, con
+  // `lg:grid-cols-3`, así que la misma lista de cuatro salía a cuatro columnas en la portada y
+  // a tres más una huérfana ahí. Duplicar el marcado fue lo que permitió que se separaran.
+  class?: string;
 }
 
-const { certifications, heading = DEFAULT_PAGES.inicio.sections?.certificaciones?.heading } = Astro.props;
+const {
+  certifications,
+  heading = DEFAULT_PAGES.inicio.sections?.certificaciones?.heading,
+  class: className = '',
+} = Astro.props;
 const items = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATIONS;
 ---
 
@@ -17,7 +26,7 @@ const items = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATION
   /* Light section between two navy ones, so both of its wedges are navy: accent-500 matches
     where Servicios' inverted gradient lands above and where Proyectos' starts below. */
 }
-<section id="certificaciones" class="relative overflow-hidden">
+<section id="certificaciones" class:list={['relative overflow-hidden', className]}>
   <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl" data-reveal>
       <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
