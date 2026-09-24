@@ -17,6 +17,8 @@ export default [
     },
   },
   {
-    ignores: ['dist/', '.astro/', 'node_modules/', 'supabase/functions/**'],
+    // `.sanity/` lo escribe `npx sanity dev` al arrancar el Studio suelto; es código
+    // generado, no fuente.
+    ignores: ['dist/', '.astro/', '.sanity/', 'node_modules/', 'supabase/functions/**'],
   },
 ];

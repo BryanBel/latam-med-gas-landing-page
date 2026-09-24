@@ -6,6 +6,8 @@ dist/
 .wrangler/
 # supabase CLI local state (linked project ref, etc.)
 supabase/.temp/
+# sanity CLI local state, written by `npx sanity dev`
+.sanity/
 
 # dependencies
 node_modules/

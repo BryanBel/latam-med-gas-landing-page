@@ -35,6 +35,20 @@ This repository feeds two Workers — the live site and the preview deployment �
 
 **The Studio is served from the site itself, at `/studio`, and stays there.** Taking it out of the production build was tried on 2026-09-24 — it is ~9 MB of JavaScript, two thirds of the deploy — and reverted the same day: the client edits through that address and `latammedgas.com/studio` reads as more theirs than a `sanity.studio` URL. The weight is deploy size, not visitor cost, since nobody browsing the site ever downloads it, and Sanity asks for credentials before showing anything. It is `Disallow`ed in `robots.txt` and filtered out of the sitemap. If the deploy size ever has to come down, `npx sanity deploy` hosts a Studio at `<project>.sanity.studio` — but that trades away the URL, which is the whole reason it is here.
 
+**The Studio does not run under `astro dev`. Edit through `npx sanity dev` instead**, which serves it on `localhost:3333` from Sanity's own CLI and its own Vite config. `localhost:4321/studio/` loads the HTML and then renders a blank page.
+
+The cause is not fixable from this repository. Vite 8 pre-bundles dependencies with Rolldown, which resolves every import against the package's `exports` map, and `sanity/lib/structure.js` re-exports symbols — `CommandList`, `ContextMenuButton`, `DEFAULT_STUDIO_CLIENT_OPTIONS` and others — that `sanity`'s own `package.json` does not declare. Optimization aborts with a few hundred `MISSING_EXPORT` errors and the island never hydrates.
+
+Three things were tried on 2026-09-24 and none worked, so do not spend the afternoon again:
+
+- **Upgrading Sanity.** 6.9.1 → 6.16.0 fails identically; the package still under-declares its own exports.
+- **`optimizeDeps.exclude` on the Sanity packages.** Takes it from ~469 optimizer errors to one runtime `SyntaxError`, then to the next one. Whack-a-mole.
+- **Downgrading Vite.** Not available: `astro@7.3.4` depends on `vite@^8.0.13`, and going back to astro 7.2 reopens the critical AVIF remote-code-execution advisory closed the same day.
+
+**Production is unaffected** and always was — the build bundles from source rather than pre-bundling dependencies, so `latammedgas.com/studio/` works and `pnpm build` has never failed on this.
+
+**The Studio needs its origin in Sanity's CORS allowlist.** Until 2026-09-24 the only entry was `http://localhost:3333`, which is why the standalone CLI was the only place it had ever run — `latammedgas.com/studio/` would have shown the client a blank page. `http://localhost:4321`, `https://latammedgas.com` and the preview Worker are now allowed, all with `--credentials` because the Studio authenticates by cookie. Check with `npx sanity cors list` before concluding the Studio is broken.
+
 **In Sanity, Publish is what makes content live** — saving only updates a draft. The site is static, so a publish also needs a rebuild, which the GitHub workflow triggers automatically. Changes appear a couple of minutes later, not instantly.
 
 **Run `git fetch` and rebase before every push.** That same Sanity workflow pushes empty rebuild commits, so `origin/master` moves without warning.
