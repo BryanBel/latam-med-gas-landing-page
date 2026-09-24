@@ -49,7 +49,26 @@ const isPreview = PUBLIC_SANITY_PREVIEW === 'true';
 
 // Imported dynamically rather than at the top: a static import would make the adapter a hard
 // requirement of every build, including the static one that has no use for it.
-const adapter = isPreview ? (await import('@astrojs/cloudflare')).default() : undefined;
+const adapter = isPreview
+  ? (await import('@astrojs/cloudflare')).default({
+      // Sin esto, 2 de las 16 imágenes de la vista previa devolvían 500.
+      //
+      // El adaptador transforma en el build por omisión, y el servicio de ejecución solo sabe
+      // devolver lo que quedó pre-calculado. Cualquier tamaño que el build no previera —en la
+      // vista previa salían «220x80» del logo y «641x900» del hero, mientras «200x73» y
+      // «480x674» de las mismas dos imágenes sí funcionaban— no existe, y el endpoint
+      // `/_image` responde 500 en vez de servir algo.
+      //
+      // `runtime: 'passthrough'` hace que en ese caso se entregue el archivo original. Se ve
+      // igual: el `img` ya lleva sus atributos de tamaño y el navegador lo escala. Pesa algo
+      // más, lo cual da exactamente igual en una herramienta de edición que solo usamos
+      // nosotros y que además está marcada `noindex`.
+      //
+      // Solo afecta a la vista previa. Producción es estática, no monta adaptador, y sus
+      // imágenes salen todas optimizadas del build.
+      imageService: { build: 'compile', runtime: 'passthrough' },
+    })
+  : undefined;
 
 if (isPreview && !SANITY_VIEWER_TOKEN) {
   throw new Error(
