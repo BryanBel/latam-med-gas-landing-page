@@ -39,11 +39,14 @@ This repository feeds two Workers — the live site and the preview deployment �
 
 The cause is not fixable from this repository. Vite 8 pre-bundles dependencies with Rolldown, which resolves every import against the package's `exports` map, and `sanity/lib/structure.js` re-exports symbols — `CommandList`, `ContextMenuButton`, `DEFAULT_STUDIO_CLIENT_OPTIONS` and others — that `sanity`'s own `package.json` does not declare. Optimization aborts with a few hundred `MISSING_EXPORT` errors and the island never hydrates.
 
-Three things were tried on 2026-09-24 and none worked, so do not spend the afternoon again:
+Four things were tried on 2026-09-24 and none worked, so do not spend the afternoon again:
 
 - **Upgrading Sanity.** 6.9.1 → 6.16.0 fails identically; the package still under-declares its own exports.
 - **`optimizeDeps.exclude` on the Sanity packages.** Takes it from ~469 optimizer errors to one runtime `SyntaxError`, then to the next one. Whack-a-mole.
+- **Matching the Vite version the Sanity CLI uses.** The most tempting one, because `npx sanity dev` runs the same Studio on `vite@8.3.1` and optimizes it without a complaint, while astro was on 8.2.1. Both are on 8.3.1 now and `/studio/` under `astro dev` is still blank, so the difference is in how the Sanity CLI configures Vite, not in the version.
 - **Downgrading Vite.** Not available: `astro@7.3.4` depends on `vite@^8.0.13`, and going back to astro 7.2 reopens the critical AVIF remote-code-execution advisory closed the same day.
+
+One thing the local Studio does need from this repository: `sanity.config.ts` falls back to the literal project id and dataset, because Astro exposes `PUBLIC_`-prefixed variables to `import.meta.env` and the Sanity CLI only exposes `SANITY_STUDIO_`-prefixed ones. Without that fallback `npx sanity dev` starts and dies on "Configuration must contain `projectId`".
 
 **Production is unaffected** and always was — the build bundles from source rather than pre-bundling dependencies, so `latammedgas.com/studio/` works and `pnpm build` has never failed on this.
 
