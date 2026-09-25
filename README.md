@@ -8,6 +8,8 @@ certification.
 
 **Live at [latammedgas.com](https://latammedgas.com)** since August 2026 — a paying client, real
 traffic, and a domain that also carries the company's working email. Nothing here is a prototype.
+While the client reviews the content, the domain sits behind a Cloudflare Access login and shows
+an "under construction" page to anyone not on the review list.
 
 ## Measured
 

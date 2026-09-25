@@ -1,6 +1,10 @@
 # Working on this project
 
-Marketing site for Latam Med Gas USA LLC. **Live in production at https://latammedgas.com** since 2026-08-14. Nothing here is a prototype: real client, real traffic, and the domain carries the company's working email.
+Marketing site for Latam Med Gas USA LLC. **Deployed to production at https://latammedgas.com** since 2026-08-14. Nothing here is a prototype: real client, and the domain carries the company's working email.
+
+**Since 2026-09-24 the site is private, behind Cloudflare Access, until the client signs off.** Every path on `latammedgas.com` and `www` — `/studio` included — redirects `302` to a login page that says the site is under construction. Only emails listed in the Access policy get in, by a one-time PIN sent to that address. Sessions last 6 hours. This is deliberate, not an outage: do not "fix" it.
+
+It lives entirely in the Cloudflare dashboard, not in this repository: Zero Trust → Access controls → Applications → `latammedgas review`, policy `Revision`. To let a reviewer in, add their email to the policy. **To go live, delete that application**; the site is public again within a minute or two. Gating in code was ruled out: production has no Worker script, and setting `main` in `wrangler.jsonc` would also replace the preview Worker's SSR entry, since the Cloudflare adapter reads the same field.
 
 Project notes — task status, the DNS cutover runbook and the branding rationale — are kept outside this repository.
 
@@ -72,7 +76,13 @@ Do not revert these without being asked. They were deliberate choices, and at le
 
 ## Verifying changes
 
-Production is the fastest check now that the site is live:
+While the Access gate is up, an anonymous request to production only gets the `302` to the login page, so `curl` can confirm the gate but not the content:
+
+```sh
+curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' https://latammedgas.com
+```
+
+Check content locally with `pnpm build` and `astro preview`, or in a browser signed in through Access. Once the gate comes down, this is the fastest check again:
 
 ```sh
 curl -sS https://latammedgas.com | grep -o '<title>[^<]*</title>'

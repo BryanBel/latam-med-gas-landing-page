@@ -8,7 +8,9 @@ certificación ASSE 6000.
 
 **En línea en [latammedgas.com](https://latammedgas.com)** desde agosto de 2026 — cliente que
 paga, tráfico real, y un dominio que además carga el correo de la empresa. Nada acá es un
-prototipo.
+prototipo. Mientras el cliente revisa el contenido, el dominio está detrás de un login de
+Cloudflare Access y muestra una página de «en construcción» a quien no esté en la lista de
+revisión.
 
 ## Medido
 
