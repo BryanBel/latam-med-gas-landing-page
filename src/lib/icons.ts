@@ -35,7 +35,9 @@ export const GAS_ACCENTS = [
   '#15803d', // oxygen green
   '#b45309', // medical air amber
   '#2563eb', // nitrous oxide blue
-  '#0d9488', // vacuum teal
+  // teal-700, not the 600 (#0d9488) it used to be: every other entry is a 700 or darker, and
+  // the 600 was the only one below 4.5:1 under white text (3.74), which the course badges use.
+  '#0f766e', // vacuum teal
   '#c2410c', // instrument air orange
   '#7c3aed', // WAGD violet
   '#334155', // nitrogen charcoal
