@@ -127,7 +127,6 @@ async function main() {
   if (changed) {
     const summary = [...byType].map(([t, l]) => `${t} ${l.length}`).join(', ');
     git(['commit', '-q', '-m', `Respaldo ${DATASET} — ${docs.length} documentos (${summary})`]);
-    console.log(`\nCommit: ${git(['log', '--oneline', '-1'])}`);
   } else {
     console.log('\nSin cambios desde el último respaldo.');
   }
@@ -140,6 +139,11 @@ async function main() {
     git(['push', '--quiet'], { check: false });
     if (changed) console.log('Empujado al repositorio privado.');
   }
+  // Printed after the rebase, not after the commit: the rebase rewrites the commit whenever the
+  // scheduled job pushed in between, and the hash printed before it then points at nothing. On
+  // 2026-09-24 that sent a checkpoint note to `2159e09`, which no branch contains; the snapshot
+  // itself is `41ea260`.
+  if (changed) console.log(`\nCommit: ${git(['log', '--oneline', '-1'])}`);
 }
 
 main().catch((err) => {
