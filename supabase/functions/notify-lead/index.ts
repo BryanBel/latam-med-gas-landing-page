@@ -1,6 +1,6 @@
 // Supabase Edge Function — sends an email via Resend whenever a row is inserted
-// into public.leads. Triggered by a Supabase Database Webhook (Dashboard → Database
-// → Webhooks), not called directly by the site. See README in this folder for setup.
+// into public.leads. Triggered by a Supabase Database Webhook (Dashboard → Integrations
+// → Database Webhooks), not called directly by the site. See README in this folder for setup.
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 
@@ -13,6 +13,7 @@ function escapeHtml(value: string): string {
 }
 
 interface LeadRow {
+  id?: string;
   name: string;
   email: string;
   phone: string | null;
@@ -21,8 +22,8 @@ interface LeadRow {
   created_at?: string;
 }
 
-// Cada INSERT en `leads` dispara un correo. La anon key es pública y RLS deja insertar a
-// cualquiera, así que un POST sin autenticar equivale a un correo: el daño real de un ataque no
+// Cada INSERT en `leads` dispara un correo. Hoy solo inserta `submit-lead`, tras verificar
+// Turnstile, pero quien lo resuelva puede repetir, así que cada envío sigue siendo un correo: el daño real de un ataque no
 // son filas basura en una tabla, es inundar el buzón de trabajo de la empresa y quemar la
 // reputación de send.latammedgas.com en Resend.
 //
@@ -157,8 +158,27 @@ function formatTelefono(valor: string): string {
   return `${prefijo} ${agrupar(nacional)}`;
 }
 
+// Comparación en tiempo constante: `!==` corta en el primer carácter distinto, y el tiempo de
+// respuesta delata cuánto del secreto se acertó.
+function mismoSecreto(recibido: string | null, esperado: string): boolean {
+  if (recibido === null) return false;
+  const a = new TextEncoder().encode(recibido);
+  const b = new TextEncoder().encode(esperado);
+  let diff = a.length ^ b.length;
+  for (let i = 0; i < b.length; i++) diff |= (a[i] ?? 0) ^ b[i];
+  return diff === 0;
+}
+
 serve(async (req) => {
-  if (WEBHOOK_SECRET && req.headers.get('x-webhook-secret') !== WEBHOOK_SECRET) {
+  // Sin secreto configurado se rechaza todo, no se deja pasar todo. Antes la comprobación solo
+  // corría si el secreto existía: bastaba con desplegar la función sin él (en otro proyecto, o
+  // tras renombrarlo) para que cualquiera pudiera mandar correos al buzón de la empresa con un
+  // POST, sin Turnstile y sin dejar fila en `leads`.
+  if (!WEBHOOK_SECRET) {
+    console.error('Missing LEAD_WEBHOOK_SECRET secret — refusing every request');
+    return new Response('Server misconfigured', { status: 500 });
+  }
+  if (!mismoSecreto(req.headers.get('x-webhook-secret'), WEBHOOK_SECRET)) {
     return new Response('Unauthorized', { status: 401 });
   }
 
@@ -170,6 +190,11 @@ serve(async (req) => {
   let lead: LeadRow;
   try {
     const payload = await req.json();
+    // Solo altas en `leads`: el webhook está configurado así, y cualquier otra cosa es un error de
+    // configuración que no debe convertirse en un correo.
+    if (payload?.type !== 'INSERT' || payload?.table !== 'leads') {
+      return new Response('Unexpected webhook event', { status: 400 });
+    }
     lead = payload.record;
     if (!lead?.email || !lead?.message) {
       return new Response('Payload missing lead record', { status: 400 });
@@ -182,7 +207,9 @@ serve(async (req) => {
   // Se devuelve 200 para que Supabase no reintente el webhook: no hubo ningún fallo.
   const { score, reasons } = spamScore(lead);
   if (score >= 2) {
-    console.log(`Lead retenido sin notificar (puntuación ${score}: ${reasons.join(', ')}) — ${lead.email}`);
+    // El id y no el correo: los logs de Supabase no son sitio para datos de contacto de clientes,
+    // y el id basta para encontrar la fila en la tabla.
+    console.log(`Lead retenido sin notificar (puntuación ${score}: ${reasons.join(', ')}) — id ${lead.id ?? '?'}`);
     return new Response('OK (notificación omitida)', { status: 200 });
   }
   if (score > 0) {

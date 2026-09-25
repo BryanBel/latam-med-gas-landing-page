@@ -8,9 +8,9 @@
 // cierra: con el INSERT de `anon` revocado, escribir en `leads` exige pasar por aquí, y aquí
 // exige un token de Turnstile válido, que es de un solo uso.
 //
-// Se despliega con --no-verify-jwt a propósito. La clave pública del proyecto es del formato
-// nuevo (sb_publishable_…), que no es un JWT, así que la puerta del gateway la rechazaría antes
-// de llegar a este código — el mismo 401 invisible que documenta CLAUDE.md para notify-lead. La
+// Se despliega con --no-verify-jwt a propósito. El navegador no manda ninguna clave ni cabecera
+// `Authorization` —el formulario envía solo JSON—, así que la puerta del gateway la rechazaría
+// antes de llegar a este código — el mismo 401 invisible que documenta CLAUDE.md para notify-lead. La
 // autenticación real de esta función es el token de Turnstile, no la clave del proyecto.
 //
 //   npx supabase functions deploy submit-lead --project-ref xsdmvvsksddnvvclndvu --no-verify-jwt
@@ -118,6 +118,11 @@ serve(async (req) => {
   } catch {
     return json({ error: 'Petición mal formada.' }, 400, origin);
   }
+  // `null`, un número o un array también son JSON válido, y `body.turnstileToken` sobre `null`
+  // lanzaba y acababa en un 500 genérico.
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return json({ error: 'Petición mal formada.' }, 400, origin);
+  }
 
   const token = typeof body.turnstileToken === 'string' ? body.turnstileToken : '';
   if (!token) return json({ error: 'Falta la verificación anti-spam.' }, 400, origin);
@@ -142,7 +147,11 @@ serve(async (req) => {
   });
 
   if (!res.ok) {
-    console.error('PostgREST respondió', res.status, await res.text().catch(() => ''));
+    // Solo código y mensaje. El `details` de PostgREST en una violación de restricción es
+    // «Failing row contains (…)»: la fila entera, con el nombre, correo y teléfono del cliente,
+    // que no tiene por qué quedar en los logs.
+    const err = await res.json().catch(() => null);
+    console.error('PostgREST respondió', res.status, err?.code ?? '', err?.message ?? '');
     return json({ error: 'No se pudo registrar el mensaje.' }, 502, origin);
   }
 
