@@ -1,3 +1,14 @@
 allowBuilds:
   esbuild: true
   sharp: true
+
+# Parches de seguridad en dependencias transitivas de herramientas de desarrollo (CLI de
+# Sanity, language server de Astro). Nada de esto llega al navegador del visitante, pero
+# `pnpm audit` deja de listarlas. Todas están dentro de la misma versión mayor que pide el
+# paquete padre, así que no cambian ninguna API. Revisar si siguen haciendo falta cuando se
+# actualice `sanity` o `@astrojs/check`: si el padre ya trae la versión corregida, sobran.
+overrides:
+  js-yaml@3: ^3.15.2
+  smol-toml@1: ^1.7.1
+  fast-uri@3: ^3.1.6
+  adm-zip@0.6.0: 0.6.1
