@@ -11,7 +11,9 @@ jobs:
   rebuild:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # Pinned to a commit rather than the moving `v4` tag: a tag can be re-pointed, and this
+      # job holds write access to the repository.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Empty commit to trigger Cloudflare build
         run: |

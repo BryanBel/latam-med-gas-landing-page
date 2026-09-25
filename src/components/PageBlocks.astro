@@ -7,7 +7,7 @@
 // section and assume a known neighbour above and below; an arbitrary run of blocks has neither,
 // and a clip-path against the wrong ground shows as a stray wedge.
 import SanityImage from './SanityImage.astro';
-import { renderPortableText } from '../lib/portableText';
+import { renderPortableText, cleanHref } from '../lib/portableText';
 import type { PageBlock } from '../lib/sanityQueries';
 import { resolveServiceIcon, accentFor } from '../lib/icons';
 import { ArrowRight } from 'lucide-react';
@@ -90,10 +90,11 @@ const richText = (value: PageBlock['body'], dark: boolean) =>
             <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {(block.cards ?? []).map((card, i) => {
                 const Icon = resolveServiceIcon(card.icon);
-                const Tag = card.link ? 'a' : 'div';
+                const link = cleanHref(card.link);
+                const Tag = link ? 'a' : 'div';
                 return (
                   <Tag
-                    href={card.link}
+                    href={link}
                     data-reveal
                     data-reveal-delay={(i % 3) * 70}
                     data-tilt
@@ -117,7 +118,7 @@ const richText = (value: PageBlock['body'], dark: boolean) =>
                         {card.text}
                       </p>
                     )}
-                    {card.link && (
+                    {link && (
                       <span
                         class:list={[
                           'mt-4 inline-flex items-center gap-1.5 text-sm font-semibold',
@@ -221,7 +222,7 @@ const richText = (value: PageBlock['body'], dark: boolean) =>
             {block.text && <p class:list={[...support, 'mx-auto max-w-[52ch]']}>{block.text}</p>}
             {block.buttonLabel && (
               <a
-                href={block.buttonHref ?? '/contacto/'}
+                href={cleanHref(block.buttonHref) ?? '/contacto/'}
                 class:list={[
                   'press-feedback focus-visible:ring-accent mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-safe:hover:-translate-y-0.5',
                   dark

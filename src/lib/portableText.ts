@@ -43,10 +43,19 @@ const escape = (value: string) =>
 // `\/(?!\/)` and not `\/`: a protocol-relative `//evil.com` also starts with a slash, so the
 // looser test let an editor write what reads as an internal path in the Studio and lands on
 // someone else's domain.
-const safeHref = (href?: string) => {
-  if (!href) return null;
+//
+// `cleanHref` is the same test for links rendered straight into an attribute from a Sanity
+// field (hero button, service cards, page blocks, menus). Astro escapes attribute values, so it
+// returns the plain string; what it filters is the scheme, which escaping does not touch.
+export const cleanHref = (href?: string | null) => {
+  if (!href) return undefined;
   const trimmed = href.trim();
-  return /^(https?:|mailto:|tel:|\/(?!\/)|#)/i.test(trimmed) ? escape(trimmed) : null;
+  return /^(https?:|mailto:|tel:|\/(?!\/)|#)/i.test(trimmed) ? trimmed : undefined;
+};
+
+const safeHref = (href?: string) => {
+  const clean = cleanHref(href);
+  return clean ? escape(clean) : null;
 };
 
 interface Classes {

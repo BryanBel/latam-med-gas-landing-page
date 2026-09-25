@@ -68,6 +68,11 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [organization, website, ...graph],
 };
+
+// `set:html` writes this unescaped, and several values are Sanity text. A site name or
+// description containing `</script>` would close the tag and let whatever follows run on every
+// page. `<` is the same character to a JSON parser and inert to the HTML one.
+const json = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
 ---
 
-<script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+<script type="application/ld+json" is:inline set:html={json} />

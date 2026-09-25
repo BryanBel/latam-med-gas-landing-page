@@ -2,6 +2,7 @@
 import { NAV_LINKS, DEFAULT_SITE_SETTINGS } from '../lib/content';
 import { sanityImageUrl } from '../lib/sanityImage';
 import type { SiteSettings } from '../lib/sanityQueries';
+import { cleanHref } from '../lib/portableText';
 import { getImage } from 'astro:assets';
 import lmgMark from '../assets/brand/lmg-mark.webp';
 
@@ -11,7 +12,11 @@ interface Props {
 
 const { settings } = Astro.props;
 const siteName = settings?.siteName ?? DEFAULT_SITE_SETTINGS.siteName;
-const navLinks = settings?.navLinks?.length ? settings.navLinks : NAV_LINKS;
+// Menu entries are editable in Sanity; one with an unsafe scheme is dropped, not rendered.
+const navLinks = (settings?.navLinks?.length ? settings.navLinks : NAV_LINKS).flatMap((l) => {
+  const href = cleanHref(l.href);
+  return href ? [{ ...l, href }] : [];
+});
 const tagline = settings?.tagline ?? DEFAULT_SITE_SETTINGS.tagline;
 const footerNote = settings?.footerNote ?? DEFAULT_SITE_SETTINGS.footerNote;
 
