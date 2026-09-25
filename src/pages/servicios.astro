@@ -50,44 +50,42 @@ const graph = [
     <section class="bg-white">
       <div class="mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
         <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {
-            items.map((s, i) => {
-              const Icon = resolveServiceIcon(s.icon);
-              const accent = accentFor(i);
-              // A service with a page of its own becomes a link; the affordance at the foot of
-              // the card is what distinguishes it from the ones that are not clickable.
-              const Tag = s.link ? 'a' : 'div';
-              return (
-                <Tag
-                  href={s.link}
-                  data-reveal
-                  data-tilt
-                  data-reveal-delay={(i % 3) * 70}
-                  class:list={[
-                    'group hover:ring-accent-200 rounded-2xl bg-white p-7 ring-1 ring-slate-200 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-slate-200/60 motion-safe:hover:-translate-y-0.5',
-                    s.link &&
-                      'focus-visible:ring-accent block focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
-                  ]}
+          {items.map((s, i) => {
+            const Icon = resolveServiceIcon(s.icon);
+            const accent = accentFor(i);
+            // A service with a page of its own becomes a link; the affordance at the foot of
+            // the card is what distinguishes it from the ones that are not clickable.
+            const Tag = s.link ? 'a' : 'div';
+            return (
+              <Tag
+                href={s.link}
+                data-reveal
+                data-tilt
+                data-reveal-delay={(i % 3) * 70}
+                class:list={[
+                  'group hover:ring-accent-200 rounded-2xl bg-white p-7 ring-1 ring-slate-200 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-slate-200/60 motion-safe:hover:-translate-y-0.5',
+                  s.link &&
+                    'focus-visible:ring-accent block focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
+                ]}
+              >
+                <div
+                  class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl transition-transform motion-safe:group-hover:scale-105"
+                  style={{ backgroundColor: `${accent}1a` }}
+                  aria-hidden="true"
                 >
-                  <div
-                    class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl transition-transform motion-safe:group-hover:scale-105"
-                    style={{ backgroundColor: `${accent}1a` }}
-                    aria-hidden="true"
-                  >
-                    <Icon size={22} color={accent} strokeWidth={2} aria-hidden="true" />
-                  </div>
-                  <h2 class="font-display text-ink mb-2 text-lg font-bold text-balance">{s.title}</h2>
-                  <p class="text-sm leading-relaxed text-slate-600">{s.description}</p>
-                  {s.link && (
-                    <span class="text-accent mt-4 inline-flex items-center gap-1.5 text-sm font-semibold [&_svg]:transition-transform [&_svg]:duration-200 group-hover:[&_svg]:translate-x-0.5 motion-reduce:[&_svg]:transform-none">
-                      Ver los cursos
-                      <ArrowRight size={15} strokeWidth={2.5} aria-hidden="true" />
-                    </span>
-                  )}
-                </Tag>
-              );
-            })
-          }
+                  <Icon size={22} color={accent} strokeWidth={2} aria-hidden="true" />
+                </div>
+                <h2 class="font-display text-ink mb-2 text-lg font-bold text-balance">{s.title}</h2>
+                <p class="text-sm leading-relaxed text-slate-600">{s.description}</p>
+                {s.link && (
+                  <span class="text-accent mt-4 inline-flex items-center gap-1.5 text-sm font-semibold [&_svg]:transition-transform [&_svg]:duration-200 group-hover:[&_svg]:translate-x-0.5 motion-reduce:[&_svg]:transform-none">
+                    Ver los cursos
+                    <ArrowRight size={15} strokeWidth={2.5} aria-hidden="true" />
+                  </span>
+                )}
+              </Tag>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -107,20 +105,18 @@ const graph = [
             </p>
           </div>
           <ul class="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2" data-reveal>
-            {
-              products.map((p) => (
-                <li class="flex items-start gap-3">
-                  <span
-                    class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md"
-                    style={{ backgroundColor: '#15803d1a' }}
-                    aria-hidden="true"
-                  >
-                    <Check size={14} color="#15803d" strokeWidth={2.5} aria-hidden="true" />
-                  </span>
-                  <span class="text-sm leading-relaxed text-slate-700">{p}</span>
-                </li>
-              ))
-            }
+            {products.map((p) => (
+              <li class="flex items-start gap-3">
+                <span
+                  class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md"
+                  style={{ backgroundColor: '#15803d1a' }}
+                  aria-hidden="true"
+                >
+                  <Check size={14} color="#15803d" strokeWidth={2.5} aria-hidden="true" />
+                </span>
+                <span class="text-sm leading-relaxed text-slate-700">{p}</span>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

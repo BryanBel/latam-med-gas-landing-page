@@ -98,8 +98,7 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
       id="scroll-progress"
       class="from-accent-300 to-accent fixed top-0 left-0 z-50 h-0.5 w-full origin-left bg-gradient-to-r"
       aria-hidden="true"
-    >
-    </div>
+    ></div>
     <a
       href="#contenido"
       class="bg-accent focus:ring-accent sr-only rounded-lg px-4 py-2 text-sm font-semibold text-white focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:ring-2 focus:ring-offset-2 focus:outline-none"
@@ -116,16 +115,14 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
     <script>
       import '../scripts/site';
     </script>
-    {
-      cfBeaconToken && (
-        <script
-          is:inline
-          type="module"
-          src="https://static.cloudflareinsights.com/beacon.min.js"
-          data-cf-beacon={JSON.stringify({ token: cfBeaconToken })}
-        />
-      )
-    }
+    {cfBeaconToken && (
+      <script
+        is:inline
+        type="module"
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={JSON.stringify({ token: cfBeaconToken })}
+      />
+    )}
   </body>
 </html>
 

@@ -22,47 +22,39 @@ const {
 const items = certifications.length > 0 ? certifications : DEFAULT_CERTIFICATIONS;
 ---
 
-{
-  /* Light section between two navy ones, so both of its wedges are navy: accent-500 matches
-    where Servicios' inverted gradient lands above and where Proyectos' starts below. */
-}
+{/* Light section between two navy ones, so both of its wedges are navy: accent-500 matches
+    where Servicios' inverted gradient lands above and where Proyectos' starts below. */}
 <section id="certificaciones" class:list={['relative overflow-hidden', className]}>
   <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
     <div class="mb-12 max-w-2xl" data-reveal>
-      <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
-        {heading}
-      </h2>
+      <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">{heading}</h2>
     </div>
 
-    {
-      /* Deliberately not the card grid Servicios uses - a layout family gets one appearance
+    {/* Deliberately not the card grid Servicios uses - a layout family gets one appearance
         per page. These are four standards, not four products: a rule above each one carries
         the accent, and the absence of card chrome lets them read as a reference list.
         The badge only renders once the client uploads a real one, so the section no longer
-        shows four empty placeholder boxes. */
-    }
+        shows four empty placeholder boxes. */}
     <div class="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-      {
-        items.map((c, i) => (
-          <div data-reveal data-reveal-delay={(i % 4) * 70}>
-            <div class="mb-4 h-[3px] w-12" style={{ backgroundColor: accentFor(i) }} aria-hidden="true" />
-            {c.badge && (
-              <SanityImage
-                image={c.badge}
-                alt={c.name}
-                caption={c.name}
-                aspect="aspect-16/10"
-                class="mb-4 rounded-lg"
-                width={480}
-              />
-            )}
-            <h3 class="font-display text-ink mb-2 text-base font-bold" translate="no">
-              {c.name}
-            </h3>
-            <p class="text-xs leading-relaxed text-slate-600">{c.description}</p>
-          </div>
-        ))
-      }
+      {items.map((c, i) => (
+        <div data-reveal data-reveal-delay={(i % 4) * 70}>
+          <div class="mb-4 h-[3px] w-12" style={{ backgroundColor: accentFor(i) }} aria-hidden="true" />
+          {c.badge && (
+            <SanityImage
+              image={c.badge}
+              alt={c.name}
+              caption={c.name}
+              aspect="aspect-16/10"
+              class="mb-4 rounded-lg"
+              width={480}
+            />
+          )}
+          <h3 class="font-display text-ink mb-2 text-base font-bold" translate="no">
+            {c.name}
+          </h3>
+          <p class="text-xs leading-relaxed text-slate-600">{c.description}</p>
+        </div>
+      ))}
     </div>
   </div>
 </section>

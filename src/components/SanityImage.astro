@@ -73,21 +73,19 @@ const altText = sanitySrc ? alt : (fallbackAlt ?? alt);
 const srcset = sanitySrcSet ?? optimized?.srcSet?.attribute ?? undefined;
 ---
 
-{
-  src ? (
-    <img
-      src={src}
-      srcset={srcset}
-      sizes={srcset ? sizes : undefined}
-      alt={altText}
-      width={width}
-      height={height}
-      loading={priority ? 'eager' : 'lazy'}
-      fetchpriority={priority ? 'high' : 'auto'}
-      decoding={priority ? 'sync' : 'async'}
-      class:list={['w-full object-cover', aspect, className]}
-    />
-  ) : (
-    <ImagePlaceholder caption={caption} aspect={aspect} class={className} />
-  )
-}
+{src ? (
+  <img
+    src={src}
+    srcset={srcset}
+    sizes={srcset ? sizes : undefined}
+    alt={altText}
+    width={width}
+    height={height}
+    loading={priority ? 'eager' : 'lazy'}
+    fetchpriority={priority ? 'high' : 'auto'}
+    decoding={priority ? 'sync' : 'async'}
+    class:list={['w-full object-cover', aspect, className]}
+  />
+) : (
+  <ImagePlaceholder caption={caption} aspect={aspect} class={className} />
+)}

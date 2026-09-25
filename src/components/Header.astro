@@ -45,22 +45,20 @@ const ctaClass =
     </a>
 
     <nav class="hidden items-center gap-7 lg:flex" aria-label="Navegación principal">
-      {
-        navLinks.map((l) => (
-          <a href={l.href} class={linkClass}>
-            {l.label}
-          </a>
-        ))
-      }
-      <a href="/contacto/" class={ctaClass}>Contáctenos</a>
+      {navLinks.map((l) => (
+        <a href={l.href} class={linkClass}>
+          {l.label}
+        </a>
+      ))}
+      <a href="/contacto/" class={ctaClass}>
+        Contáctenos
+      </a>
     </nav>
 
-    {
-      /* Etiqueta sin estado a propósito: `aria-expanded` ya dice si está abierto o cerrado. La
+    {/* Etiqueta sin estado a propósito: `aria-expanded` ya dice si está abierto o cerrado. La
       anterior decía «Abrir menú de…» siempre, así que con el menú desplegado un lector de
       pantalla anunciaba «Abrir menú…, expandido», que se contradice. Sin estado en la etiqueta
-      no hay nada que sincronizar desde el script. */
-    }
+      no hay nada que sincronizar desde el script. */}
     <button
       type="button"
       id="mobile-nav-button"
@@ -79,16 +77,14 @@ const ctaClass =
       class="border-b-accent absolute top-[76px] right-0 left-0 hidden flex-col gap-1 border-b-[3px] bg-white p-5 shadow-lg shadow-slate-900/10 lg:hidden"
       aria-label="Navegación móvil"
     >
-      {
-        navLinks.map((l) => (
-          <a
-            href={l.href}
-            class="hover:text-accent focus-visible:ring-accent rounded-lg px-2 py-2.5 text-base font-medium text-slate-600 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
-          >
-            {l.label}
-          </a>
-        ))
-      }
+      {navLinks.map((l) => (
+        <a
+          href={l.href}
+          class="hover:text-accent focus-visible:ring-accent rounded-lg px-2 py-2.5 text-base font-medium text-slate-600 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
+        >
+          {l.label}
+        </a>
+      ))}
       <a
         href="/contacto/"
         class="bg-accent focus-visible:ring-accent mt-2 rounded-full px-4 py-2.5 text-center text-sm font-semibold text-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"

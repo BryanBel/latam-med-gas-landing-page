@@ -58,25 +58,23 @@ const entes = [
     </div>
 
     <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {
-        entes.map((ente, i) => (
-          <div
-            data-reveal
-            data-reveal-delay={i * 90}
-            class="flex flex-col items-center rounded-xl bg-white p-8 text-center ring-1 ring-slate-200/80"
-          >
-            <Image
-              src={ente.logo}
-              alt={ente.nombre}
-              widths={[240, 360]}
-              sizes="(min-width: 640px) 240px, 60vw"
-              format="webp"
-              class="h-16 w-auto object-contain"
-            />
-            <p class="mt-6 text-xs leading-relaxed text-balance text-slate-500">{ente.pie}</p>
-          </div>
-        ))
-      }
+      {entes.map((ente, i) => (
+        <div
+          data-reveal
+          data-reveal-delay={i * 90}
+          class="flex flex-col items-center rounded-xl bg-white p-8 text-center ring-1 ring-slate-200/80"
+        >
+          <Image
+            src={ente.logo}
+            alt={ente.nombre}
+            widths={[240, 360]}
+            sizes="(min-width: 640px) 240px, 60vw"
+            format="webp"
+            class="h-16 w-auto object-contain"
+          />
+          <p class="mt-6 text-xs leading-relaxed text-balance text-slate-500">{ente.pie}</p>
+        </div>
+      ))}
     </div>
   </div>
 </section>

@@ -30,9 +30,7 @@ const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
   </div>
   <NavyTexture glow="#15803d33" />
 
-  <div
-    class="relative mx-auto grid w-full max-w-7xl items-center gap-14 px-5 pt-16 pb-28 md:px-9 md:pt-20 md:pb-36 lg:grid-cols-[1.1fr_0.9fr]"
-  >
+  <div class="relative mx-auto grid w-full max-w-7xl items-center gap-14 px-5 pt-16 pb-28 md:px-9 md:pt-20 md:pb-36 lg:grid-cols-[1.1fr_0.9fr]">
     <div>
       <span
         data-reveal
@@ -40,14 +38,12 @@ const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
       >
         {eyebrow}
       </span>
-      {
-        /* Sin `data-reveal`: este titular es el candidato a LCP de la portada y antes entraba
+      {/* Sin `data-reveal`: este titular es el candidato a LCP de la portada y antes entraba
           palabra por palabra desde opacity 0 — diez spans escalonados, la última aterrizaba
           ~1.2s después de entrar en viewport, y el navegador no cuenta el LCP hasta que el
           elemento se pinta a su opacidad final. Pinta de una. El resto del hero (antetítulo,
           bajada, botones) conserva la entrada escalonada, así que la coreografía se mantiene
-          alrededor del titular en vez de retrasarlo. */
-      }
+          alrededor del titular en vez de retrasarlo. */}
       <h1 class="font-display text-3xl leading-[1.1] font-extrabold tracking-tight text-white md:text-4xl">
         {heading}
       </h1>
@@ -88,11 +84,11 @@ const ctaLink = hero?.ctaLink ?? DEFAULT_HERO.ctaLink;
         />
       </div>
 
-      <div
-        class="bg-accent-700/90 absolute -bottom-6 left-2 rotate-[3deg] rounded-2xl px-5 py-4 shadow-xl ring-1 ring-white/20 backdrop-blur sm:-left-6"
-      >
+      <div class="bg-accent-700/90 absolute -bottom-6 left-2 rotate-[3deg] rounded-2xl px-5 py-4 shadow-xl ring-1 ring-white/20 backdrop-blur sm:-left-6">
         <div class="text-2xs font-mono tracking-widest text-white/50 uppercase">Normativa</div>
-        <div class="font-display mt-1 text-base font-bold text-white" translate="no">ASSE&nbsp;6000 · NFPA&nbsp;99</div>
+        <div class="font-display mt-1 text-base font-bold text-white" translate="no">
+          ASSE&nbsp;6000 · NFPA&nbsp;99
+        </div>
       </div>
 
       <div

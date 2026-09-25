@@ -23,16 +23,12 @@ const seo = pageSeo('404', page);
 
 <Layout title={seo.title} description={seo.description} settings={settings}>
   <Header settings={settings} />
-  {
-    /* The wrapper sits outside <main> so the message and the footer still share one viewport
+  {/* The wrapper sits outside <main> so the message and the footer still share one viewport
       — instead of the footer sitting below the fold on an otherwise empty page — while the
-      footer stays a sibling of main and keeps its contentinfo landmark. */
-  }
+      footer stays a sibling of main and keeps its contentinfo landmark. */}
   <div class="contact-screen">
     <main id="contenido">
-      <section
-        class="from-accent-700 via-accent to-accent-400 seam-cut-bottom relative overflow-hidden bg-gradient-to-br"
-      >
+      <section class="from-accent-700 via-accent to-accent-400 seam-cut-bottom relative overflow-hidden bg-gradient-to-br">
         <NavyTexture glow="#2563eb33" glowClass="-top-24 -right-24 h-[420px] w-[420px]" />
 
         <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
@@ -40,9 +36,7 @@ const seo = pageSeo('404', page);
             <div class="text-accent-100 mb-3 font-mono text-xs font-semibold tracking-[0.08em] uppercase">
               {page?.heroEyebrow ?? seed.heroEyebrow}
             </div>
-            <h1
-              class="font-display text-3xl leading-[1.1] font-extrabold tracking-tight text-balance text-white md:text-4xl"
-            >
+            <h1 class="font-display text-3xl leading-[1.1] font-extrabold tracking-tight text-balance text-white md:text-4xl">
               {page?.heroTitle ?? seed.heroTitle}
             </h1>
             <p class="mt-6 max-w-[52ch] text-base leading-relaxed text-white/75 md:text-lg">

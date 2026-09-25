@@ -86,39 +86,37 @@ const graph = [
         <div class="grid gap-14 lg:grid-cols-[0.9fr_1.1fr]">
           <div data-reveal>
             <dl class="space-y-5">
-              {
-                CONTACT_ROWS.map(({ label, Icon, links, text }, i) => {
-                  const accent = accentFor(i);
-                  return (
-                    /* Grid rather than nested flex: dt and dd have to be direct children of a
+              {CONTACT_ROWS.map(({ label, Icon, links, text }, i) => {
+                const accent = accentFor(i);
+                return (
+                  /* Grid rather than nested flex: dt and dd have to be direct children of a
                        div that is itself a direct child of the dl, or screen readers lose the
                        pairing. The icon spans both rows to keep the same layout. */
-                    <div class="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3.5">
-                      <span
-                        class="row-span-2 mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
-                        style={{ backgroundColor: `${accent}1a` }}
-                        aria-hidden="true"
-                      >
-                        <Icon size={18} color={accent} strokeWidth={2} aria-hidden="true" />
-                      </span>
-                      <dt class="text-2xs mb-0.5 font-semibold tracking-[0.08em] text-slate-500 uppercase">{label}</dt>
-                      <dd class="text-ink text-sm leading-relaxed font-medium break-words">
-                        {links.length > 0 ? (
-                          <span class="flex flex-col gap-0.5">
-                            {links.map((l) => (
-                              <a href={l.href} class={contactLinkClass}>
-                                {l.text}
-                              </a>
-                            ))}
-                          </span>
-                        ) : (
-                          text
-                        )}
-                      </dd>
-                    </div>
-                  );
-                })
-              }
+                  <div class="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3.5">
+                    <span
+                      class="row-span-2 mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
+                      style={{ backgroundColor: `${accent}1a` }}
+                      aria-hidden="true"
+                    >
+                      <Icon size={18} color={accent} strokeWidth={2} aria-hidden="true" />
+                    </span>
+                    <dt class="text-2xs mb-0.5 font-semibold tracking-[0.08em] text-slate-500 uppercase">{label}</dt>
+                    <dd class="text-ink text-sm leading-relaxed font-medium break-words">
+                      {links.length > 0 ? (
+                        <span class="flex flex-col gap-0.5">
+                          {links.map((l) => (
+                            <a href={l.href} class={contactLinkClass}>
+                              {l.text}
+                            </a>
+                          ))}
+                        </span>
+                      ) : (
+                        text
+                      )}
+                    </dd>
+                  </div>
+                );
+              })}
             </dl>
 
             {/* Ubicación. El mapa es de verdad y navegable; ver el porqué de OSM arriba. */}
@@ -128,7 +126,8 @@ const graph = [
                 title="Mapa de la ubicación de Latam Med Gas USA LLC en Miami, Florida"
                 class="block h-56 w-full border-0 sm:h-64"
                 loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"></iframe>
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
               <div class="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
                 <p class="text-sm leading-relaxed text-slate-600">{address}</p>
                 <a

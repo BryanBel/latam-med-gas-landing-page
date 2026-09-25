@@ -40,207 +40,202 @@ const richText = (value: PageBlock['body'], dark: boolean) =>
   });
 ---
 
-{
-  blocks.map((block) => {
-    const dark = onNavy(block.tone);
-    const heading = [
-      'font-display text-2xl font-extrabold tracking-tight text-balance md:text-3xl',
-      dark ? 'text-white' : 'text-ink',
-    ];
-    const eyebrow = [
-      'mb-3 text-xs font-semibold tracking-[0.08em] uppercase',
-      dark ? 'text-accent-100' : 'text-accent',
-    ];
-    const support = ['mt-3 text-base leading-relaxed', dark ? 'text-white/75' : 'text-slate-600'];
+{blocks.map((block) => {
+  const dark = onNavy(block.tone);
+  const heading = [
+    'font-display text-2xl font-extrabold tracking-tight text-balance md:text-3xl',
+    dark ? 'text-white' : 'text-ink',
+  ];
+  const eyebrow = ['mb-3 text-xs font-semibold tracking-[0.08em] uppercase', dark ? 'text-accent-100' : 'text-accent'];
+  const support = ['mt-3 text-base leading-relaxed', dark ? 'text-white/75' : 'text-slate-600'];
 
-    return (
-      <section class:list={['relative overflow-hidden', ground(block.tone)]}>
-        <div class="relative mx-auto w-full max-w-7xl px-5 py-16 md:px-9 md:py-20">
-          {block._type === 'blockText' && (
-            <div class="max-w-3xl" data-reveal>
+  return (
+    <section class:list={['relative overflow-hidden', ground(block.tone)]}>
+      <div class="relative mx-auto w-full max-w-7xl px-5 py-16 md:px-9 md:py-20">
+        {block._type === 'blockText' && (
+          <div class="max-w-3xl" data-reveal>
+            {block.eyebrow && <div class:list={eyebrow}>{block.eyebrow}</div>}
+            {block.heading && <h2 class:list={heading}>{block.heading}</h2>}
+            <Fragment set:html={richText(block.body, dark)} />
+          </div>
+        )}
+
+        {block._type === 'blockTextImage' && (
+          <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+            <div class:list={[block.imageSide === 'left' ? 'lg:order-2' : 'lg:order-1']} data-reveal>
               {block.eyebrow && <div class:list={eyebrow}>{block.eyebrow}</div>}
               {block.heading && <h2 class:list={heading}>{block.heading}</h2>}
-              <Fragment set:html={richText(block.body, dark)} />
+              {block.body && <p class:list={support}>{block.body}</p>}
             </div>
-          )}
-
-          {block._type === 'blockTextImage' && (
-            <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-              <div class:list={[block.imageSide === 'left' ? 'lg:order-2' : 'lg:order-1']} data-reveal>
-                {block.eyebrow && <div class:list={eyebrow}>{block.eyebrow}</div>}
-                {block.heading && <h2 class:list={heading}>{block.heading}</h2>}
-                {block.body && <p class:list={support}>{block.body}</p>}
-              </div>
-              <div class:list={[block.imageSide === 'left' ? 'lg:order-1' : 'lg:order-2']} data-reveal>
-                <SanityImage
-                  image={block.image}
-                  alt={block.heading ?? ''}
-                  caption={block.heading ?? 'Imagen'}
-                  aspect="aspect-4/3"
-                  class="rounded-2xl"
-                  width={900}
-                />
-              </div>
+            <div class:list={[block.imageSide === 'left' ? 'lg:order-1' : 'lg:order-2']} data-reveal>
+              <SanityImage
+                image={block.image}
+                alt={block.heading ?? ''}
+                caption={block.heading ?? 'Imagen'}
+                aspect="aspect-4/3"
+                class="rounded-2xl"
+                width={900}
+              />
             </div>
-          )}
+          </div>
+        )}
 
-          {block._type === 'blockCards' && (
-            <Fragment>
-              <div class="mb-10 max-w-2xl" data-reveal>
-                {block.eyebrow && <div class:list={eyebrow}>{block.eyebrow}</div>}
-                {block.heading && <h2 class:list={heading}>{block.heading}</h2>}
-                {block.intro && <p class:list={support}>{block.intro}</p>}
-              </div>
-              <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {(block.cards ?? []).map((card, i) => {
-                  const Icon = resolveServiceIcon(card.icon);
-                  const Tag = card.link ? 'a' : 'div';
-                  return (
-                    <Tag
-                      href={card.link}
-                      data-reveal
-                      data-reveal-delay={(i % 3) * 70}
-                      data-tilt
-                      class:list={[
-                        'focus-visible:ring-accent block rounded-xl p-6 focus-visible:ring-2 focus-visible:outline-none',
-                        dark ? 'bg-white/5 ring-1 ring-white/15' : 'bg-white ring-1 ring-slate-200/80',
-                      ]}
+        {block._type === 'blockCards' && (
+          <Fragment>
+            <div class="mb-10 max-w-2xl" data-reveal>
+              {block.eyebrow && <div class:list={eyebrow}>{block.eyebrow}</div>}
+              {block.heading && <h2 class:list={heading}>{block.heading}</h2>}
+              {block.intro && <p class:list={support}>{block.intro}</p>}
+            </div>
+            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {(block.cards ?? []).map((card, i) => {
+                const Icon = resolveServiceIcon(card.icon);
+                const Tag = card.link ? 'a' : 'div';
+                return (
+                  <Tag
+                    href={card.link}
+                    data-reveal
+                    data-reveal-delay={(i % 3) * 70}
+                    data-tilt
+                    class:list={[
+                      'focus-visible:ring-accent block rounded-xl p-6 focus-visible:ring-2 focus-visible:outline-none',
+                      dark ? 'bg-white/5 ring-1 ring-white/15' : 'bg-white ring-1 ring-slate-200/80',
+                    ]}
+                  >
+                    <span
+                      class="mb-4 flex h-10 w-10 items-center justify-center rounded-lg"
+                      style={{ backgroundColor: `${accentFor(i)}1a` }}
+                      aria-hidden="true"
                     >
-                      <span
-                        class="mb-4 flex h-10 w-10 items-center justify-center rounded-lg"
-                        style={{ backgroundColor: `${accentFor(i)}1a` }}
-                        aria-hidden="true"
-                      >
-                        <Icon size={19} color={accentFor(i)} strokeWidth={2} aria-hidden="true" />
-                      </span>
-                      <h3 class:list={['font-display mb-2 text-base font-bold', dark ? 'text-white' : 'text-ink']}>
-                        {card.title}
-                      </h3>
-                      {card.text && (
-                        <p class:list={['text-sm leading-relaxed', dark ? 'text-white/70' : 'text-slate-600']}>
-                          {card.text}
-                        </p>
-                      )}
-                      {card.link && (
-                        <span
-                          class:list={[
-                            'mt-4 inline-flex items-center gap-1.5 text-sm font-semibold',
-                            dark ? 'text-accent-100' : 'text-accent',
-                          ]}
-                        >
-                          Ver más
-                          <ArrowRight size={15} strokeWidth={2.5} aria-hidden="true" />
-                        </span>
-                      )}
-                    </Tag>
-                  );
-                })}
-              </div>
-            </Fragment>
-          )}
-
-          {block._type === 'blockQuote' && (
-            <figure class="mx-auto max-w-3xl text-center" data-reveal>
-              <div class="mx-auto mb-6 h-[3px] w-10" style={{ backgroundColor: accentFor(2) }} aria-hidden="true" />
-              <blockquote
-                class:list={[
-                  'font-display text-xl leading-snug font-bold text-balance md:text-2xl',
-                  dark ? 'text-white' : 'text-ink',
-                ]}
-              >
-                {block.quote}
-              </blockquote>
-              {(block.author || block.role) && (
-                <figcaption class:list={['mt-5 text-sm font-medium', dark ? 'text-white/70' : 'text-slate-500']}>
-                  {[block.author, block.role].filter(Boolean).join(' · ')}
-                </figcaption>
-              )}
-            </figure>
-          )}
-
-          {block._type === 'blockGallery' && (
-            <Fragment>
-              {block.heading && (
-                <h2 class:list={[...heading, 'mb-10 max-w-2xl']} data-reveal>
-                  {block.heading}
-                </h2>
-              )}
-              <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {(block.images ?? []).map((image, i) => (
-                  <div data-reveal data-reveal-delay={(i % 3) * 70}>
-                    <SanityImage
-                      image={image}
-                      alt={image.alt ?? ''}
-                      caption={image.alt ?? 'Imagen'}
-                      aspect="aspect-4/3"
-                      class="rounded-xl"
-                      width={800}
-                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    />
-                  </div>
-                ))}
-              </div>
-            </Fragment>
-          )}
-
-          {block._type === 'blockFaq' && (
-            <div class="mx-auto max-w-3xl">
-              {block.heading && (
-                <h2 class:list={[...heading, 'mb-8']} data-reveal>
-                  {block.heading}
-                </h2>
-              )}
-              <div class="divide-y divide-slate-200">
-                {(block.items ?? []).map((item, i) => (
-                  <details class="group py-4" data-reveal data-reveal-delay={(i % 4) * 60}>
-                    <summary
-                      class:list={[
-                        'focus-visible:ring-accent flex cursor-pointer items-start justify-between gap-4 rounded-sm text-base font-semibold focus-visible:ring-2 focus-visible:outline-none',
-                        dark ? 'text-white' : 'text-ink',
-                      ]}
-                    >
-                      {item.question}
+                      <Icon size={19} color={accentFor(i)} strokeWidth={2} aria-hidden="true" />
+                    </span>
+                    <h3 class:list={['font-display mb-2 text-base font-bold', dark ? 'text-white' : 'text-ink']}>
+                      {card.title}
+                    </h3>
+                    {card.text && (
+                      <p class:list={['text-sm leading-relaxed', dark ? 'text-white/70' : 'text-slate-600']}>
+                        {card.text}
+                      </p>
+                    )}
+                    {card.link && (
                       <span
                         class:list={[
-                          'mt-1 shrink-0 transition-transform group-open:rotate-90',
+                          'mt-4 inline-flex items-center gap-1.5 text-sm font-semibold',
                           dark ? 'text-accent-100' : 'text-accent',
                         ]}
-                        aria-hidden="true"
                       >
-                        <ArrowRight size={16} strokeWidth={2.5} />
+                        Ver más
+                        <ArrowRight size={15} strokeWidth={2.5} aria-hidden="true" />
                       </span>
-                    </summary>
-                    <p class:list={['mt-3 text-base leading-relaxed', dark ? 'text-white/75' : 'text-slate-600']}>
-                      {item.answer}
-                    </p>
-                  </details>
-                ))}
-              </div>
+                    )}
+                  </Tag>
+                );
+              })}
             </div>
-          )}
+          </Fragment>
+        )}
 
-          {block._type === 'blockCta' && (
-            <div class="mx-auto max-w-2xl text-center" data-reveal>
-              <h2 class:list={heading}>{block.heading}</h2>
-              {block.text && <p class:list={[...support, 'mx-auto max-w-[52ch]']}>{block.text}</p>}
-              {block.buttonLabel && (
-                <a
-                  href={block.buttonHref ?? '/contacto/'}
-                  class:list={[
-                    'press-feedback focus-visible:ring-accent mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-safe:hover:-translate-y-0.5',
-                    dark
-                      ? 'bg-white text-[var(--color-accent-700)] shadow-lg shadow-black/20'
-                      : 'bg-accent text-white shadow-lg shadow-slate-300/60',
-                  ]}
-                >
-                  {block.buttonLabel}
-                  <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
-                </a>
-              )}
+        {block._type === 'blockQuote' && (
+          <figure class="mx-auto max-w-3xl text-center" data-reveal>
+            <div class="mx-auto mb-6 h-[3px] w-10" style={{ backgroundColor: accentFor(2) }} aria-hidden="true" />
+            <blockquote
+              class:list={[
+                'font-display text-xl leading-snug font-bold text-balance md:text-2xl',
+                dark ? 'text-white' : 'text-ink',
+              ]}
+            >
+              {block.quote}
+            </blockquote>
+            {(block.author || block.role) && (
+              <figcaption class:list={['mt-5 text-sm font-medium', dark ? 'text-white/70' : 'text-slate-500']}>
+                {[block.author, block.role].filter(Boolean).join(' · ')}
+              </figcaption>
+            )}
+          </figure>
+        )}
+
+        {block._type === 'blockGallery' && (
+          <Fragment>
+            {block.heading && (
+              <h2 class:list={[...heading, 'mb-10 max-w-2xl']} data-reveal>
+                {block.heading}
+              </h2>
+            )}
+            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {(block.images ?? []).map((image, i) => (
+                <div data-reveal data-reveal-delay={(i % 3) * 70}>
+                  <SanityImage
+                    image={image}
+                    alt={image.alt ?? ''}
+                    caption={image.alt ?? 'Imagen'}
+                    aspect="aspect-4/3"
+                    class="rounded-xl"
+                    width={800}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  />
+                </div>
+              ))}
             </div>
-          )}
-        </div>
-      </section>
-    );
-  })
-}
+          </Fragment>
+        )}
+
+        {block._type === 'blockFaq' && (
+          <div class="mx-auto max-w-3xl">
+            {block.heading && (
+              <h2 class:list={[...heading, 'mb-8']} data-reveal>
+                {block.heading}
+              </h2>
+            )}
+            <div class="divide-y divide-slate-200">
+              {(block.items ?? []).map((item, i) => (
+                <details class="group py-4" data-reveal data-reveal-delay={(i % 4) * 60}>
+                  <summary
+                    class:list={[
+                      'focus-visible:ring-accent flex cursor-pointer items-start justify-between gap-4 rounded-sm text-base font-semibold focus-visible:ring-2 focus-visible:outline-none',
+                      dark ? 'text-white' : 'text-ink',
+                    ]}
+                  >
+                    {item.question}
+                    <span
+                      class:list={[
+                        'mt-1 shrink-0 transition-transform group-open:rotate-90',
+                        dark ? 'text-accent-100' : 'text-accent',
+                      ]}
+                      aria-hidden="true"
+                    >
+                      <ArrowRight size={16} strokeWidth={2.5} />
+                    </span>
+                  </summary>
+                  <p class:list={['mt-3 text-base leading-relaxed', dark ? 'text-white/75' : 'text-slate-600']}>
+                    {item.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {block._type === 'blockCta' && (
+          <div class="mx-auto max-w-2xl text-center" data-reveal>
+            <h2 class:list={heading}>{block.heading}</h2>
+            {block.text && <p class:list={[...support, 'mx-auto max-w-[52ch]']}>{block.text}</p>}
+            {block.buttonLabel && (
+              <a
+                href={block.buttonHref ?? '/contacto/'}
+                class:list={[
+                  'press-feedback focus-visible:ring-accent mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-safe:hover:-translate-y-0.5',
+                  dark
+                    ? 'bg-white text-[var(--color-accent-700)] shadow-lg shadow-black/20'
+                    : 'bg-accent text-white shadow-lg shadow-slate-300/60',
+                ]}
+              >
+                {block.buttonLabel}
+                <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+})}

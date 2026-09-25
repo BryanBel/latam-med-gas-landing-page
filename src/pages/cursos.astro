@@ -72,37 +72,33 @@ const graph = [
     <section class="bg-white">
       <div class="mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
         <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {
-            items.map((c, i) => (
-              <div
-                data-reveal
-                data-tilt
-                data-reveal-delay={(i % 3) * 60}
-                class="hover:ring-accent-200 rounded-2xl bg-white p-6 ring-1 ring-slate-200 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-slate-200/60 motion-safe:hover:-translate-y-0.5"
-              >
-                <div class="mb-3 flex items-center gap-3">
-                  <span
-                    class="font-display text-2xs shrink-0 rounded-full px-2.5 py-1 font-bold text-white"
-                    style={{ backgroundColor: accentFor(i) }}
-                    translate="no"
-                  >
-                    ASSE {c.code}
-                  </span>
-                  <h2 class="font-display text-ink min-w-0 text-base font-bold text-balance">{c.title}</h2>
-                </div>
-                <p class="text-xs leading-relaxed text-slate-600">{c.description}</p>
+          {items.map((c, i) => (
+            <div
+              data-reveal
+              data-tilt
+              data-reveal-delay={(i % 3) * 60}
+              class="hover:ring-accent-200 rounded-2xl bg-white p-6 ring-1 ring-slate-200 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-slate-200/60 motion-safe:hover:-translate-y-0.5"
+            >
+              <div class="mb-3 flex items-center gap-3">
+                <span
+                  class="font-display text-2xs shrink-0 rounded-full px-2.5 py-1 font-bold text-white"
+                  style={{ backgroundColor: accentFor(i) }}
+                  translate="no"
+                >
+                  ASSE {c.code}
+                </span>
+                <h2 class="font-display text-ink min-w-0 text-base font-bold text-balance">{c.title}</h2>
               </div>
-            ))
-          }
+              <p class="text-xs leading-relaxed text-slate-600">{c.description}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
 
-    {
-      /* La foto es de un curso real de LMG. Es vertical y el techo del salón se lleva el tercio
+    {/* La foto es de un curso real de LMG. Es vertical y el techo del salón se lleva el tercio
       superior, así que se recorta a 4/5 y se encuadra algo por debajo del centro para que la
-      mesa y los asistentes queden en el eje. */
-    }
+      mesa y los asistentes queden en el eje. */}
     <section class="bg-white">
       <div class="mx-auto w-full max-w-7xl px-5 pb-20 md:px-9 md:pb-24">
         <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
@@ -123,16 +119,14 @@ const graph = [
             </h2>
             {notaTexto && <p class="mt-4 max-w-[52ch] text-base leading-relaxed text-slate-600">{notaTexto}</p>}
 
-            {
-              /* Quién da la clase de la foto. Va codificado aquí y no en el Studio a propósito:
+            {/* Quién da la clase de la foto. Va codificado aquí y no en el Studio a propósito:
                 es el crédito de *esta* fotografía, que vive en el repositorio como ella, y deja
                 de ser cierto en cuanto se cambie la imagen. Un campo editable suelto en Sanity
                 se quedaría con el nombre viejo bajo una foto nueva.
 
                 «Instructor», no «instructor certificado ASSE 6050»: esa credencial sigue sin
                 verificarse y es exactamente la frase que se retiró de esta página en agosto.
-                Si se confirma, aquí es donde vuelve. */
-            }
+                Si se confirma, aquí es donde vuelve. */}
             <div class="mt-8 border-t border-slate-200 pt-5">
               <p class="font-display text-ink text-sm font-bold">José Sepúlveda</p>
               <p class="text-2xs mt-0.5 font-medium text-slate-500">Propietario e instructor</p>

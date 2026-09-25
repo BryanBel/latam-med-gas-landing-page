@@ -61,10 +61,8 @@ const seo = pageSeo('inicio', page);
   settings={settings}
 >
   <Header settings={settings} />
-  {
-    /* Lean summary: hero + teasers that route to their own pages. Not `.screens` (full-screen) —
-     the teasers are natural height so the home reads as a concise overview. */
-  }
+  {/* Lean summary: hero + teasers that route to their own pages. Not `.screens` (full-screen) —
+     the teasers are natural height so the home reads as a concise overview. */}
   <main id="contenido">
     <Hero hero={hero} />
     <AboutUs about={about} />
@@ -79,25 +77,20 @@ const seo = pageSeo('inicio', page);
       certifications={certifications}
       heading={certificacionesHeader.heading ?? seedSection('certificaciones').heading}
     />
-    {
-      /* Trayectoria, el eslogan y la banda de contacto comparten un solo fondo. Por separado
+    {/* Trayectoria, el eslogan y la banda de contacto comparten un solo fondo. Por separado
       cada una pintaba su propio degradado y su propia trama, y aunque los tonos encadenaran, el
       ojo leía tres superficies azules pegadas con la costura a la vista. Aquí el degradado y la
       trama se pintan una vez para el tramo entero y las tres van sin fondo (`bare`), así que el
-      cierre de la página es una sola pieza. */
-    }
+      cierre de la página es una sola pieza. */}
     <div class="from-accent-700 via-accent to-accent-400 seam-cut-top relative overflow-hidden bg-gradient-to-br">
       <NavyTexture glow="#0d948833" glowClass="-top-20 -right-20 h-[380px] w-[380px]" />
-      {
-        /* Segundo resplandor abajo: el tramo es alto y uno solo arriba dejaba apagado el final,
-        justo donde está el botón. */
-      }
+      {/* Segundo resplandor abajo: el tramo es alto y uno solo arriba dejaba apagado el final,
+        justo donde está el botón. */}
       <div
         class="glow-drift pointer-events-none absolute -bottom-28 -left-24 h-[420px] w-[420px] rounded-full blur-3xl"
         aria-hidden="true"
         style={{ backgroundColor: '#7c3aed2e' }}
-      >
-      </div>
+      ></div>
       <Projects
         projects={projects}
         limit={4}

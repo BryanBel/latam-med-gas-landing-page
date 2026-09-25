@@ -15,39 +15,35 @@ interface Props {
 const { testimonials, heading = DEFAULT_PAGES.trayectoria.sections?.testimonios?.heading } = Astro.props;
 ---
 
-{
-  testimonials.length > 0 && (
-    <section id="testimonios" class="relative overflow-hidden bg-slate-50">
-      <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
-        <div class="mb-12 max-w-2xl" data-reveal>
-          <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
-            {heading}
-          </h2>
-        </div>
-
-        <div class="grid gap-6 md:grid-cols-2 lg:gap-8">
-          {testimonials.map((t, i) => (
-            <figure
-              data-reveal
-              data-reveal-delay={(i % 2) * 90}
-              class="flex flex-col rounded-xl bg-white p-7 ring-1 ring-slate-200/80"
-            >
-              <div class="mb-5 h-[3px] w-10" style={{ backgroundColor: accentFor(i) }} aria-hidden="true" />
-              <blockquote class="text-ink grow text-base leading-relaxed text-pretty">{t.quote}</blockquote>
-              {(t.authorName || t.company) && (
-                <figcaption class="mt-6 border-t border-slate-200 pt-4">
-                  {t.authorName && <span class="text-ink block text-sm font-bold">{t.authorName}</span>}
-                  {(t.authorRole || t.company) && (
-                    <span class="text-2xs mt-0.5 block font-medium text-slate-500">
-                      {[t.authorRole, t.company].filter(Boolean).join(' · ')}
-                    </span>
-                  )}
-                </figcaption>
-              )}
-            </figure>
-          ))}
-        </div>
+{testimonials.length > 0 && (
+  <section id="testimonios" class="relative overflow-hidden bg-slate-50">
+    <div class="relative mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
+      <div class="mb-12 max-w-2xl" data-reveal>
+        <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">{heading}</h2>
       </div>
-    </section>
-  )
-}
+
+      <div class="grid gap-6 md:grid-cols-2 lg:gap-8">
+        {testimonials.map((t, i) => (
+          <figure
+            data-reveal
+            data-reveal-delay={(i % 2) * 90}
+            class="flex flex-col rounded-xl bg-white p-7 ring-1 ring-slate-200/80"
+          >
+            <div class="mb-5 h-[3px] w-10" style={{ backgroundColor: accentFor(i) }} aria-hidden="true" />
+            <blockquote class="text-ink grow text-base leading-relaxed text-pretty">{t.quote}</blockquote>
+            {(t.authorName || t.company) && (
+              <figcaption class="mt-6 border-t border-slate-200 pt-4">
+                {t.authorName && <span class="text-ink block text-sm font-bold">{t.authorName}</span>}
+                {(t.authorRole || t.company) && (
+                  <span class="text-2xs mt-0.5 block font-medium text-slate-500">
+                    {[t.authorRole, t.company].filter(Boolean).join(' · ')}
+                  </span>
+                )}
+              </figcaption>
+            )}
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

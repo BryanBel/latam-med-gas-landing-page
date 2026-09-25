@@ -25,14 +25,12 @@ const body = about?.body ?? DEFAULT_ABOUT.body;
     class="pointer-events-none absolute -top-16 -left-24 h-[190px] w-[190px] rounded-full blur-2xl sm:h-[380px] sm:w-[380px] sm:blur-3xl"
     aria-hidden="true"
     style={{ backgroundColor: '#0a0a8914' }}
-  >
-  </div>
+  ></div>
   <div
     class="pointer-events-none absolute -right-20 bottom-0 h-[160px] w-[160px] rounded-full blur-2xl sm:h-[300px] sm:w-[300px] sm:blur-3xl"
     aria-hidden="true"
     style={{ backgroundColor: '#15803d0f' }}
-  >
-  </div>
+  ></div>
 
   <div class="relative mx-auto w-full max-w-7xl px-5 pt-24 pb-20 md:px-9 md:pt-28 md:pb-24">
     <div class="grid items-center gap-12 lg:grid-cols-2">
@@ -47,19 +45,17 @@ const body = about?.body ?? DEFAULT_ABOUT.body;
             fallback={aboutCorridor}
           />
         </div>
-        <div
-          class="bg-accent-700 absolute -bottom-5 -left-4 hidden -rotate-3 items-center gap-2 rounded-xl px-4 py-3 shadow-lg sm:flex"
-        >
+        <div class="bg-accent-700 absolute -bottom-5 -left-4 hidden -rotate-3 items-center gap-2 rounded-xl px-4 py-3 shadow-lg sm:flex">
           <BadgeCheck size={18} color="#ffffff" strokeWidth={2} aria-hidden="true" />
-          <span class="font-display text-xs font-bold text-white" translate="no">ASSE&nbsp;6000 · NFPA&nbsp;99</span>
+          <span class="font-display text-xs font-bold text-white" translate="no">
+            ASSE&nbsp;6000 · NFPA&nbsp;99
+          </span>
         </div>
       </div>
 
       <div class="order-1 lg:order-2" data-reveal>
         <div class="text-accent mb-3 text-xs font-semibold tracking-[0.08em] uppercase">Nosotros</div>
-        <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">
-          {heading}
-        </h2>
+        <h2 class="font-display text-ink text-2xl font-extrabold tracking-tight text-balance md:text-3xl">{heading}</h2>
         <p class="mt-5 text-base leading-relaxed text-slate-600">{body}</p>
         <a
           href="/nosotros/"

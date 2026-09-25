@@ -30,21 +30,17 @@ const address = settings?.address ?? DEFAULT_SITE_SETTINGS.address;
         {page?.heroTitle ?? seed.heroTitle}
       </h1>
 
-      {
-        /* Sin aviso de borrador. Estuvo en vivo desde el lanzamiento diciendo que el sitio aún
+      {/* Sin aviso de borrador. Estuvo en vivo desde el lanzamiento diciendo que el sitio aún
           no había lanzado, que es lo peor de los dos mundos: restaba confianza al visitante y
           no acercaba la revisión legal. El texto describe con exactitud lo que hace el sitio,
-          y la revisión legal quedó hecha el 25/09/2026. */
-      }
+          y la revisión legal quedó hecha el 25/09/2026. */}
 
-      {
-        sections.map(({ heading, body }) => (
-          <section class="mt-10">
-            <h2 class="font-display text-ink mb-3 text-xl font-bold">{heading}</h2>
-            <p class="text-base leading-relaxed text-slate-600">{body}</p>
-          </section>
-        ))
-      }
+      {sections.map(({ heading, body }) => (
+        <section class="mt-10">
+          <h2 class="font-display text-ink mb-3 text-xl font-bold">{heading}</h2>
+          <p class="text-base leading-relaxed text-slate-600">{body}</p>
+        </section>
+      ))}
 
       <section class="mt-10">
         <h2 class="font-display text-ink mb-3 text-xl font-bold">Contacto</h2>

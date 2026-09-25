@@ -71,53 +71,49 @@ const year = new Date().getFullYear();
     <div>
       <h2 class="text-2xs text-ink mb-3 font-semibold tracking-[0.08em] uppercase">Contacto</h2>
       <ul class="space-y-1.5 text-xs text-slate-600">
-        {
-          phoneLinks.map((p) => (
-            <li>
-              <a href={p.href} class={footerLink}>
-                {p.text}
-              </a>
-            </li>
-          ))
-        }
+        {phoneLinks.map((p) => (
+          <li>
+            <a href={p.href} class={footerLink}>
+              {p.text}
+            </a>
+          </li>
+        ))}
         <li>
-          <a href={`mailto:${email}`} class:list={[footerLink, 'break-all']}>{email}</a>
+          <a href={`mailto:${email}`} class:list={[footerLink, 'break-all']}>
+            {email}
+          </a>
         </li>
         <li class="text-slate-500">{ciudad}</li>
       </ul>
     </div>
 
-    {
-      /* Los seis enlaces, en dos columnas. Apilados en una sola eran lo que estiraba el pie
+    {/* Los seis enlaces, en dos columnas. Apilados en una sola eran lo que estiraba el pie
         —seis filas seguidas— mientras la columna de la marca se quedaba medio vacía justo al
         lado. Repartidos, las tres secciones acaban a una altura parecida y el pie pierde unos
         70 px sin perder nada de contenido.
 
         Y va como lista, que es lo que es: un lector de pantalla anuncia «seis elementos» en
-        vez de recitarlos sueltos. */
-    }
+        vez de recitarlos sueltos. */}
     <nav aria-labelledby="footer-nav-titulo">
       <h2 id="footer-nav-titulo" class="text-2xs text-ink mb-3 font-semibold tracking-[0.08em] uppercase">
         Navegación
       </h2>
       <ul class="grid grid-cols-2 gap-x-6 gap-y-2">
-        {
-          footerNav.map((l) => (
-            <li>
-              <a href={l.href} class={footerNavLink}>
-                {l.label}
-              </a>
-            </li>
-          ))
-        }
+        {footerNav.map((l) => (
+          <li>
+            <a href={l.href} class={footerNavLink}>
+              {l.label}
+            </a>
+          </li>
+        ))}
       </ul>
     </nav>
   </div>
   <div class="border-t border-slate-200">
-    <div
-      class="text-2xs mx-auto flex max-w-7xl flex-col items-start justify-between gap-2 px-5 py-5 text-slate-500 sm:flex-row sm:items-center md:px-9"
-    >
-      <span>© {year} {siteName}. Todos los derechos reservados.</span>
+    <div class="text-2xs mx-auto flex max-w-7xl flex-col items-start justify-between gap-2 px-5 py-5 text-slate-500 sm:flex-row sm:items-center md:px-9">
+      <span>
+        © {year} {siteName}. Todos los derechos reservados.
+      </span>
       <span class="flex flex-wrap items-center gap-x-2">
         {footerNote}
         <a

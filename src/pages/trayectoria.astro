@@ -47,19 +47,13 @@ const graph = [
 <Layout title={seo.title} description={seo.description} settings={settings} graph={graph}>
   <Header settings={settings} />
   <main id="contenido">
-    <section
-      class="from-accent-700 via-accent to-accent-400 seam-cut-bottom relative overflow-hidden bg-gradient-to-br"
-    >
+    <section class="from-accent-700 via-accent to-accent-400 seam-cut-bottom relative overflow-hidden bg-gradient-to-br">
       <NavyTexture glow="#0d948833" />
       <div class="relative mx-auto w-full max-w-7xl px-5 pt-14 pb-24 md:px-9 md:pt-20 md:pb-28">
-        <span
-          class="text-2xs mb-5 inline-flex items-center rounded-full bg-white/10 px-3 py-1 font-mono font-semibold text-white ring-1 ring-white/25 ring-inset"
-        >
+        <span class="text-2xs mb-5 inline-flex items-center rounded-full bg-white/10 px-3 py-1 font-mono font-semibold text-white ring-1 ring-white/25 ring-inset">
           {page?.heroEyebrow ?? seed.heroEyebrow}
         </span>
-        <h1
-          class="font-display max-w-3xl text-3xl leading-[1.1] font-extrabold tracking-tight text-balance text-white md:text-4xl"
-        >
+        <h1 class="font-display max-w-3xl text-3xl leading-[1.1] font-extrabold tracking-tight text-balance text-white md:text-4xl">
           {page?.heroTitle ?? seed.heroTitle}
         </h1>
         <p class="mt-5 max-w-[60ch] text-base leading-relaxed text-white/75 md:text-lg">
@@ -79,32 +73,30 @@ const graph = [
         </h2>
 
         <ol class="relative ml-1.5 border-l border-slate-200">
-          {
-            items.map((p, i) => (
-              <li data-reveal class="relative pb-10 pl-8 last:pb-0">
-                <span
-                  class="absolute top-1.5 -left-[7px] h-3 w-3 rounded-full ring-4 ring-white"
-                  style={{ backgroundColor: accentFor(i) }}
-                  aria-hidden="true"
-                />
-                <div class="mb-1.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                  {p.date && <span class="text-2xs font-semibold tracking-wide text-slate-500">{p.date}</span>}
-                  {p.serviceType && (
-                    <span class="text-accent-700 bg-accent-50 text-2xs rounded-full px-2.5 py-0.5 font-semibold">
-                      {p.serviceType}
-                    </span>
-                  )}
-                </div>
-                <h3 class="font-display text-ink text-lg font-bold text-balance">{p.clientName}</h3>
-                {(p.location || p.country) && (
-                  <p class="text-2xs mt-0.5 mb-2 font-medium text-slate-500">
-                    {[p.location, p.country].filter(Boolean).join(', ')}
-                  </p>
+          {items.map((p, i) => (
+            <li data-reveal class="relative pb-10 pl-8 last:pb-0">
+              <span
+                class="absolute top-1.5 -left-[7px] h-3 w-3 rounded-full ring-4 ring-white"
+                style={{ backgroundColor: accentFor(i) }}
+                aria-hidden="true"
+              />
+              <div class="mb-1.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                {p.date && <span class="text-2xs font-semibold tracking-wide text-slate-500">{p.date}</span>}
+                {p.serviceType && (
+                  <span class="text-accent-700 bg-accent-50 text-2xs rounded-full px-2.5 py-0.5 font-semibold">
+                    {p.serviceType}
+                  </span>
                 )}
-                {p.description && <p class="text-sm leading-relaxed text-slate-600">{p.description}</p>}
-              </li>
-            ))
-          }
+              </div>
+              <h3 class="font-display text-ink text-lg font-bold text-balance">{p.clientName}</h3>
+              {(p.location || p.country) && (
+                <p class="text-2xs mt-0.5 mb-2 font-medium text-slate-500">
+                  {[p.location, p.country].filter(Boolean).join(', ')}
+                </p>
+              )}
+              {p.description && <p class="text-sm leading-relaxed text-slate-600">{p.description}</p>}
+            </li>
+          ))}
         </ol>
       </div>
     </section>

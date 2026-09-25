@@ -38,11 +38,9 @@ const light = tone === 'light';
     bare ? '' : light ? 'bg-white' : 'from-accent-700 via-accent to-accent-400 bg-gradient-to-br',
   ]}
 >
-  {
-    /* El violeta WAGD no lo usa ninguna otra sección, así que la banda de cierre se distingue
+  {/* El violeta WAGD no lo usa ninguna otra sección, así que la banda de cierre se distingue
     de la que tenga encima en cualquier página. El resplandor abajo a la izquierda asienta el
-    final de la página en vez de tirar la mirada hacia arriba. */
-  }
+    final de la página en vez de tirar la mirada hacia arriba. */}
   {!light && !bare && <NavyTexture glow="#7c3aed33" glowClass="-bottom-28 -left-24 h-[420px] w-[420px]" />}
   <div class="relative mx-auto w-full max-w-7xl px-5 py-16 text-center md:px-9 md:py-20" data-reveal>
     <h2
@@ -53,11 +51,9 @@ const light = tone === 'light';
     >
       {title}
     </h2>
-    {
-      text && (
-        <p class:list={['mx-auto mt-4 max-w-[52ch] text-base', light ? 'text-slate-600' : 'text-white/75']}>{text}</p>
-      )
-    }
+    {text && (
+      <p class:list={['mx-auto mt-4 max-w-[52ch] text-base', light ? 'text-slate-600' : 'text-white/75']}>{text}</p>
+    )}
     <a
       href="/contacto/"
       class:list={[

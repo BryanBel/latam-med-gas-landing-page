@@ -20,26 +20,24 @@ const CARDS = [
 ---
 
 <div class="grid gap-5 md:grid-cols-2">
-  {
-    CARDS.map(({ label, body, Icon, accent }, i) => (
-      <div
-        data-reveal
-        data-tilt
-        data-reveal-delay={i * 90}
-        class="group hover:ring-accent-200 rounded-2xl bg-white p-7 ring-1 ring-slate-200 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-slate-200/60 motion-safe:hover:-translate-y-0.5"
-      >
-        <div class="mb-4 flex items-center gap-3">
-          <span
-            class="flex h-11 w-11 items-center justify-center rounded-xl transition-transform motion-safe:group-hover:scale-105"
-            style={{ backgroundColor: `${accent}1a` }}
-            aria-hidden="true"
-          >
-            <Icon size={20} color={accent} strokeWidth={2} aria-hidden="true" />
-          </span>
-          <h3 class="font-display text-ink text-xl font-bold">{label}</h3>
-        </div>
-        <p class="text-sm leading-relaxed text-slate-600">{body}</p>
+  {CARDS.map(({ label, body, Icon, accent }, i) => (
+    <div
+      data-reveal
+      data-tilt
+      data-reveal-delay={i * 90}
+      class="group hover:ring-accent-200 rounded-2xl bg-white p-7 ring-1 ring-slate-200 transition-[transform,box-shadow] hover:shadow-lg hover:shadow-slate-200/60 motion-safe:hover:-translate-y-0.5"
+    >
+      <div class="mb-4 flex items-center gap-3">
+        <span
+          class="flex h-11 w-11 items-center justify-center rounded-xl transition-transform motion-safe:group-hover:scale-105"
+          style={{ backgroundColor: `${accent}1a` }}
+          aria-hidden="true"
+        >
+          <Icon size={20} color={accent} strokeWidth={2} aria-hidden="true" />
+        </span>
+        <h3 class="font-display text-ink text-xl font-bold">{label}</h3>
       </div>
-    ))
-  }
+      <p class="text-sm leading-relaxed text-slate-600">{body}</p>
+    </div>
+  ))}
 </div>
