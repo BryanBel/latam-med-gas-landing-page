@@ -1,12 +1,10 @@
 # Working on this project
 
-Marketing site for Latam Med Gas USA LLC. **Deployed to production at https://latammedgas.com** since 2026-08-14. Nothing here is a prototype: real client, and the domain carries the company's working email.
+Marketing site for Latam Med Gas USA LLC. **Live and public at https://latammedgas.com.** Deployed since 2026-08-14; private behind Cloudflare Access for client review from 2026-09-24, public again since 2026-09-25. Nothing here is a prototype: real client, real traffic, and the domain carries the company's working email.
 
-**Since 2026-09-24 the site is private, behind Cloudflare Access, until the client signs off.** Every path on `latammedgas.com` and `www` — `/studio` included — redirects `302` to a login page that says the site is under construction. Only emails listed in the Access policy get in, by a one-time PIN sent to that address. Sessions last 6 hours. This is deliberate, not an outage: do not "fix" it.
+**The review gate was deleted, not paused.** The Access application `latammedgas review` no longer exists; the custom login page (logo, navy background, "Sitio en construcción") is account-level and survives. To gate the site again: Zero Trust → Access controls → Applications → Add → Self-hosted, hostnames `latammedgas.com` and `www.latammedgas.com`, an Allow policy with an Emails rule, and in Authentication leave only **One-time PIN** with instant authentication on. The **Cloudflare** login option confused reviewers without a Cloudflare account — it asks for one and never emails a code. The login page says "code sent" for every address, allowed or not, on purpose, so an unlisted email looks exactly like a lost one. Gating in code was ruled out: production has no Worker script, and setting `main` in `wrangler.jsonc` would also replace the preview Worker's SSR entry, since the Cloudflare adapter reads the same field.
 
-**The preview Worker is not covered.** `latam-med-gas-preview.bryanbelandriav.workers.dev` answers 200 to anyone, renders drafts, and its form writes real leads — and its URL is in this public repository. Putting it behind Access too is a dashboard change (Worker → Settings → Domains & Routes → Cloudflare Access on `workers.dev`); until then, treat it as public.
-
-The gate lives entirely in the Cloudflare dashboard, not in this repository: Zero Trust → Access controls → Applications → `latammedgas review`, policy `Revision`. To let a reviewer in, add their email to the policy. **To go live, delete that application**; the site is public again within a minute or two. Gating in code was ruled out: production has no Worker script, and setting `main` in `wrangler.jsonc` would also replace the preview Worker's SSR entry, since the Cloudflare adapter reads the same field.
+**The preview Worker is public.** `latam-med-gas-preview.bryanbelandriav.workers.dev` answers 200 to anyone, renders drafts, and its form writes real leads — and its URL is in this public repository. Putting it behind Access is a dashboard change (Worker → Settings → Domains & Routes → Cloudflare Access on `workers.dev`).
 
 Project notes — task status, the DNS cutover runbook and the branding rationale — are kept outside this repository.
 
@@ -78,17 +76,13 @@ Do not revert these without being asked. They were deliberate choices, and at le
 
 ## Verifying changes
 
-While the Access gate is up, an anonymous request to production only gets the `302` to the login page, so `curl` can confirm the gate but not the content:
-
-```sh
-curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' https://latammedgas.com
-```
-
-Check content locally with `pnpm build` and `astro preview`, or in a browser signed in through Access. Once the gate comes down, this is the fastest check again:
+Production is the fastest check:
 
 ```sh
 curl -sS https://latammedgas.com | grep -o '<title>[^<]*</title>'
 ```
+
+If the site is ever gated again, that `curl` only gets the `302` to the login page; check content locally with `pnpm build` and `astro preview` instead.
 
 For local work, `pnpm build` then `astro preview` on port 4322 (`C:\dev\.claude\launch.json` has it). Port 4321 often holds a stale dev server from an earlier session, and `astro preview` refuses to start while an older one is running — it serves `dist/` from disk, so the old one serves the new build anyway.
 
