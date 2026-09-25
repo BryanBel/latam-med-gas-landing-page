@@ -83,7 +83,11 @@ const graph = [
 
     <section class="bg-white">
       <div class="mx-auto w-full max-w-7xl px-5 py-20 md:px-9 md:py-24">
-        <div class="grid gap-14 lg:grid-cols-[0.9fr_1.1fr]">
+        {/* Columnas con mínimo 0. Sin `grid-cols-1`, en móvil la única columna es implícita
+            (`auto`) y se ensancha hasta el contenido más ancho: la caja de Turnstile mide 302 px
+            aunque esté invisible, y con el relleno de la tarjeta empujaba la página 3 px más allá
+            de la pantalla a 375 px, con scroll horizontal incluido. */}
+        <div class="grid grid-cols-1 gap-14 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
           <div data-reveal>
             <dl class="space-y-5">
               {CONTACT_ROWS.map(({ label, Icon, links, text }, i) => {

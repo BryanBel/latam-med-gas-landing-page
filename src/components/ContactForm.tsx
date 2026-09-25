@@ -12,6 +12,7 @@ interface Turnstile {
       sitekey: string;
       execution?: 'render' | 'execute';
       appearance?: 'always' | 'execute' | 'interaction-only';
+      size?: 'normal' | 'flexible' | 'compact';
       callback?: (token: string) => void;
       'error-callback'?: () => void;
       'expired-callback'?: () => void;
@@ -213,6 +214,11 @@ export default function ContactForm() {
           sitekey: TURNSTILE_SITE_KEY,
           execution: 'execute',
           appearance: 'interaction-only',
+          // El widget normal mide 300 px de ancho aunque esté invisible. En pantallas de 320 px
+          // la tarjeta solo deja unos 224, y la caja empujaba la página hacia los lados. El
+          // compacto mide 150 y cabe en cualquier teléfono. Se mide el formulario y no la caja,
+          // que hasta este momento está vacía y por tanto oculta (`empty:hidden`): mediría 0.
+          size: (cajaRef.current.parentElement?.clientWidth ?? 0) < 300 ? 'compact' : 'normal',
           language: 'es',
           callback: (token) => {
             pendiente.current?.resolve(token);
@@ -382,7 +388,7 @@ export default function ContactForm() {
     <form onSubmit={handleSubmit} className="flex h-full flex-col gap-4" noValidate>
       <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className={labelClass}>
             Nombre y apellido *
@@ -431,7 +437,7 @@ export default function ContactForm() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="phone" className={labelClass}>
             Teléfono
