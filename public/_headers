@@ -33,16 +33,20 @@
   #                    viejos. Donde conviven, manda esta.
   #
   # NO lleva script-src, connect-src ni default-src, que es lo que de verdad frenaría un XSS.
-  # El Studio ya no se monta en producción, pero este archivo se copia a `dist/` en LAS DOS
-  # construcciones, y la de vista previa sí lo lleva: 'unsafe-eval', blob:, websockets y una
-  # lista larga de orígenes de sanity.io. Una política de scripts aquí lo dejaría inservible
-  # allí, y no vale aflojarla por ruta, porque Cloudflare **combina** las reglas de `_headers`
-  # que coinciden en vez de sustituirlas: las dos aplicarían y el navegador exige pasar ambas.
+  # El Studio SÍ se monta en producción, en /studio, y necesita 'unsafe-eval', blob:,
+  # websockets y una lista larga de orígenes de sanity.io. Una política de scripts aquí lo
+  # dejaría en blanco en latammedgas.com/studio, que es por donde edita el cliente. Tampoco vale
+  # aflojarla solo para /studio: Cloudflare **combina** las reglas de `_headers` que coinciden
+  # en vez de sustituirlas, así que las dos aplicarían y el navegador exige pasar ambas.
   #
-  # Para cerrarlo hace falta que cada despliegue sirva su propia cabecera —un `_headers` por
-  # construcción, o moverlas al adaptador— y enumerar los orígenes que el sitio carga en
-  # tiempo de ejecución: challenges.cloudflare.com (Turnstile), static.cloudflareinsights.com
-  # (analítica), cdn.sanity.io (imágenes) y el proyecto de Supabase (la edge function).
+  # En la vista previa este archivo solo alcanza a los assets estáticos. Sus páginas, /studio
+  # incluido, las renderiza el Worker y salen con las cabeceras de `src/middleware.ts`.
+  #
+  # Para cerrarlo hace falta una política de scripts para todo el sitio menos /studio, lo que
+  # con `_headers` no se puede expresar por lo dicho arriba, y enumerar los orígenes que el
+  # sitio carga en tiempo de ejecución: challenges.cloudflare.com (Turnstile),
+  # static.cloudflareinsights.com (analítica), cdn.sanity.io (imágenes) y el proyecto de
+  # Supabase (la edge function).
   Content-Security-Policy: base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'self'
 
 # Los nombres de archivo en /_astro/ llevan hash de contenido: un cambio produce un nombre

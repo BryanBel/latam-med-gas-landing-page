@@ -68,10 +68,10 @@ than on a media query, because a touchscreen laptop with a mouse attached matche
 
 ### Privacy without a cookie banner
 
-Analytics is Cloudflare Web Analytics, which sets no cookies. The contact page links out to Google
-Maps behind a static card instead of embedding an iframe, so no third party is contacted before a
-visitor asks for it. The result is a site with no consent banner, because there is nothing to
-consent to — not a banner that lies.
+Analytics is Cloudflare Web Analytics, which sets no cookies. The contact map is an OpenStreetMap
+embed, which sets none either and is disclosed in the privacy policy; Google Maps is only a link.
+Turnstile loads from Cloudflare when the contact form is on screen. No third party sets a cookie,
+so the site has no consent banner because there is nothing to consent to — not a banner that lies.
 
 ### Lead capture that cannot leak, and cannot be used as a mail cannon
 
@@ -108,16 +108,16 @@ was a four-token change that lifted the whole site at once.
 
 ## Stack
 
-| Layer         | Choice                                                                 | Why                                                                                                   |
-| ------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Framework     | [Astro](https://astro.build), static output                            | Ships zero JS by default; only what needs interactivity hydrates                                      |
-| Interactivity | [React](https://react.dev) islands                                     | Exactly one ([`ContactForm.tsx`](src/components/ContactForm.tsx)) — everything else is plain `.astro` |
-| Styling       | [Tailwind CSS v4](https://tailwindcss.com)                             | Design tokens centralized in [`global.css`](src/styles/global.css)                                    |
-| CMS           | [Sanity](https://sanity.io), Studio embedded at `/studio`              | Client edits on the deployed site; no separate CMS host to run or pay for                             |
-| Backend       | [Supabase](https://supabase.com)                                       | Contact leads only; nothing public may read or write the table — writes go through an edge function   |
-| Bot defence   | [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Invisible unless challenged; its token is what authorises a lead write                                |
-| Hosting       | [Cloudflare Workers](https://workers.cloudflare.com)                   | Free tier, git-push deploys, global CDN                                                               |
-| Language      | TypeScript, strict                                                     | `astro check` runs clean across the project                                                           |
+| Layer         | Choice                                                                 | Why                                                                                                          |
+| ------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Framework     | [Astro](https://astro.build), static output                            | Ships zero JS by default; only what needs interactivity hydrates                                             |
+| Interactivity | [React](https://react.dev) islands                                     | On the public pages, exactly one ([`ContactForm.tsx`](src/components/ContactForm.tsx)); the rest is `.astro` |
+| Styling       | [Tailwind CSS v4](https://tailwindcss.com)                             | Design tokens centralized in [`global.css`](src/styles/global.css)                                           |
+| CMS           | [Sanity](https://sanity.io), Studio embedded at `/studio`              | Client edits on the deployed site; no separate CMS host to run or pay for                                    |
+| Backend       | [Supabase](https://supabase.com)                                       | Contact leads only; nothing public may read or write the table — writes go through an edge function          |
+| Bot defence   | [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) | Invisible unless challenged; its token is what authorises a lead write                                       |
+| Hosting       | [Cloudflare Workers](https://workers.cloudflare.com)                   | Free tier, git-push deploys, global CDN                                                                      |
+| Language      | TypeScript, strict                                                     | `astro check` runs clean across the project                                                                  |
 
 ## Project structure
 
@@ -140,14 +140,14 @@ was a four-token change that lifted the whole site at once.
 └── supabase/
     ├── functions/submit-lead/ # Edge function: Turnstile check → insert (service role)
     ├── functions/notify-lead/ # Edge function: webhook → branded email, spam-scored
-    └── migrations/            # `leads` table, length limits, RLS policy
+    └── migrations/            # `leads` table, length limits, anon policy and grants revoked
 ```
 
 ## Getting started
 
 ```sh
 pnpm install
-cp .env.example .env   # fill in Sanity + Supabase values
+cp .env.example .env   # Sanity + Supabase values, and PUBLIC_TURNSTILE_SITE_KEY or it won't start
 pnpm dev               # http://localhost:4321
 ```
 
@@ -156,7 +156,6 @@ pnpm dev               # http://localhost:4321
 | `PUBLIC_SANITY_PROJECT_ID`  | [sanity.io/manage](https://sanity.io/manage) → your project                                                                                                     |
 | `PUBLIC_SANITY_DATASET`     | Usually `production`                                                                                                                                            |
 | `PUBLIC_SUPABASE_URL`       | [supabase.com/dashboard](https://supabase.com/dashboard) → Project Settings → API                                                                               |
-| `PUBLIC_SUPABASE_ANON_KEY`  | Same page — the anon key, never the service role key                                                                                                            |
 | `PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare → Turnstile → your widget. Public, ships in the bundle. **The build fails without it**, on purpose: absent, the contact form silently takes no leads |
 | `PUBLIC_CF_BEACON_TOKEN`    | Cloudflare → Web Analytics. Public identifier, not a secret. Leave blank locally so dev traffic stays out of the data                                           |
 
@@ -176,10 +175,11 @@ Editors log into `/studio` on the deployed site — no code, no git, no local se
 in [`src/sanity/schemaTypes/`](src/sanity/schemaTypes/): site settings, hero, services,
 certifications, courses, projects, testimonials.
 
-A second one, which is easy to walk into from the Studio: collection fallbacks fire only when a
+One trap that is easy to walk into from the Studio: collection fallbacks fire only when a
 type is **entirely empty** (`courses.length > 0 ? courses : DEFAULT_COURSES`). Creating one
 course in a type that had none would have replaced ten rendered courses with one. Every
-collection is populated now, so the seed is a genuine last resort rather than a live dependency.
+collection with a seed is populated now, so the seed is a genuine last resort rather than a live
+dependency. Testimonials have no seed: with none published, that section simply does not render.
 
 One rule for anyone scripting against the dataset: **never give a Sanity document an `_id`
 containing a dot.** Sanity treats those as private and serves them only to authenticated requests,
@@ -195,8 +195,8 @@ for a month that way, and the seed fallback rendered the same thirteen, so nothi
    beacon token builds without analytics and without an error.
 3. **Both edge functions need `--no-verify-jwt`**, for different reasons. `notify-lead` is
    called by a Database Webhook that sends no `Authorization` header. `submit-lead` is called
-   by a browser, but this project's publishable key is the new `sb_publishable_` format, which
-   is not a JWT — so the gateway would reject it before it reached the code. Either way the
+   by a browser that sends no key and no `Authorization` header at all, so the gateway would
+   reject it before it reached the code. Either way the
    failure is an invisible 401 that never surfaces as a broken form. See
    [`submit-lead`](supabase/functions/submit-lead/README.md) and
    [`notify-lead`](supabase/functions/notify-lead/README.md).
@@ -223,16 +223,18 @@ same repository, and the whole difference is three environment variables:
 | ------------------------------ | -------------------------------------------------------------- |
 | `PUBLIC_SANITY_PREVIEW`        | `true`                                                         |
 | `SANITY_VIEWER_TOKEN`          | a Sanity token with the **viewer** role, from sanity.io/manage |
-| `PUBLIC_SANITY_PREVIEW_ORIGIN` | set on the **production** project, to the preview Worker's URL |
+| `PUBLIC_SANITY_PREVIEW_ORIGIN` | optional; defaults to the preview Worker's workers.dev URL     |
 
 With the flag set, `astro build` switches to `output: 'server'` and pulls in the Cloudflare
 adapter; without it the build is byte-identical to what it was before any of this existed.
 
 Two things worth knowing before touching it:
 
-- The adapter is pinned to **14.2.6**. From 14.3.0 it imports `renderForPrerender` from
-  `astro/app`, which `astro@7.2.0` does not export. Upgrading the adapter means upgrading Astro,
-  which is the framework that builds the live site — not a trade worth making for a preview.
+- The adapter (`^14.3`) only loads when `PUBLIC_SANITY_PREVIEW=true`. From 14.3.0 it imports
+  `renderForPrerender` from `astro/app`, which only exists from astro 7.3, so Astro cannot go
+  back below 7.3 without taking the adapter with it.
+- The preview Worker is **public**: it is not behind the Cloudflare Access gate that covers
+  latammedgas.com, it renders drafts, and its contact form writes real leads.
 - `SANITY_VIEWER_TOKEN` is read at build time and lands in the preview's **server** bundle. It
   is never in the client bundle, but it is in a build artefact, which is why it should be a
   read-only token and never the one with write access.

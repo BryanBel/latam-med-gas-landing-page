@@ -4,7 +4,9 @@ Marketing site for Latam Med Gas USA LLC. **Deployed to production at https://la
 
 **Since 2026-09-24 the site is private, behind Cloudflare Access, until the client signs off.** Every path on `latammedgas.com` and `www` — `/studio` included — redirects `302` to a login page that says the site is under construction. Only emails listed in the Access policy get in, by a one-time PIN sent to that address. Sessions last 6 hours. This is deliberate, not an outage: do not "fix" it.
 
-It lives entirely in the Cloudflare dashboard, not in this repository: Zero Trust → Access controls → Applications → `latammedgas review`, policy `Revision`. To let a reviewer in, add their email to the policy. **To go live, delete that application**; the site is public again within a minute or two. Gating in code was ruled out: production has no Worker script, and setting `main` in `wrangler.jsonc` would also replace the preview Worker's SSR entry, since the Cloudflare adapter reads the same field.
+**The preview Worker is not covered.** `latam-med-gas-preview.bryanbelandriav.workers.dev` answers 200 to anyone, renders drafts, and its form writes real leads — and its URL is in this public repository. Putting it behind Access too is a dashboard change (Worker → Settings → Domains & Routes → Cloudflare Access on `workers.dev`); until then, treat it as public.
+
+The gate lives entirely in the Cloudflare dashboard, not in this repository: Zero Trust → Access controls → Applications → `latammedgas review`, policy `Revision`. To let a reviewer in, add their email to the policy. **To go live, delete that application**; the site is public again within a minute or two. Gating in code was ruled out: production has no Worker script, and setting `main` in `wrangler.jsonc` would also replace the preview Worker's SSR entry, since the Cloudflare adapter reads the same field.
 
 Project notes — task status, the DNS cutover runbook and the branding rationale — are kept outside this repository.
 
@@ -21,13 +23,13 @@ npx supabase functions deploy notify-lead --project-ref xsdmvvsksddnvvclndvu --n
 npx supabase functions deploy submit-lead --project-ref xsdmvvsksddnvvclndvu --no-verify-jwt
 ```
 
-Supabase puts a JWT gate in front of edge functions by default. `notify-lead` is triggered by a Database Webhook that sends no `Authorization` header. `submit-lead` is called by a browser, but this project's publishable key is the new `sb_publishable_` format, which is not a JWT, so the gateway rejects it too. Either way the call is refused at the gateway with a 401 that never reaches the function and never surfaces as a failure. Auth is the `x-webhook-secret` header for the first and the Turnstile token for the second.
+Supabase puts a JWT gate in front of edge functions by default. `notify-lead` is triggered by a Database Webhook that sends no `Authorization` header. `submit-lead` is called by a browser that sends no key and no `Authorization` header at all — the form posts only JSON — so the gateway would reject it too. Either way the call is refused at the gateway with a 401 that never reaches the function and never surfaces as a failure. Auth is the `x-webhook-secret` header for the first and the Turnstile token for the second.
 
 **Supabase migrations must be named `<14-digit timestamp>_name.sql`.** The CLI lists any other name in `migration list` and then skips it, so `db push` reports "Remote database is up to date" without having applied anything. `0001_`/`0002_` prefixes looked fine and did nothing for a month.
 
-**Never let `anon` write to `leads` again.** Every insert fires the webhook that emails the client, so one unauthenticated POST equals one email to the company's working mailbox, from `send.latammedgas.com`. Writes go through `submit-lead`, which checks a Turnstile token and inserts with the service role. If that path ever has to be rolled back, restore the policy first and revert the frontend second — never leave the form pointing at a function that cannot write, because it still says "Gracias" while losing every lead.
+**Never let `anon` write to `leads` again.** Every insert fires the webhook that emails the client, so one unauthenticated POST equals one email to the company's working mailbox, from `send.latammedgas.com`. Writes go through `submit-lead`, which checks a Turnstile token and inserts with the service role. If that path ever has to be rolled back, restore **both** the table grant and the policy first — since `20260924030000` a policy alone fails with `42501`, because `anon` no longer holds INSERT — and revert the frontend second — never leave the form pointing at a function that cannot write, because it still says "Gracias" while losing every lead.
 
-**Revoking a policy is not revoking a grant.** `20260923190000` dropped the RLS policy and stopped there, so for a day `anon` and `authenticated` still held INSERT, SELECT, UPDATE, DELETE, TRUNCATE and REFERENCES on `public.leads` — Supabase grants those by default to everything created in the public schema. Nothing was exploitable, because RLS with zero policies denies regardless, but the whole defence hung on one flag: disable RLS to debug something, or add a permissive policy later for another purpose, and a key that ships in the bundle can empty the customer table. `20260924030000` revokes them. When locking a table down, check `information_schema.role_table_grants`, not just `pg_policies`, and never revoke from `service_role` — the edge function writes with it.
+**Revoking a policy is not revoking a grant.** `20260923190000` dropped the RLS policy and stopped there, so for about eight hours `anon` and `authenticated` still held INSERT, SELECT, UPDATE, DELETE, TRUNCATE, REFERENCES and TRIGGER on `public.leads` — Supabase grants those by default to everything created in the public schema. Nothing was exploitable, because RLS with zero policies denies regardless, but the whole defence hung on one flag: disable RLS to debug something, or add a permissive policy later for another purpose, and a key that ships in the bundle can empty the customer table. `20260924030000` revokes them. When locking a table down, check `information_schema.role_table_grants`, not just `pg_policies`, and never revoke from `service_role` — the edge function writes with it.
 
 **`PUBLIC_TURNSTILE_SITE_KEY` must be set on BOTH Cloudflare Workers**, or `astro.config.mjs` fails the build on purpose. Absent, the widget never renders and the contact form silently takes nothing.
 
@@ -48,7 +50,7 @@ Four things were tried on 2026-09-24 and none worked, so do not spend the aftern
 - **Upgrading Sanity.** 6.9.1 → 6.16.0 fails identically; the package still under-declares its own exports.
 - **`optimizeDeps.exclude` on the Sanity packages.** Takes it from ~469 optimizer errors to one runtime `SyntaxError`, then to the next one. Whack-a-mole.
 - **Matching the Vite version the Sanity CLI uses.** The most tempting one, because `npx sanity dev` runs the same Studio on `vite@8.3.1` and optimizes it without a complaint, while astro was on 8.2.1. Both are on 8.3.1 now and `/studio/` under `astro dev` is still blank, so the difference is in how the Sanity CLI configures Vite, not in the version.
-- **Downgrading Vite.** Not available: `astro@7.3.4` depends on `vite@^8.0.13`, and going back to astro 7.2 reopens the critical AVIF remote-code-execution advisory closed the same day.
+- **Downgrading Vite.** Not available: `astro@7.3` depends on `vite@^8.0.13`, and going back to astro 7.2 reopens the critical AVIF remote-code-execution advisory closed the same day.
 
 One thing the local Studio does need from this repository: `sanity.config.ts` falls back to the literal project id and dataset, because Astro exposes `PUBLIC_`-prefixed variables to `import.meta.env` and the Sanity CLI only exposes `SANITY_STUDIO_`-prefixed ones. Without that fallback `npx sanity dev` starts and dies on "Configuration must contain `projectId`".
 
@@ -88,7 +90,13 @@ Check content locally with `pnpm build` and `astro preview`, or in a browser sig
 curl -sS https://latammedgas.com | grep -o '<title>[^<]*</title>'
 ```
 
-For local work, `astro preview` on port 4322 via `C:\dev\.claude\launch.json`. Port 4321 often holds a stale dev server from an earlier session.
+For local work, `pnpm build` then `astro preview` on port 4322 (`C:\dev\.claude\launch.json` has it). Port 4321 often holds a stale dev server from an earlier session, and `astro preview` refuses to start while an older one is running — it serves `dist/` from disk, so the old one serves the new build anyway.
+
+The local `.env` carries the **real** Turnstile site key, and Turnstile refuses automated browsers, so a headless test of the form times out after 20 s with the anti-spam error. Build with Cloudflare's test key to exercise the form, and intercept the call to `submit-lead` — a real POST emails the client:
+
+```sh
+PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA pnpm build
+```
 
 The in-app Browser pane has quirks worth knowing: it does not composite unless displayed (screenshots time out, `innerWidth` is 0 — use `resize_window` with explicit dimensions and assert via DOM), `document.visibilityState` is `hidden` so `client:visible` islands never hydrate, and plain reloads serve cached HTML — use `location.replace('/?v='+Date.now())`.
 

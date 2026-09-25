@@ -56,9 +56,9 @@ lead. Held rows are logged with their score and the reasons.
 3. **Set secrets** (Supabase Dashboard → Edge Functions → notify-lead → Secrets, or CLI):
 
    ```
-   npx supabase secrets set RESEND_API_KEY=re_xxxxxxxx
-   npx supabase secrets set LEAD_NOTIFY_EMAIL=administracion@latammedgas.com
-   npx supabase secrets set LEAD_WEBHOOK_SECRET=<any random string you make up>
+   npx supabase secrets set RESEND_API_KEY=re_xxxxxxxx --project-ref xsdmvvsksddnvvclndvu
+   npx supabase secrets set LEAD_NOTIFY_EMAIL=administracion@latammedgas.com --project-ref xsdmvvsksddnvvclndvu
+   npx supabase secrets set LEAD_WEBHOOK_SECRET=<any random string you make up> --project-ref xsdmvvsksddnvvclndvu
    ```
 
 4. **Wire the trigger** — Dashboard → **Integrations → Database Webhooks** (it is _not_
@@ -73,7 +73,8 @@ lead. Held rows are logged with their score and the reasons.
      calls Resend; a timeout here means a silently lost notification.
    - HTTP Headers: keep the default `Content-type: application/json`, and add
      `x-webhook-secret: <same random string from step 3>`. Without that header the function
-     returns 401 on every call.
+     returns 401 on every call, and with `LEAD_WEBHOOK_SECRET` unset it returns 500 on every
+     call — it refuses rather than sending mail unauthenticated.
    - HTTP Parameters: leave empty — the payload arrives in the body, not the query string.
 
 5. Submit the contact form on the live site once to confirm the email arrives.

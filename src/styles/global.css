@@ -2,7 +2,7 @@
 
 @theme {
   /* Navy sampled from the client's real letterhead logo (client-assets/logo-latam.pdf).
-     See BRANDING.md — confirmed as the final brand treatment, not a placeholder. */
+     See project-notes/guides/branding.md (outside this repo) — confirmed as the final brand treatment, not a placeholder. */
   --color-ink: #1a1f36;
   --color-accent: #0a0a89;
   --color-accent-400: #4747b8;

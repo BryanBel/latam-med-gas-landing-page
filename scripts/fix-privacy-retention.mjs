@@ -5,7 +5,7 @@
  * wording that is accurate today and commits to no specific period.
  *
  * It is not the final answer: a definite retention period is a decision for the client, and the
- * policy has still never had legal review. The text is editable from the Studio now
+ * policy had not had legal review yet when this ran (it did on 2026-09-25). The text is editable from the Studio now
  * (Páginas → Política de Privacidad → Cuerpo de texto), so replacing it needs no deploy.
  *
  * Only rewrites the one apartado, and only while it still holds the placeholder.

@@ -73,8 +73,8 @@ way in. Service role bypasses RLS, which is the point.
 
    **`--no-verify-jwt` is required here too, for a different reason than `notify-lead`'s.** That
    one is called by a webhook that sends no `Authorization` header. This one is called by a
-   browser — but this project's publishable key is the new `sb_publishable_` format, which is
-   not a JWT, so the gateway would reject the call before it reached this code. Same invisible
+   browser that sends no project key and no `Authorization` header at all — the form posts
+   plain JSON — so the gateway would reject the call before it reached this code. Same invisible
    401, different cause. **The Turnstile token is this function's authentication**, not the
    project key.
 
