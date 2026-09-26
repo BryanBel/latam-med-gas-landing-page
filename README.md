@@ -9,6 +9,8 @@ certification.
 **Live at [latammedgas.com](https://latammedgas.com)** since August 2026 — a paying client, real
 traffic, and a domain that also carries the company's working email. Nothing here is a prototype.
 
+![The Latam Med Gas home page](docs/home.webp)
+
 ## Measured
 
 Lighthouse, mobile profile, against production. All six pages:

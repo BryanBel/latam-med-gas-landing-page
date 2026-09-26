@@ -10,6 +10,8 @@ certificación ASSE 6000.
 paga, tráfico real, y un dominio que además carga el correo de la empresa. Nada acá es un
 prototipo.
 
+![La página de inicio de Latam Med Gas](docs/home.webp)
+
 ## Medido
 
 Lighthouse, perfil móvil, contra producción. Las seis páginas:
