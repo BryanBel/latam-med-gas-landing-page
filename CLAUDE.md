@@ -4,7 +4,12 @@ Marketing site for Latam Med Gas USA LLC. **Live and public at https://latammedg
 
 **The review gate was deleted, not paused.** The Access application `latammedgas review` no longer exists; the custom login page (logo, navy background, "Sitio en construcción") is account-level and survives. To gate the site again: Zero Trust → Access controls → Applications → Add → Self-hosted, hostnames `latammedgas.com` and `www.latammedgas.com`, an Allow policy with an Emails rule, and in Authentication leave only **One-time PIN** with instant authentication on. The **Cloudflare** login option confused reviewers without a Cloudflare account — it asks for one and never emails a code. The login page says "code sent" for every address, allowed or not, on purpose, so an unlisted email looks exactly like a lost one. Gating in code was ruled out: production has no Worker script, and setting `main` in `wrangler.jsonc` would also replace the preview Worker's SSR entry, since the Cloudflare adapter reads the same field.
 
-**The preview Worker is public.** `latam-med-gas-preview.bryanbelandriav.workers.dev` answers 200 to anyone, renders drafts, and its form writes real leads — and its URL is in this public repository. Putting it behind Access is a dashboard change (Worker → Settings → Domains & Routes → Cloudflare Access on `workers.dev`).
+**The preview Worker is behind Cloudflare Access since 2026-09-27.** `latam-med-gas-preview.bryanbelandriav.workers.dev` renders drafts and its form writes real leads, and its URL is in this public repository, so it must not be open. It is configured on the Worker itself (Workers & Pages → `latam-med-gas-preview` → Access), which created the Zero Trust app `latam-med-gas-preview - Cloudflare Workers`. Two settings there cost time:
+
+- **Scope must be "All traffic".** The default, "Previews only", protects only the versioned `*-latam-med-gas-preview…` URLs; to Cloudflare the main workers.dev URL is "production" and stays public, and that is the one the Studio uses.
+- **The policy is `Revision`**, an exact Emails list (Bryan, jsepulveda44@gmail.com, sensormedical@gmail.com). The wizard proposes an "Email domain" rule prefilled with a full address, which matches addresses _ending in_ `@bryanbelandriav@gmail.com` — nobody — so it shows the login page and never sends a code.
+
+The Studio's Presentation tool still loads the preview inside `latammedgas.com/studio`, verified 2026-09-27, after signing in to the preview URL once in the same browser. An editor who is not on the `Revision` list sees the rest of the Studio but not the preview.
 
 Project notes — task status, the DNS cutover runbook and the branding rationale — are kept outside this repository.
 

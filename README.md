@@ -233,8 +233,9 @@ Two things worth knowing before touching it:
 - The adapter (`^14.3`) only loads when `PUBLIC_SANITY_PREVIEW=true`. From 14.3.0 it imports
   `renderForPrerender` from `astro/app`, which only exists from astro 7.3, so Astro cannot go
   back below 7.3 without taking the adapter with it.
-- The preview Worker is **public**: it is not behind the Cloudflare Access gate that covers
-  latammedgas.com, it renders drafts, and its contact form writes real leads.
+- The preview Worker is behind **Cloudflare Access** (scope "All traffic"), because it renders
+  drafts and its contact form writes real leads. Only the editors on the Access list can open it,
+  and the Studio's Presentation tool works for them after one sign-in.
 - `SANITY_VIEWER_TOKEN` is read at build time and lands in the preview's **server** bundle. It
   is never in the client bundle, but it is in a build artefact, which is why it should be a
   read-only token and never the one with write access.
