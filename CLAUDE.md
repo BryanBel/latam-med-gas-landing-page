@@ -19,6 +19,10 @@ Project notes — task status, the DNS cutover runbook and the branding rational
 
 **Never cancel the registrar's hosting.** The domain carries the company's live mailboxes. The site running on Cloudflare makes that hosting look redundant. It is not.
 
+**DNS lives in Cloudflare; the domain is registered at Network Solutions, in the client's account.** Nameservers there must stay `anton` and `olga.ns.cloudflare.com`. The "Advanced DNS Records" on that page are leftovers nobody reads; editing them changes nothing, and "Restore original nameservers" or "Add Premium DNS" would pull DNS out of Cloudflare and take the site and the mail with it.
+
+**DNSSEC is signed at Cloudflare since 2026-09-27 but not active:** Network Solutions offers no self-service DS record for external nameservers, so it waits on their support. Harmless as it is. **Once a DS record is published there, never turn DNSSEC off in Cloudflare or change nameservers until the DS has been removed at Network Solutions and a couple of days have passed** — the other order makes the whole domain, mail included, stop resolving.
+
 **Always deploy edge functions with `--no-verify-jwt` — both of them, for different reasons:**
 
 ```sh
