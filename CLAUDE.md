@@ -23,14 +23,25 @@ Project notes — task status, the DNS cutover runbook and the branding rational
 
 **DNSSEC is signed at Cloudflare since 2026-09-27 but not active:** Network Solutions offers no self-service DS record for external nameservers, so it waits on their support. Harmless as it is. **Once a DS record is published there, never turn DNSSEC off in Cloudflare or change nameservers until the DS has been removed at Network Solutions and a couple of days have passed** — the other order makes the whole domain, mail included, stop resolving.
 
-**Always deploy edge functions with `--no-verify-jwt` — both of them, for different reasons:**
+**Always deploy edge functions with `--no-verify-jwt` — all three of them, for different reasons:**
 
 ```sh
 npx supabase functions deploy notify-lead --project-ref xsdmvvsksddnvvclndvu --no-verify-jwt
 npx supabase functions deploy submit-lead --project-ref xsdmvvsksddnvvclndvu --no-verify-jwt
+npx supabase functions deploy keepalive   --project-ref xsdmvvsksddnvvclndvu --no-verify-jwt
 ```
 
-Supabase puts a JWT gate in front of edge functions by default. `notify-lead` is triggered by a Database Webhook that sends no `Authorization` header. `submit-lead` is called by a browser that sends no key and no `Authorization` header at all — the form posts only JSON — so the gateway would reject it too. Either way the call is refused at the gateway with a 401 that never reaches the function and never surfaces as a failure. Auth is the `x-webhook-secret` header for the first and the Turnstile token for the second.
+Supabase puts a JWT gate in front of edge functions by default. `keepalive` is called by a GitHub Actions runner that sends only its own shared-secret header. `notify-lead` is triggered by a Database Webhook that sends no `Authorization` header. `submit-lead` is called by a browser that sends no key and no `Authorization` header at all — the form posts only JSON — so the gateway would reject it too. Either way the call is refused at the gateway with a 401 that never reaches the function and never surfaces as a failure. Auth is the `x-webhook-secret` header for the first and the Turnstile token for the second.
+
+**The free Supabase plan pauses a project after 7 days without activity, and a paused project does not wake up on traffic** — it has to be restored by hand from the dashboard. Left alone, one quiet week is enough for the contact form to start failing with nobody told: a hospital writes, gets an error, and the lead is gone. This is not hypothetical, `shield-link-db` in the same account is already `INACTIVE`.
+
+`.github/workflows/supabase-keepalive.yml` calls the `keepalive` function every three days, which counts rows in `leads` with `limit=0` — a real database query that reads none of the contact data. Three days against a seven-day budget because GitHub delays scheduled runs under load and admits it may drop them.
+
+The alerting is the half that did not exist before: a failed ping fails the job, and GitHub emails the repository owner. **Test it by hand from the Actions tab** (Supabase keepalive → Run workflow) rather than waiting for the cron.
+
+`KEEPALIVE_SECRET` lives in two places and both must match — `npx supabase secrets set` for the function and `gh secret set` for the workflow. If they ever drift, the ping starts failing, which is exactly when the alert earns its keep.
+
+The workflow also pushes an empty commit, but **only when the repository has been quiet for 40 days**, because GitHub disables scheduled workflows after 60 days of inactivity and this repo only gets commits when someone publishes in Sanity. It is deliberately separate from the ping: pushing on every run would mean about ten pointless Cloudflare rebuilds a month.
 
 **Supabase migrations must be named `<14-digit timestamp>_name.sql`.** The CLI lists any other name in `migration list` and then skips it, so `db push` reports "Remote database is up to date" without having applied anything. `0001_`/`0002_` prefixes looked fine and did nothing for a month.
 

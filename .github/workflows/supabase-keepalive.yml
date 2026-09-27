@@ -1,0 +1,68 @@
+name: Supabase keepalive
+
+# Mantiene despierto el proyecto de Supabase, y avisa si deja de estarlo.
+#
+# El plan gratuito pausa un proyecto tras 7 días sin actividad, y uno pausado no despierta solo
+# con tráfico: hay que restaurarlo a mano. Sin esto, una semana tranquila basta para que el
+# formulario deje de funcionar sin que nadie se entere. Ver `supabase/functions/keepalive`.
+#
+# La alarma sale gratis: si el ping falla, el job falla, y GitHub avisa por correo al dueño del
+# repositorio. Hoy no existe ninguna otra vigilancia sobre esto.
+
+on:
+  schedule:
+    # Cada 3 días a las 09:00 UTC, contra un presupuesto de 7. El margen no es por gusto: los
+    # cron de GitHub se retrasan bajo carga y GitHub admite que puede descartar ejecuciones, así
+    # que perder una no puede costar el proyecto.
+    - cron: '0 9 */3 * *'
+  # Para poder probarlo a mano desde la pestaña Actions sin esperar al cron.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      # Anclado a un commit y no a la etiqueta móvil `v4`, igual que el workflow de Sanity: una
+      # etiqueta se puede reapuntar, y este job tiene permiso de escritura sobre el repositorio.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Despertar la base de datos
+        env:
+          KEEPALIVE_SECRET: ${{ secrets.KEEPALIVE_SECRET }}
+        run: |
+          codigo=$(curl -sS -o respuesta.json -w '%{http_code}' \
+            -X POST 'https://xsdmvvsksddnvvclndvu.supabase.co/functions/v1/keepalive' \
+            -H "x-keepalive-secret: $KEEPALIVE_SECRET")
+          echo "HTTP $codigo"
+          cat respuesta.json || true
+          echo
+          if [ "$codigo" != "200" ]; then
+            echo "::error::El latido falló con HTTP $codigo. Revisa si el proyecto de Supabase está pausado (panel → Project Settings) o si KEEPALIVE_SECRET dejó de coincidir entre GitHub y Supabase."
+            exit 1
+          fi
+
+      # GitHub desactiva los workflows programados tras 60 días sin actividad en el repositorio,
+      # y este repo solo recibe commits cuando alguien publica en Sanity. Si el contenido se
+      # queda quieto dos meses, el latido moriría en silencio — justo el fallo que viene a
+      # evitar.
+      #
+      # El commit va aparte del ping a propósito. Empujarlo en cada latido serían ~10
+      # reconstrucciones de Cloudflare al mes que no hacen falta, más ruido en el historial. Así
+      # solo se empuja cuando el repositorio lleva de verdad mucho tiempo quieto, que en la
+      # práctica es casi nunca.
+      - name: Que GitHub no apague el cron
+        run: |
+          ultimo=$(git log -1 --format=%ct)
+          dias=$(( ( $(date +%s) - ultimo ) / 86400 ))
+          echo "Último commit hace $dias días."
+          if [ "$dias" -lt 40 ]; then
+            echo "Hay actividad reciente; no hace falta commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit --allow-empty -m "chore: mantener vivo el cron del latido de Supabase"
+          git push
