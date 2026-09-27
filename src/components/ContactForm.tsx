@@ -13,6 +13,7 @@ interface Turnstile {
       execution?: 'render' | 'execute';
       appearance?: 'always' | 'execute' | 'interaction-only';
       size?: 'normal' | 'flexible' | 'compact';
+      action?: string;
       callback?: (token: string) => void;
       'error-callback'?: () => void;
       'expired-callback'?: () => void;
@@ -219,6 +220,9 @@ export default function ContactForm() {
           // compacto mide 150 y cabe en cualquier teléfono. Se mide el formulario y no la caja,
           // que hasta este momento está vacía y por tanto oculta (`empty:hidden`): mediría 0.
           size: (cajaRef.current.parentElement?.clientWidth ?? 0) < 300 ? 'compact' : 'normal',
+          // `submit-lead` exige esta etiqueta: un token resuelto en otro formulario con la misma
+          // clave del sitio no sirve aquí.
+          action: 'contacto',
           language: 'es',
           callback: (token) => {
             pendiente.current?.resolve(token);

@@ -63,7 +63,7 @@ One thing the local Studio does need from this repository: `sanity.config.ts` fa
 
 **Production is unaffected** and always was — the build bundles from source rather than pre-bundling dependencies, so `latammedgas.com/studio/` works and `pnpm build` has never failed on this.
 
-**The Studio needs its origin in Sanity's CORS allowlist.** Until 2026-09-24 the only entry was `http://localhost:3333`, which is why the standalone CLI was the only place it had ever run — `latammedgas.com/studio/` would have shown the client a blank page. `http://localhost:4321`, `https://latammedgas.com` and the preview Worker are now allowed, all with `--credentials` because the Studio authenticates by cookie. Check with `npx sanity cors list` before concluding the Studio is broken.
+**The Studio needs its origin in Sanity's CORS allowlist.** Until 2026-09-24 the only entry was `http://localhost:3333`, which is why the standalone CLI was the only place it had ever run — `latammedgas.com/studio/` would have shown the client a blank page. `https://latammedgas.com` and the preview Worker are now allowed, both with `--credentials` because the Studio authenticates by cookie. `http://localhost:4321` was added the same day and removed on 2026-09-27: the Studio never runs under `astro dev`, so it only widened who could use an editor's session cookie. Check with `npx sanity cors list` before concluding the Studio is broken.
 
 **In Sanity, Publish is what makes content live** — saving only updates a draft. The site is static, so a publish also needs a rebuild, which the GitHub workflow triggers automatically. Changes appear a couple of minutes later, not instantly.
 
