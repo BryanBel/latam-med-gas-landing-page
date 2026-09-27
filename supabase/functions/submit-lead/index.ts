@@ -32,6 +32,11 @@ const ORIGENES = [
   'http://localhost:4322',
 ];
 
+// Donde se puede resolver el widget: los mismos sitios que el CORS, sin esquema ni puerto,
+// que es como Turnstile devuelve `hostname`.
+const HOSTS = [...new Set(ORIGENES.map((o) => new URL(o).hostname))];
+const TURNSTILE_ACTION = 'contacto';
+
 // Los mismos topes que los CHECK de la migración 20260923174300 y que LEAD_LIMITS en el
 // frontend. Repetidos aquí a propósito: quien llame a esta función no tiene por qué haber
 // pasado por nuestro formulario.
@@ -97,8 +102,17 @@ async function turnstileValido(token: string, ip: string | null): Promise<boolea
   if (!data.success) {
     // Los códigos de error de Cloudflare son diagnóstico, no datos del visitante.
     console.log('Turnstile rechazó el token:', JSON.stringify(data['error-codes'] ?? []));
+    return false;
   }
-  return data.success === true;
+  // `success` solo dice que el token es auténtico y no se ha usado. Cloudflare recomienda
+  // comprobar también dónde y para qué se resolvió: un token de otra página que use la misma
+  // clave del sitio, o de otro formulario, no debe abrir este. El formulario manda la acción
+  // `contacto`; el dominio sale de la misma lista que el CORS.
+  if (data.action !== TURNSTILE_ACTION || !HOSTS.includes(data.hostname)) {
+    console.log('Token de Turnstile de otro origen:', JSON.stringify({ action: data.action, hostname: data.hostname }));
+    return false;
+  }
+  return true;
 }
 
 serve(async (req) => {
