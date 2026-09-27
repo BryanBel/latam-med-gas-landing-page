@@ -140,6 +140,7 @@ was a four-token change that lifted the whole site at once.
 └── supabase/
     ├── functions/submit-lead/ # Edge function: Turnstile check → insert (service role)
     ├── functions/notify-lead/ # Edge function: webhook → branded email, spam-scored
+    ├── functions/keepalive/   # Edge function: cron ping so the free plan never pauses
     └── migrations/            # `leads` table, length limits, anon policy and grants revoked
 ```
 
@@ -193,13 +194,15 @@ for a month that way, and the seed fallback rendered the same thirteen, so nothi
    empty 404 instead of the styled one.
 2. **Environment variables** — set the same keys in the Cloudflare project settings. A missing
    beacon token builds without analytics and without an error.
-3. **Both edge functions need `--no-verify-jwt`**, for different reasons. `notify-lead` is
-   called by a Database Webhook that sends no `Authorization` header. `submit-lead` is called
-   by a browser that sends no key and no `Authorization` header at all, so the gateway would
-   reject it before it reached the code. Either way the
-   failure is an invisible 401 that never surfaces as a broken form. See
-   [`submit-lead`](supabase/functions/submit-lead/README.md) and
-   [`notify-lead`](supabase/functions/notify-lead/README.md).
+3. **All three edge functions need `--no-verify-jwt`**, for different reasons. `notify-lead`
+   is called by a Database Webhook that sends no `Authorization` header. `submit-lead` is
+   called by a browser that sends no key and no `Authorization` header at all, so the gateway
+   would reject it before it reached the code. `keepalive` is called by a GitHub Actions
+   runner that sends only its own shared-secret header. Either way the failure is an
+   invisible 401 that never surfaces as a broken form. See
+   [`submit-lead`](supabase/functions/submit-lead/README.md),
+   [`notify-lead`](supabase/functions/notify-lead/README.md) and
+   [`keepalive`](supabase/functions/keepalive/README.md).
 4. **Supabase migrations must be named with a 14-digit timestamp.** The CLI lists any other
    name and then skips it, and `db push` answers "Remote database is up to date" without
    having applied anything.
@@ -239,3 +242,21 @@ Two things worth knowing before touching it:
 - `SANITY_VIEWER_TOKEN` is read at build time and lands in the preview's **server** bundle. It
   is never in the client bundle, but it is in a build artefact, which is why it should be a
   read-only token and never the one with write access.
+
+### Scheduled jobs
+
+Two workflows in `.github/workflows/`, and both matter for reasons that are not obvious from
+their names.
+
+**`sanity-rebuild.yml`** answers a `repository_dispatch` from Sanity and pushes an empty commit,
+because the site is static: publishing in the Studio changes nothing until Cloudflare rebuilds.
+If it stops working, edits appear to save and never reach the site.
+
+**`supabase-keepalive.yml`** pings [`keepalive`](supabase/functions/keepalive/README.md) every
+three days. The free Supabase plan pauses a project after seven days without activity and a
+paused project does not wake up on traffic, so without this a quiet week is enough for the
+contact form to start failing with nobody told. A failed ping fails the job, and GitHub emails
+the repository owner — which is the only monitoring this project has.
+
+Both push to `master` directly. The branch ruleset forbids force-pushes and deletion but
+deliberately **does not require pull requests**, because these two jobs would be blocked by it.

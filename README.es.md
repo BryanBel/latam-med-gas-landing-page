@@ -145,6 +145,7 @@ cuatro tokens y subió todo el sitio de una.
 └── supabase/
     ├── functions/submit-lead/ # Edge function: Turnstile → inserción (service role)
     ├── functions/notify-lead/ # Edge function: webhook → correo con marca, con filtro de spam
+    ├── functions/keepalive/   # Edge function: latido programado para que el plan gratuito no pause
     └── migrations/            # Tabla `leads`, límites de longitud, política y permisos de anon revocados
 ```
 
@@ -200,12 +201,15 @@ parecía roto.
    devuelven un 404 vacío en vez de la página con estilo.
 2. **Variables de entorno** — las mismas claves en la configuración del proyecto en Cloudflare. Si
    falta el token del beacon, el build pasa sin analítica y sin error.
-3. **Las dos edge functions necesitan `--no-verify-jwt`**, por motivos distintos.
+3. **Las tres edge functions necesitan `--no-verify-jwt`**, por motivos distintos.
    `notify-lead` la llama un Database Webhook que no manda cabecera `Authorization`.
    `submit-lead` la llama un navegador que no manda ninguna clave ni cabecera `Authorization`,
-   así que el gateway la rechazaría antes de llegar al código. En ambos casos el fallo es un 401 invisible que nunca se manifiesta como un
-   formulario roto. Ver [`submit-lead`](supabase/functions/submit-lead/README.md) y
-   [`notify-lead`](supabase/functions/notify-lead/README.md).
+   así que el gateway la rechazaría antes de llegar al código. `keepalive` la llama un runner
+   de GitHub Actions que solo manda su propia cabecera de secreto compartido. En los tres
+   casos el fallo es un 401 invisible que nunca se manifiesta como un formulario roto. Ver
+   [`submit-lead`](supabase/functions/submit-lead/README.md),
+   [`notify-lead`](supabase/functions/notify-lead/README.md) y
+   [`keepalive`](supabase/functions/keepalive/README.md).
 4. **Las migraciones de Supabase deben nombrarse con marca de tiempo de 14 dígitos.** El CLI
    lista cualquier otro nombre y después lo ignora, y `db push` responde «Remote database is up
    to date» sin haber aplicado nada.
@@ -246,3 +250,20 @@ Dos cosas que conviene saber antes de tocarlo:
 - `SANITY_VIEWER_TOKEN` se lee al construir y queda dentro del bundle de **servidor** del
   preview. Nunca está en el del cliente, pero sí en un artefacto de build: por eso debe ser un
   token de solo lectura y nunca el que tiene permisos de escritura.
+
+### Tareas programadas
+
+Dos workflows en `.github/workflows/`, y los dos importan por motivos que su nombre no revela.
+
+**`sanity-rebuild.yml`** responde a un `repository_dispatch` de Sanity y empuja un commit vacío,
+porque el sitio es estático: publicar en el Studio no cambia nada hasta que Cloudflare
+reconstruye. Si deja de funcionar, las ediciones parecen guardarse y nunca llegan al sitio.
+
+**`supabase-keepalive.yml`** llama a [`keepalive`](supabase/functions/keepalive/README.md) cada
+tres días. El plan gratuito de Supabase pausa un proyecto tras siete días sin actividad, y un
+proyecto pausado no despierta con tráfico, así que sin esto una semana tranquila basta para que
+el formulario empiece a fallar sin que nadie se entere. Si el ping falla, el job falla y GitHub
+avisa por correo al dueño del repositorio — la única vigilancia que tiene este proyecto.
+
+Los dos empujan a `master` directamente. El ruleset de la rama prohíbe force-push y borrado pero
+**no exige pull requests** a propósito, porque estos dos jobs quedarían bloqueados por ello.
