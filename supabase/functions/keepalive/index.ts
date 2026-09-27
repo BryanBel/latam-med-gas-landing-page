@@ -67,8 +67,16 @@ serve(async (req) => {
   // `Content-Range` llega como `*/5`: lo de después de la barra es el total.
   const total = Number(res.headers.get('content-range')?.split('/')[1] ?? NaN);
 
+  // El conteo va al registro de Supabase, que es privado, y **no** al cuerpo de la respuesta.
+  // Quien llama es un runner de GitHub Actions de un repositorio público, y los registros de
+  // Actions los lee cualquiera con una cuenta: devolver la cifra publicaba cuántas consultas
+  // recibe el cliente, actualizado cada tres días. En un nicho donde todos se conocen, eso es
+  // inteligencia comercial sobre su negocio.
+  //
+  // El workflow tampoco la necesita: esta función ya devuelve 502 si PostgREST falla, así que
+  // un 200 es por sí solo la prueba de que la consulta llegó a Postgres.
   console.log(`Latido correcto — ${Number.isFinite(total) ? total : '?'} leads`);
-  return new Response(JSON.stringify({ ok: true, leads: Number.isFinite(total) ? total : null }), {
+  return new Response(JSON.stringify({ ok: true }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });

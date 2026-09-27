@@ -37,9 +37,14 @@ jobs:
             -X POST 'https://xsdmvvsksddnvvclndvu.supabase.co/functions/v1/keepalive' \
             -H "x-keepalive-secret: $KEEPALIVE_SECRET")
           echo "HTTP $codigo"
-          cat respuesta.json || true
-          echo
           if [ "$codigo" != "200" ]; then
+            # El cuerpo solo se imprime cuando algo falla. Este repositorio es público y los
+            # registros de Actions los lee cualquiera con una cuenta de GitHub, así que todo lo
+            # que se imprima aquí queda publicado. Las respuestas de error de esta función no
+            # llevan ninguna cifra; la de éxito llevaba el conteo de leads, lo que publicaba el
+            # volumen de consultas del cliente actualizado cada tres días.
+            cat respuesta.json || true
+            echo
             echo "::error::El latido falló con HTTP $codigo. Revisa si el proyecto de Supabase está pausado (panel → Project Settings) o si KEEPALIVE_SECRET dejó de coincidir entre GitHub y Supabase."
             exit 1
           fi

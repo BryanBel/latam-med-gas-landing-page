@@ -85,17 +85,23 @@ three days for the cron.
 Against the function directly, all three cases are safe — nothing is written and no email is
 sent:
 
-| Request        | Expected                           |
-| -------------- | ---------------------------------- |
-| No header      | `401`                              |
-| Wrong secret   | `401`                              |
-| Correct secret | `200` with `{"ok":true,"leads":N}` |
+| Request        | Expected                 |
+| -------------- | ------------------------ |
+| No header      | `401`                    |
+| Wrong secret   | `401`                    |
+| Correct secret | `200` with `{"ok":true}` |
 
-`N` should match the real table, which is the proof the query reached Postgres rather than
-stopping at the gateway:
+**The body deliberately carries no row count.** The caller is a GitHub Actions runner on a
+public repository, and Actions logs are readable by anyone with a GitHub account — returning the
+figure published how many enquiries the client receives, refreshed every three days. In a niche
+where everyone knows everyone, that is commercial intelligence about their business.
+
+Nothing is lost by leaving it out. The function answers `502` when PostgREST fails, so a `200`
+is on its own the proof that the query reached Postgres. The count still goes to the function's
+log, which lives in the Supabase dashboard and is private:
 
 ```sh
-npx supabase db query "select count(*) from public.leads" --linked --project-ref xsdmvvsksddnvvclndvu
+npx supabase functions logs keepalive --project-ref xsdmvvsksddnvvclndvu
 ```
 
 ## What it does not cover
