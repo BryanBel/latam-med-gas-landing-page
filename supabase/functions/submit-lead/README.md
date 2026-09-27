@@ -23,7 +23,8 @@ people depend on.
 browser  ──POST {lead, turnstileToken}──▶  submit-lead
                                               │
                                               ├─▶ challenges.cloudflare.com/siteverify
-                                              │      (rejects ⇒ 403, nothing written)
+                                              │      success, action "contacto" and one of
+                                              │      our hostnames — else 403, nothing written
                                               │
                                               └─▶ PostgREST, service role  ⇒  leads
                                                                                │
@@ -35,6 +36,14 @@ browser  ──POST {lead, turnstileToken}──▶  submit-lead
 
 `anon` has no insert policy any more (migration `20260923190000`), so this function is the only
 way in. Service role bypasses RLS, which is the point.
+
+A token must also have been solved **for this form, on this site**: the widget renders with
+`action: 'contacto'`, and the function checks that action plus a `hostname` from the same list
+as its CORS origins. `success` alone only proves the token is genuine and unused; a token solved
+on another page or form sharing the site key would pass it. A mismatch is logged with the action
+and hostname only. The two halves shipped in order — the form in `b36badb`, the check in
+`46164e2` once production served the new form — and any future change to the action has to
+follow the same order, or real visitors get the 403.
 
 ## One-time setup
 
@@ -110,11 +119,17 @@ Cloudflare publishes test keys, so the whole path can be exercised before the re
 
 Two probes that write nothing:
 
-- **Which secret is live** — POST a garbage token with an invalid payload (an empty `name`).
-  Turnstile is checked before the payload, so `403` means the real secret, `400` means a test
-  one. Neither writes.
+- **Which secret is live** — no longer answerable this way. Before `46164e2`, a garbage token
+  gave `403` under the real secret and `400` under a test one. Cloudflare's test responses do
+  not carry this site's hostname or the `contacto` action, so both now give `403`. The flip
+  side: a test secret left in production refuses every real visitor too, which at least fails
+  loudly instead of letting everything through.
 - **Is `anon` still locked out** — insert straight into PostgREST with the anon key. Expect
   `401` / `42501`.
 
-Verifying the success path requires a real token, which only a browser produces. Submit the form
-on the live site and confirm the email arrives.
+Verifying the success path requires a real token, which only a person in a browser produces;
+headless browsers are refused by Turnstile. To test it **without emailing the client**, submit
+the live form with a message `notify-lead` holds back as spam — two links and a keyword, e.g.
+`prueba seo https://a.example https://b.example`. The visitor sees "Gracias", the row is
+written, the webhook answers `OK (notificación omitida)` (read it in `net._http_response`), and
+no email goes out. Then delete that one row. Done this way on 2026-09-27.
