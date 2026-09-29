@@ -11,9 +11,9 @@ traffic, and a domain that also carries the company's working email. Nothing her
 
 https://github.com/user-attachments/assets/0e9a6b24-2403-4517-a96d-ad8c5fd1fdfb
 
-**[Launch film — 18 s](https://github.com/BryanBel/latam-med-gas-landing-page/raw/master/docs/film.mp4)** ·
-one continuous line of gas becomes the standard, the wordmark, the six services, a hospital wall
-and, at the end, the site itself. No cuts.
+_18 seconds, not a single cut: one continuous line of gas becomes the standard, the baseline the
+LMG wordmark lands on, the run through the six services, the outlet rail on a hospital wall and, at
+the end, the site itself._
 
 ![The Latam Med Gas home page](docs/home.webp)
 
@@ -283,11 +283,18 @@ its palette, its synthesised sound score and the notes on what was wrong in the 
 site's contribution is `docs/page.png`-style capture: a full-page screenshot of production, taken
 after walking the whole page so every scroll-revealed island had hydrated.
 
+**The player at the top of this file is a GitHub attachment, not the committed file.** GitHub gives a
+video player to exactly one thing: a bare `https://github.com/user-attachments/assets/…` URL on its
+own line, and that URL only exists once the file has been dragged into an issue, comment or file
+editor through the web UI. Nothing that points at a path inside the repository renders as a player —
+`<video>` is sanitised away, image syntax on an `.mp4` becomes a broken `<img>`, and both `raw`
+forms stay plain links. [`docs/film.mp4`](docs/film.mp4) is the same 3.3 MB encode kept in the
+repository, because the attachment is hosted on infrastructure this project does not control.
+
 Nothing about the film is wired into the build. `docs/` is outside `src/` and `public/`, so
 Astro never copies it into `dist/` and no visitor to the site downloads it — it is a repository
-asset, not a page asset. The committed file is a 3.3 MB web encode; the 4K60 master is not in git,
-because a marketing asset that changes once a year has no business in the history of a site that
-rebuilds on every Sanity publish.
+asset, not a page asset. The 4K60 master is not in git, because a marketing asset that changes once
+a year has no business in the history of a site that rebuilds on every Sanity publish.
 
 **Re-cutting it after a redesign** means re-capturing the page screenshot and re-rendering — the
 composition reads the capture, so a visual change to the site does not propagate on its own. The

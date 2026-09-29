@@ -12,9 +12,9 @@ prototipo.
 
 https://github.com/user-attachments/assets/0499dbfb-1c42-4139-a497-5bb31df2f5a6
 
-**[Video de lanzamiento — 18 s](https://github.com/BryanBel/latam-med-gas-landing-page/raw/master/docs/film.mp4)** ·
-una sola línea de gas se convierte en la norma, en el logotipo, en los seis servicios, en la pared
-de un hospital y, al final, en el sitio. Sin un solo corte.
+_18 segundos, sin un solo corte: una sola línea de gas se convierte en la norma, en la base sobre la
+que aterriza el logotipo LMG, en el recorrido por los seis servicios, en el riel de tomas de la
+pared de un hospital y, al final, en el sitio._
 
 ![La página de inicio de Latam Med Gas](docs/home.webp)
 
@@ -291,11 +291,20 @@ sheet, su paleta, su banda sonora sintetizada y las notas de lo que estaba mal e
 pasada. Lo que aporta el sitio es la captura: un screenshot de página completa de producción,
 tomado después de recorrerla entera para que cada isla revelada por scroll hubiera hidratado.
 
+**El reproductor de arriba es un adjunto de GitHub, no el archivo commiteado.** GitHub le da
+reproductor a una sola cosa: una URL `https://github.com/user-attachments/assets/…` sola en su
+línea, y esa URL solo existe después de arrastrar el archivo a un issue, un comentario o el editor
+web. Nada que apunte a una ruta del repositorio se convierte en reproductor — `<video>` se
+sanitiza, la sintaxis de imagen sobre un `.mp4` da un `<img>` roto, y las dos formas de `raw`
+quedan como enlace pelado. [`docs/film.mp4`](docs/film.mp4) es esa misma codificación de 3.3 MB
+guardada en el repositorio, porque el adjunto vive en infraestructura que este proyecto no
+controla.
+
 Nada del video está conectado al build. `docs/` queda fuera de `src/` y `public/`, así que Astro
-nunca lo copia a `dist/` y ningún visitante del sitio lo descarga — es un archivo del
-repositorio, no de la página. Lo que está commiteado es una codificación web de 3.3 MB; el máster
-4K60 no está en git, porque un material de marketing que cambia una vez al año no tiene nada que
-hacer en el historial de un sitio que se reconstruye con cada publicación de Sanity.
+nunca lo copia a `dist/` y ningún visitante del sitio lo descarga — es un archivo del repositorio,
+no de la página. El máster 4K60 no está en git, porque un material de marketing que cambia una vez
+al año no tiene nada que hacer en el historial de un sitio que se reconstruye con cada publicación
+de Sanity.
 
 **Volver a montarlo tras un rediseño** significa recapturar el screenshot y volver a renderizar:
 la composición lee la captura, así que un cambio visual del sitio no se propaga solo. El último

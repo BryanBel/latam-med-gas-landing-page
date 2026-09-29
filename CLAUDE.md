@@ -107,8 +107,11 @@ Do not revert these without being asked. They were deliberate choices, and at le
   answers "we can't show files that are this big" for the 3.16 MB file — and `raw` serves
   `application/octet-stream`, so it downloads rather than plays. **The only thing GitHub turns into
   a player is a bare `https://github.com/user-attachments/assets/…` URL on its own line**, and that
-  URL only exists once the file has been dragged into an issue, comment or release through the web
-  UI. `BryanBel/shield-link` does it that way; do the same here rather than re-testing the others.
+  URL only exists once the file has been dragged into an issue, comment or file editor through the
+  web UI — which is a manual step no token or CLI can do. Both READMEs carry one, uploaded
+  separately, so they are two different UUIDs of the same file. `docs/film.mp4` stays committed as
+  the copy this project controls; if an attachment URL ever dies, re-upload that file the same way
+  and swap the URL. `BryanBel/shield-link` is set up identically.
 
 ## Verifying changes
 
