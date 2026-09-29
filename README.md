@@ -9,6 +9,11 @@ certification.
 **Live at [latammedgas.com](https://latammedgas.com)** since August 2026 — a paying client, real
 traffic, and a domain that also carries the company's working email. Nothing here is a prototype.
 
+<video src="https://github.com/BryanBel/latam-med-gas-landing-page/raw/master/docs/film.mp4" poster="https://github.com/BryanBel/latam-med-gas-landing-page/raw/master/docs/film-poster.webp" controls muted playsinline width="100%"></video>
+
+▶ **[Launch film — 18 s](docs/film.mp4)** · one continuous line of gas becomes the standard, the
+wordmark, the six services, a hospital wall and, at the end, the site itself.
+
 ![The Latam Med Gas home page](docs/home.webp)
 
 ## Measured
@@ -260,3 +265,30 @@ the repository owner — which is the only monitoring this project has.
 
 Both push to `master` directly. The branch ruleset forbids force-pushes and deletion but
 deliberately **does not require pull requests**, because these two jobs would be blocked by it.
+
+## The launch film
+
+`docs/film.mp4` — 18.5 s, no voice-over. One continuous line of gas is drawn across a single
+world and becomes, in order, the rule under `ASSE SERIE 6000 · NFPA 99`, the baseline the **LMG**
+wordmark lands on, the run through the six services, the outlet rail on a hospital wall, and — once
+a green pulse has travelled the whole length back to its source — the bottom edge of a window in
+which latammedgas.com itself unfolds and scrolls. It folds back into the line, and the line
+underlines the company's own slogan. There is not a single cut in it.
+
+**It is not built from this repository.** The source is a self-contained HTML composition where
+every value is a function of time, rendered frame by frame with real shutter motion blur; it lives
+outside this repo, under the `onetake` skill in `cases/latam-15s/`, together with its beat sheet,
+its palette, its synthesised sound score and the notes on what was wrong in the first pass. The
+site's contribution is `docs/page.png`-style capture: a full-page screenshot of production, taken
+after walking the whole page so every scroll-revealed island had hydrated.
+
+Nothing about the film is wired into the build. `docs/` is outside `src/` and `public/`, so
+Astro never copies it into `dist/` and no visitor to the site downloads it — it is a repository
+asset, not a page asset. The committed file is a 3.3 MB web encode; the 4K60 master is not in git,
+because a marketing asset that changes once a year has no business in the history of a site that
+rebuilds on every Sanity publish.
+
+**Re-cutting it after a redesign** means re-capturing the page screenshot and re-rendering — the
+composition reads the capture, so a visual change to the site does not propagate on its own. The
+last third of the film is the only part that shows the site; the first two thirds are independent
+of it.

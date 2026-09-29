@@ -93,6 +93,13 @@ Do not revert these without being asked. They were deliberate choices, and at le
 - **The bare domain is canonical.** `astro.config.mjs` `site` reflects this and feeds the canonical tags, sitemap and OG URLs. Since 2026-09-27 `www` redirects to it with a 301, keeping path and query string: a Cloudflare Redirect Rule (Rules → Redirect Rules, from the "Redirect from WWW to root" template, `https://www.*` → `https://${1}`). Before that, `www` served the same site at 200 while this file claimed a redirect that did not exist. When deploying the rule, Cloudflare warns that `www` may not be proxied; that is a false positive, because `www` is a Worker custom domain, which is proxied but not an A/CNAME record. Do not "fix" it by adding a proxied DNS record for `www`, which would collide with the Worker's.
 - **Type scale and shape system are tokenized** in `src/styles/global.css`. Use `text-sm` / `text-2xl` etc., never arbitrary `text-[15px]`. Interactive elements are fully round, surfaces 16px, nested elements 8px.
 - The client has delegated visual judgment to Bryan, so design choices do not need client sign-off.
+- **The launch film lives in `docs/film.mp4` and is not built from this repository.** Its source is a
+  `onetake` composition under that skill's `cases/latam-15s/` — an HTML file where every value is a
+  function of time, plus its palette, sound score and beat sheet. `docs/` is outside `src/` and
+  `public/`, so Astro never copies it into `dist/` and no visitor downloads it; it is a repository
+  asset for the READMEs. Only the committed 3.3 MB web encode is in git, never the 4K60 master.
+  The film's last third shows the site as a full-page screenshot scrolled inside a window, so **a
+  redesign does not propagate into it** — the capture has to be retaken and the film re-rendered.
 
 ## Verifying changes
 

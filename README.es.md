@@ -10,6 +10,11 @@ certificación ASSE 6000.
 paga, tráfico real, y un dominio que además carga el correo de la empresa. Nada acá es un
 prototipo.
 
+<video src="https://github.com/BryanBel/latam-med-gas-landing-page/raw/master/docs/film.mp4" poster="https://github.com/BryanBel/latam-med-gas-landing-page/raw/master/docs/film-poster.webp" controls muted playsinline width="100%"></video>
+
+▶ **[Video de lanzamiento — 18 s](docs/film.mp4)** · una sola línea de gas se convierte en la
+norma, en el logotipo, en los seis servicios, en la pared de un hospital y, al final, en el sitio.
+
 ![La página de inicio de Latam Med Gas](docs/home.webp)
 
 ## Medido
@@ -267,3 +272,31 @@ avisa por correo al dueño del repositorio — la única vigilancia que tiene es
 
 Los dos empujan a `master` directamente. El ruleset de la rama prohíbe force-push y borrado pero
 **no exige pull requests** a propósito, porque estos dos jobs quedarían bloqueados por ello.
+
+## El video de lanzamiento
+
+`docs/film.mp4` — 18.5 s, sin voz. Una sola línea de gas se traza sobre un único mundo y se
+convierte, en este orden, en la regla bajo `ASSE SERIE 6000 · NFPA 99`, en la base sobre la que
+aterriza el logotipo **LMG**, en el recorrido por los seis servicios, en el riel de tomas de la
+pared de un hospital y —una vez que un pulso verde ha recorrido toda su longitud de vuelta hasta
+el origen— en el borde inferior de una ventana donde latammedgas.com se despliega y se recorre.
+La ventana se pliega de vuelta a la línea, y la línea subraya el eslogan de la empresa. No tiene
+un solo corte.
+
+**No se construye desde este repositorio.** La fuente es una composición HTML autocontenida donde
+cada valor es una función del tiempo, renderizada cuadro a cuadro con desenfoque de obturador
+real; vive fuera de este repo, bajo el skill `onetake` en `cases/latam-15s/`, junto con su beat
+sheet, su paleta, su banda sonora sintetizada y las notas de lo que estaba mal en la primera
+pasada. Lo que aporta el sitio es la captura: un screenshot de página completa de producción,
+tomado después de recorrerla entera para que cada isla revelada por scroll hubiera hidratado.
+
+Nada del video está conectado al build. `docs/` queda fuera de `src/` y `public/`, así que Astro
+nunca lo copia a `dist/` y ningún visitante del sitio lo descarga — es un archivo del
+repositorio, no de la página. Lo que está commiteado es una codificación web de 3.3 MB; el máster
+4K60 no está en git, porque un material de marketing que cambia una vez al año no tiene nada que
+hacer en el historial de un sitio que se reconstruye con cada publicación de Sanity.
+
+**Volver a montarlo tras un rediseño** significa recapturar el screenshot y volver a renderizar:
+la composición lee la captura, así que un cambio visual del sitio no se propaga solo. El último
+tercio del video es la única parte que muestra el sitio; los dos primeros tercios son
+independientes de él.
