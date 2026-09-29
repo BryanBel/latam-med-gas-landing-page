@@ -10,7 +10,7 @@ certificación ASSE 6000.
 paga, tráfico real, y un dominio que además carga el correo de la empresa. Nada acá es un
 prototipo.
 
-https://github.com/user-attachments/assets/0499dbfb-1c42-4139-a497-5bb31df2f5a6
+https://github.com/user-attachments/assets/0e9a6b24-2403-4517-a96d-ad8c5fd1fdfb
 
 _18 segundos, sin un solo corte: una sola línea de gas se convierte en la norma, en la base sobre la
 que aterriza el logotipo LMG, en el recorrido por los seis servicios, en el riel de tomas de la
