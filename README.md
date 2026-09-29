@@ -9,7 +9,7 @@ certification.
 **Live at [latammedgas.com](https://latammedgas.com)** since August 2026 — a paying client, real
 traffic, and a domain that also carries the company's working email. Nothing here is a prototype.
 
-[![Launch film — 18 seconds](docs/film-poster.webp)](https://github.com/BryanBel/latam-med-gas-landing-page/raw/master/docs/film.mp4)
+https://github.com/user-attachments/assets/0e9a6b24-2403-4517-a96d-ad8c5fd1fdfb
 
 **[Launch film — 18 s](https://github.com/BryanBel/latam-med-gas-landing-page/raw/master/docs/film.mp4)** ·
 one continuous line of gas becomes the standard, the wordmark, the six services, a hospital wall
