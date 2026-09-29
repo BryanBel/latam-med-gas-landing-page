@@ -113,6 +113,14 @@ Do not revert these without being asked. They were deliberate choices, and at le
   one-place change. `docs/film.mp4` stays committed as the copy this project controls; if the
   attachment ever dies, drag that file into any issue or editor again and swap the URL.
   `BryanBel/shield-link` is set up identically.
+  **In the GitHub Mobile app the same README shows the bare URL instead of a player, and no
+  markdown fixes that.** `POST /markdown` returns the `<video>` wrapped in a `<details>`, so the
+  server does convert it; the app renders markdown itself rather than asking for that HTML, and its
+  parser does not know the transformation. Inferred from the API's output, not from reading the
+  app. The alternative was a poster image linked to the attachment, which looks the same on every
+  client but loses the player on the web, because the conversion only applies to a bare URL alone
+  on its line — bracket it and it stays a link. Decided 2026-09-29 in favour of the web player:
+  a repository README is mostly read on a desktop, and on a phone the URL is still tappable.
 
 ## Verifying changes
 
