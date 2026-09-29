@@ -10,11 +10,11 @@ certificación ASSE 6000.
 paga, tráfico real, y un dominio que además carga el correo de la empresa. Nada acá es un
 prototipo.
 
-[![Video de lanzamiento — 18 segundos](docs/film-poster.webp)](docs/film.mp4)
+[![Video de lanzamiento — 18 segundos](docs/film-poster.webp)](https://github.com/BryanBel/latam-med-gas-landing-page/raw/master/docs/film.mp4)
 
-**[Video de lanzamiento — 18 s](docs/film.mp4)** · una sola línea de gas se convierte en la norma,
-en el logotipo, en los seis servicios, en la pared de un hospital y, al final, en el sitio. Sin
-un solo corte.
+**[Video de lanzamiento — 18 s](https://github.com/BryanBel/latam-med-gas-landing-page/raw/master/docs/film.mp4)** ·
+una sola línea de gas se convierte en la norma, en el logotipo, en los seis servicios, en la pared
+de un hospital y, al final, en el sitio. Sin un solo corte.
 
 ![La página de inicio de Latam Med Gas](docs/home.webp)
 

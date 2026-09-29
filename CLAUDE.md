@@ -100,10 +100,15 @@ Do not revert these without being asked. They were deliberate choices, and at le
   asset for the READMEs. Only the committed 3.3 MB web encode is in git, never the 4K60 master.
   The film's last third shows the site as a full-page screenshot scrolled inside a window, so **a
   redesign does not propagate into it** — the capture has to be retaken and the film re-rendered.
-  **GitHub strips `<video>` out of README markdown**, so the READMEs use a poster image linking to
-  `docs/film.mp4`; clicking it lands on GitHub's own blob page, which does have a player. An inline
-  player needs a `user-attachments` URL, which only exists if the file is dragged into an issue,
-  comment or release through the web UI — a repository path never renders as one.
+  **No path inside the repository will ever render as a video player on GitHub.** Checked against
+  the `POST /markdown` API with `context` set to this repo: `<video>` is stripped to an empty
+  paragraph, `![x](docs/film.mp4)` becomes a broken `<img>`, and a bare `raw` or
+  `raw.githubusercontent.com` URL stays a plain link. The blob page does not help either — it
+  answers "we can't show files that are this big" for the 3.16 MB file — and `raw` serves
+  `application/octet-stream`, so it downloads rather than plays. **The only thing GitHub turns into
+  a player is a bare `https://github.com/user-attachments/assets/…` URL on its own line**, and that
+  URL only exists once the file has been dragged into an issue, comment or release through the web
+  UI. `BryanBel/shield-link` does it that way; do the same here rather than re-testing the others.
 
 ## Verifying changes
 
