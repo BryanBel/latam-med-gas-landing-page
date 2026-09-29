@@ -100,6 +100,10 @@ Do not revert these without being asked. They were deliberate choices, and at le
   asset for the READMEs. Only the committed 3.3 MB web encode is in git, never the 4K60 master.
   The film's last third shows the site as a full-page screenshot scrolled inside a window, so **a
   redesign does not propagate into it** — the capture has to be retaken and the film re-rendered.
+  **GitHub strips `<video>` out of README markdown**, so the READMEs use a poster image linking to
+  `docs/film.mp4`; clicking it lands on GitHub's own blob page, which does have a player. An inline
+  player needs a `user-attachments` URL, which only exists if the file is dragged into an issue,
+  comment or release through the web UI — a repository path never renders as one.
 
 ## Verifying changes
 
