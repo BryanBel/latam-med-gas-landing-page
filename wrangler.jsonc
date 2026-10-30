@@ -1,6 +1,6 @@
 {
   "name": "latam-med-gas-web",
-  "compatibility_date": "2025-01-01",
+  "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "./dist",
     // Without this, Workers Assets defaults to "none" and answers unknown paths with an
