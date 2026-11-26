@@ -19,11 +19,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   keepalive:
     runs-on: ubuntu-latest
+    # Único job que empuja un commit vacío; el resto del workflow queda en solo lectura.
+    permissions:
+      contents: write
     steps:
       # Anclado a un commit y no a la etiqueta móvil `v4`, igual que el workflow de Sanity: una
       # etiqueta se puede reapuntar, y este job tiene permiso de escritura sobre el repositorio.
